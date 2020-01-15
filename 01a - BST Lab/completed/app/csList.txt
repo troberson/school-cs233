@@ -1,0 +1,437 @@
+1,Wil,van der Aalst, business process management  process mining  Petri nets
+2,Scott,Aaronson, quantum computing and complexity theory
+3,Hal,Abelson, intersection of computing and teaching
+4,Serge,Abiteboul, database theory
+5,Samson,Abramsky, game semantics
+6,Leonard,Adleman, RSA  DNA computing
+7,Manindra,Agrawal, polynomial-time primality testing
+8,Luis,von Ahn, human-based computation
+9,Alfred,Aho, compilers book  the 'a' in AWK
+10,Frances,Allen, compiler optimization
+11,Gene,Amdahl, supercomputer developer  founder of Amdahl Corporation
+12,David,Anderson, volunteer computing
+13,Andrew,Appel, compiler of text books
+14,Cecilia,Aragon, inventor of the treap  human-centered data science
+15,Bruce,Arden, programming language compilers (GAT  MAD)  virtual memory architecture  MTS
+16,Sanjeev,Arora, PCP theorem
+17,Winifred,Asprey, established the computer science curriculum at Vassar College
+18,John,Atanasoff, computer pioneer  creator of ABC or Atanasoff Berry Computer
+19,Charles,Babbage, invented first mechanical computer called the supreme mathematician
+20,Charles,Bachman, American computer scientist  known for Integrated Data Store
+21,Roland,Backhouse, mathematics of program construction
+22,John,Backus, FORTRAN  Backus
+23,David,Bacon, Programming languages  garbage collection
+24,Anthony,Barr, SAS System
+25,Jean,Bartik, one of the first computer programmers
+26,Rudolf,Bayer, B-tree
+27,James,Beatty, compiler optimization [1] super-computing[2]
+28,Gordon,Bell, computer designer DEC VAX  author: Computer Structures
+29,Steven,Bellovin, network security
+30,Tim,Berners-Lee, World Wide Web
+31,Daniel,Bernstein, qmail  software as protected speech
+32,Dines,Bjørner, Vienna Development Method (VDM)  RAISE
+33,Gerrit,Blaauw, one of the principal designers of the IBM System 360 line of computers
+34,Dorothy,Blum, National Security Agency
+35,Lenore,Blum, complexity
+36,Manuel,Blum, cryptography
+37,Barry,Boehm, software engineering economics  spiral development
+38,Corrado,Bohm, author of the structured program theorem
+39,Jeff,Bonwick, inventor of slab allocation and ZFS
+40,Grady,Booch, Unified Modeling Language  Object Management Group
+41,George,Boole, Boolean logic
+42,Andrew,Booth, developed the first rotating drum storage device
+43,Kathleen,Booth, developed the first assembly language
+44,Anita,Borg,2003) 
+45,Bert,Bos, Cascading Style Sheets
+46,Mikhail,Botvinnik, World Chess Champion  computer scientist and electrical engineer  pioneer of early expert system AI inventor of Computer chess
+47,Jonathan,Bowen, Z notation  formal methods
+48,Stephen,Bourne, Bourne shell  portable ALGOL 68C compiler
+49,Harry,Bouwman, Dutch Information systems researcher  and Professor at the Åbo Akademi University
+50,Robert,Boyer, string searching  ACL2 theorem prover
+51,Karlheinz,Brandenburg, Main mp3 contributor
+52,Jack,Bresenham, early computer-graphics contributions  including Bresenham's algorithm
+53,Sergey,Brin, co-founder of Google
+54,David,Brown, unified memory architecture  binary compatibility
+55,Per,Hansen, concurrency
+56,Sjaak,Brinkkemper, methodology of product software development
+57,Fred,Brooks, System 360  OS/360  The Mythical Man-Month  No Silver Bullet
+58,Michael,Butler, Event-B
+59,Lee,Calcote, cloud computing
+60,Tracy,Camp, wireless computing
+61,Martin,Campbell-Kelly, history of computing
+62,Bryan,Cantrill, inventor of DTrace
+63,Luca,Cardelli, objects
+64,Edwin,Catmull, computer graphics
+65,Vinton,Cerf, Internet  TCP/IP
+66,Zhou,Chaochen, duration calculus
+67,Peter,Chen, entity-relationship model  data modeling  conceptual model
+68,Alonzo,Church, mathematics of combinators  lambda calculus
+69,Edmund,Clarke, model checking
+70,John,Cocke, RISC
+71,Edgar,Codd,formulated the database relational model 
+72,Jacques,Cohen, computer science professor
+73,Simon,Colton, computational creativity
+74,Alain,Colmerauer, Prolog
+75,Paul,Compton, Ripple Down Rules
+76,Gordon,Cormack, co-inventor of dynamic Markov compression
+77,Stephen,Cook, NP-completeness
+78,James,Cooley, Fast Fourier transform (FFT)
+79,Danese,Cooper, Open Source Software
+80,Fernando,Corbató, Compatible Time-Sharing System (CTSS)  Multics
+81,Patrick,Cousot, abstract interpretation
+82,Ingemar,Cox, digital watermarking
+83,Seymour,Cray, Cray Research  supercomputer
+84,Nello,Cristianini, machine learning  pattern analysis  artificial intelligence
+85,Jon,Crowcroft, networking
+86,Glen,Culler, interactive computing  computer graphics  high performance computing
+87,Luigi,Dadda, designer of the Dadda multiplier
+88,Ole-Johan,Dahl, Simula
+89,Ryan,Dahl, founder of node.js project
+90,Andries,van Dam, computer graphics  hypertext
+91,Samir,Das, Wireless Networks  Mobile Computing  Vehicular ad hoc network  Sensor Networks  Mesh networking  Wireless ad hoc network
+92,Christopher,Date, proponent of database relational model
+93,Jeff,Dean, Bigtable  MapReduce  Spanner of Google
+94,Erik,Demaine, computational origami
+95,Richard,DeMillo, computer security  software engineering  educational technology
+96,Dorothy,Denning, computer security
+97,Peter,Denning, identified the use of an operating system's working set and balance set  President of ACM
+98,Michael,Dertouzos, Director of Massachusetts Institute of Technology (MIT) Laboratory for Computer Science (LCS) from 1974 to 2001
+99,Vinod,Dham, P5 Pentium processor
+100,Jan,Dietz, information systems theory and Design & Engineering Methodology for Organizations
+101,Whitfield,Diffie, public key cryptography  Diffie
+102,Edsger,Dijkstra, algorithms  Goto considered harmful  semaphore (programming)
+103,Alan,Dix, literally wrote the book on human
+104,Jack,Dongarra, linear algebra high performance computing (HCI)
+105,Marco,Dorigo, ant colony optimization
+106,Paul,Dourish, human computer interaction
+107,Susan,Dumais, information retrieval
+108,Peter,Eades, graph drawing
+109,Wim,Ebbinkhuijsen, COBOL
+110,John,Eckert, ENIAC
+111,Brendan,Eich, JavaScript  Mozilla
+112,Philip,Emeagwali, supercomputing
+113,E.,Emerson, model checking
+114,Douglas,Engelbart, tiled windows  hypertext  computer mouse
+115,Oren,Etzioni, MetaCrawler  Netbot
+116,David,Evans, computer graphics
+117,Edward,Feigenbaum, intelligence
+118,Edward,Felten, computer security
+119,Tommy,Flowers, Colossus computer
+120,Robert,Floyd, NP-completeness
+121,Sally,Floyd, Internet congestion control
+122,Lawrence,Fogel, Evolutionary programming
+123,Bernard,Galler, MAD (programming language)
+124,Michael,Garey, NP-completeness
+125,Bill,Gates, co-founder of Microsoft
+126,Juan,Gilbert, Human-Centered Computing
+127,Lee,Giles, CiteSeer
+128,Seymour,Ginsburg, formal languages  automata theory  AFL theory  database theory
+129,Kurt,Gödel, computability 
+130,Adele,Goldberg, Smalltalk
+131,Ian,Goldberg, cryptographer  off-the-record messaging
+132,Oded,Goldreich, cryptography  computational complexity theory
+133,Shafi,Goldwasser, cryptography  computational complexity theory
+134,Gene,Golub, Matrix computation
+135,Martin,Golumbic, algorithmic graph theory
+136,Gastón,Gonnet, co-founder of Waterloo Maple Inc.
+137,James,Gosling, NeWS  Java
+138,Paul,Graham, Viaweb  On Lisp  Arc
+139,Robert,Graham, programming language compilers (GAT  MAD)  virtual memory architecture  Multics
+140,Susan,Graham, compilers  programming environments
+141,Jim,Gray, database
+142,Sheila,Greibach, Greibach normal form  AFL theory
+143,Ralph,Griswold, SNOBOL
+144,Bill,Gropp, Message Passing Interface  PETSc
+145,Ramanathan,Guha, RDF  Netscape  RSS  Epinions
+146,Neil,Gunther, computer performance analysis  capacity planning
+147,Peter,Gyarmati, adaptivity in operating systems and networking
+148,Philipp,Hahn, mechanical calculator
+149,Eldon,Hall, Apollo Guidance Computer
+150,Margaret,Hamilton, ultra-reliable software design
+151,Richard,Hamming, Hamming code  founder of the Association for Computing Machinery
+152,Jiawei,Han, data mining
+153,Juris,Hartmanis, computational complexity theory
+154,Johan,Håstad, computational complexity theory
+155,Les,Hatton, software failure and vulnerabilities
+156,He,Jifeng, provably correct systems
+157,Eric,Hehner, predicative programming  formal methods  quote notation
+158,Martin,Hellman, encryption
+159,Gernot,Heiser, development of L4 and founder of OK Labs
+160,James,Hendler, Semantic Web
+161,John,Hennessy, computer architecture
+162,Danny,Hillis, Connection Machine
+163,C.A.R,Hoare, logic  rigor  Communicating sequential processes (CSP)
+164,Betty,Holberton, ENIAC programmer  developed the first Sort Merge Generator
+165,John,Holland, genetic algorithms
+166,Herman,Hollerith, invented recording of data on a machine readable medium  using punched cards 
+167,Gerard,Holzmann, software verification  logic model checking (SPIN)
+168,John,Hopcroft, compilers
+169,Grace,Hopper,1992) 
+170,Eric,Horvitz, artificial intelligence
+171,John,Hughes, structuring computations with arrows; QuickCheck randomized program testing framework; Haskell programming language design.
+172,Jean,Ichbiah, Ada
+173,Dan,Ingalls, Smalltalk  BitBlt  Lively Kernel
+174,Kenneth,Iverson, APL  J
+175,Ivar,Jacobson, Unified Modeling Language  Object Management Group
+176,Cliff,Jones, Vienna Development Method (VDM)
+177,Bill,Joy, Sun Microsystems  BSD UNIX  vi  csh
+178,Dan,Jurafsky, Natural language processing
+179,William,Kahan, numerical analysis
+180,Robert,Kahn, TCP/IP
+181,Avinash,Kak, digital image processing
+182,Poul-Henning,Kamp, inventor of GBDE  FreeBSD Jails  Varnish cache
+183,Richard,Karp, NP-completeness
+184,Narendra,Karmarkar, Karmarkar's algorithm
+185,Marek,Karpinski, NP optimization problems
+186,Alan,Kay, Dynabook  Smalltalk  overlapping windows
+187,Neeraj,Kayal, AKS primality test
+188,John,Kemeny, BASIC
+189,Ken,Kennedy, compiling for parallel and vector machines
+190,Brian,Kernighan, Unix  the 'k' in AWK
+191,Carl,Kesselman, grid computing
+192,Gregor,Kiczales, CLOS  reflection  aspect-oriented programming
+193,Peter,Kirstein, Internet
+194,Stephen,Kleene, Kleene closure  recursion theory
+195,Dan,Klein, Natural language processing  Machine translation
+196,Leonard,Kleinrock, ARPANET  queueing theory  packet switching  hierarchical routing
+197,Donald,Knuth, The Art of Computer Programming  MIX/MMIX  TeX  literate programming
+198,Andrew,Koenig, C++
+199,Daphne,Koller, Artificial intelligence  bayesian network
+200,Michael,Kölling, BlueJ
+201,Andrey,Kolmogorov, algorithmic complexity theory
+202,Janet,Kolodner, case-based reasoning
+203,David,Korn, Korn shell
+204,Kees,Koster, ALGOL 68
+205,Robert,Kowalski, logic programming
+206,John,Koza, genetic programming
+207,John,Krogstie, SEQUAL framework
+208,Joseph,Kruskal, Kruskal's algorithm
+209,Thomas,Kurtz, BASIC programming language; Dartmouth College computer professor
+210,Leslie,Lamport, algorithms for distributed computing  LaTeX
+211,Chris,Lattner, creator of Swift (programming language) and LLVM compiler infrastructure
+212,Charles,Leiserson, cache-oblivious algorithms  provably good work-stealing  coauthor of Introduction to Algorithms
+213,Douglas,Lenat, artificial intelligence  Cyc
+214,Rasmus,Lerdorf, PHP
+215,Max,Levchin, Gausebeck-Levchin test and PayPal
+216,Leonid,Levin, computational complexity theory
+217,Kevin,Leyton-Brown, artificial intelligence
+218,John,Lions, Lions Book
+219,Richard,Lipton, computational complexity theory
+220,Barbara,Liskov, programming languages
+221,Darrell,Long, Computer data storage
+222,Patricia,Lopez, broadening participation in computing
+223,Ada,Lovelace, first programmer
+224,Nadia,Magnenat, computer graphics  virtual actor
+225,Zohar,Manna, fuzzy logic
+226,James,Martin, information engineering
+227,Robert,Martin, software craftsmanship
+228,Yuri,Matiyasevich, solving Hilbert's tenth problem
+229,Yukihiro,Matsumoto, Ruby (programming language)
+230,John,Mauchly,1980) 
+231,Derek,McAuley, ubiquitous computing  computer architecture  networking
+232,John,McCarthy, Lisp (programming language)  artificial intelligence
+233,Douglas,McIlroy, pipes
+234,Chris,McKinstry, artificial intelligence  Mindpixel
+235,Marshall,McKusick, BSD  Berkeley Fast File System
+236,Lambert,Meertens, ALGOL 68  ABC (programming language)
+237,Bertrand,Meyer, Eiffel (programming language)
+238,Silvio,Micali, cryptography
+239,Robin,Milner, ML (programming language)
+240,Jack,Minker, database logic
+241,Marvin,Minsky, artificial intelligence  perceptrons  Society of Mind
+242,Paul,Mockapetris, Domain Name System (DNS)
+243,Cleve,Moler, numerical analysis  MATLAB
+244,John,Moon, inventor  Apple Inc.
+245,Charles,Moore, Forth programming language
+246,Edward,Moore, Moore machine
+247,Gordon,Moore, Moore's law
+248,J,Moore, string searching  ACL2 theorem prover
+249,Hans,Moravec, robotics
+250,Robert,Morris, Morris worm
+251,Joel,Moses, Macsyma
+252,Rajeev,Motwani, randomized algorithm
+253,Stephen,Muggleton, Inductive Logic Programming
+254,Alan,Mycroft, programming languages
+255,Mihai,Nadin, anticipation research
+256,Makoto,Nagao, machine translation  natural language processing  digital library
+257,Frieder,Nake, pioneered computer arts
+258,Peter,Naur, BNF  ALGOL 60
+259,Roger,Needham, computer security
+260,James,Nell, GERAM
+261,Bernard,de Neumann, massively parallel autonomous cellular processor  software engineering research
+262,Klara,von Neumann, early computers  ENIAC programmer and control designer
+263,John,von Neumann,Von Neumann Architecture 
+264,Allen,Newell, artificial intelligence  Computer Structures
+265,Max,Newman, Colossus  MADM
+266,Andrew,Ng, artificial intelligence  machine learning  robotics
+267,Nils,Nilsson, artificial intelligence
+268,G.M.,Nijssen, NIAM
+269,Tobias,Nipkow, proof assistance
+270,Jerre,Noe, computerized banking
+271,Peter,Nordin, artificial intelligence  genetic programming  evolutionary robotics
+272,Donald,Norman, user interfaces  usability
+273,Peter,Norvig, artificial intelligence  Director of Research at Google
+274,George,Novacky, Assistant Department Chair and Senior Lecturer in Computer Science  Assistant Dean of CAS for Undergraduate Studies at University of Pittsburgh
+275,Kristen,Nygaard, Simula
+276,T.,Olle, Ferranti Mercury
+277,John,Ousterhout, Tcl programming Language
+278,Mark,Overmars, game programming
+279,Martin,Odersky, Scala programming Language
+280,Larry,Page, co-founder of Google
+281,David,Parnas, information hiding  modular programming
+282,Yale,Patt, Instruction-level parallelism  speculative architectures
+283,Mihai,Patrascu, data structures
+284,Lawrence,Paulson, ML
+285,Juan,Pavón, software agents
+286,Judea,Pearl, artificial intelligence  search algorithms
+287,David,Pearson, CADES  computer graphics
+288,Alan,Perlis, Programming Pearls
+289,Radia,Perlman, spanning tree protocol
+290,Pier,Perotto, designer of Programma 101  arguably the first personal computer
+291,Rózsa,Péter, recursive function theory
+292,Simon,Jones, functional programming
+293,Roberto,Pieraccini, Speech technologist  technical director at Jibo Inc.
+294,Amir,Pnueli, temporal logic
+295,Willem,van der Poel, computer graphics  robotics  geographic information systems  imaging  multimedia  virtual environments  games
+296,Emil,Post, mathematics
+297,Jon,Postel, Internet
+298,Franco,Preparata, computer engineering  computational geometry  parallel algorithms  computational biology
+299,William,Press, numerical algorithms
+300,Roberto,Ierusalimschy, Lua (programming language)
+301,Michael,Rabin, nondeterministic machine
+302,Dragomir,Radev, Natural language processing  Information Retrieval
+303,T.,Raman, accessibility  Emacspeak
+304,Brian,Randell, dependability
+305,Raj,Reddy, AI
+306,Trygve,Reenskaug, Model-view-controller (MVC) software architecture pattern
+307,Joyce,Reynolds, Internet
+308,Bernard,Richards, medical informatics
+309,Martin,Richards, BCPL
+310,Dennis,Ritchie, C (programming language)  UNIX
+311,Ron,Rivest, RSA  MD5  RC4
+312,Colette,Rolland, REMORA methodology  meta modelling
+313,Douglas,Ross, Structured Analysis and Design Technique
+314,Guido,van Rossum, Python (programming language)
+315,Winston,Royce, Waterfall model
+316,Rudy,Rucker, mathematician  writer  educator
+317,Steven,Rudich, complexity theory  cryptography
+318,James,Rumbaugh, Unified Modeling Language  Object Management Group
+319,Peter,Ružicka, Slovak computer scientist and mathematician
+320,Gerard,Salton, information retrieval
+321,Jean,Sammet, programming languages
+322,Claude,Sammut, artificial-intelligence researcher
+323,Carl,Sassenrath, operating systems  programming languages  Amiga  REBOL
+324,Mahadev,Satyanarayanan, file systems  distributed systems  mobile computing  pervasive computing
+325,Walter,Savitch, discovery of complexity class NL  Savitch's theorem  natural language processing  mathematical linguistics
+326,Wilhelm,Schickard, one of the first calculating machines
+327,Steve,Schneider, formal methods  security
+328,Bruce,Schneier, cryptography  security
+329,Fred,Schneider, concurrent and distributed computing
+330,Dana,Scott, domain theory
+331,Michael,Scott, programming languages  algorithms  distributed computing
+332,Ravi,Sethi, compilers  2nd Dragon Book
+333,Adi,Shamir, RSA  cryptanalysis
+334,Claude,Shannon, information theory
+335,David,Shaw, computational finance  computational biochemistry  parallel architectures
+336,Cliff,Shaw, systems programmer  artificial intelligence
+337,Scott,Shenker, networking
+338,Ben,Shneiderman, human-computer interaction  information visualization
+339,Edward,Shortliffe, MYCIN (medical diagnostic expert system)
+340,Joseph,Sifakis, model checking
+341,Herbert,Simon, artificial intelligence
+342,Munindar,Singh, multiagent systems  software engineering  artificial intelligence  social networks
+343,Ramesh,Sitaraman, helped build Akamai's high performance network
+344,Daniel,Sleator, splay tree  amortized analysis
+345,Aaron,Sloman, artificial intelligence and cognitive science
+346,Arne,Sølvberg, information modelling
+347,Brian,Smith, reflection (computer science)  3lisp
+348,Steven,Spewak, Enterprise architecture planning
+349,Rohini,Srihari, Information Retrieval  Text Analytics  Multilingual Text Mining
+350,Sargur,Srihari, Pattern Recognition  Machine learning  Computational criminology  CEDAR-FOX
+351,Maciej,Stachowiak, GNOME  Safari  WebKit
+352,Richard,Stallman, GNU Project
+353,Richard,Stearns, computational complexity theory
+354,Guy,"Steele,", Scheme  Common Lisp
+355,Thomas,Sterling, creator of Beowulf clusters
+356,Richard,Stevens, author of books  including TCP/IP Illustrated and Advanced Programming in the Unix Environment
+357,Larry,Stockmeyer, computational complexity  distributed computing
+358,Michael,Stonebraker, relational database practice and theory
+359,Olaf,Storaasli, finite element machine  linear algebra  high performance computing
+360,Christopher,Strachey, denotational semantics
+361,Bjarne,Stroustrup, C++
+362,Madhu,Sudan, computational complexity theory  coding theory
+363,Gerald,Sussman, Scheme
+364,Bert,Sutherland, graphics  Internet
+365,Ivan,Sutherland, graphics
+366,Mario,Szegedy, complexity theory  quantum computing
+367,Roberto,Tamassia, computational geometry  computer security
+368,Andrew,Tanenbaum, operating systems  MINIX
+369,Bernhard,Thalheim, conceptual modelling foundation
+370,Robert,Tarjan, splay tree
+371,Mario,Tchou, italian engineer  of Chinese descent  leader of Olivetti Elea project
+372,Shang-Hua,Teng, analysis of algorithms
+373,Larry,Tesler, human-computer interaction  graphical user interface  Apple Macintosh
+374,Avie,Tevanian, Mach kernel team  NeXT  Mac OS X
+375,Charles,Thacker, Xerox Alto  Microsoft Research
+376,Daniel,Thalmann, computer graphics  virtual actor
+377,Ken,Thompson, Unix
+378,Sebastian,Thrun, AI researcher and inventor of autonomous driving
+379,Walter,Tichy, RCS
+380,Seinosuke,Toda, computation complexity  recipient of 1998 Gödel Prize
+381,Linus,Torvalds, Linux kernel  Git
+382,Godfried,Toussaint, computational geometry 
+383,Edwin,Tozer, business information systems
+384,Joseph,Traub, computational complexity of scientific problems
+385,John,Tukey, founder of FFT algorithm  Box plot  Exploratory Data Analysis and Coining the term 'bit'
+386,Murray,Turoff, computer-mediated communication
+387,Alan,Turing, British computing pioneer  Turing machine  algorithms  cryptology  computer architecture
+388,Jeffrey,Ullman, compilers  databases  complexity theory
+389,Leslie,Valiant, computational complexity theory  computational learning theory
+390,Vladimir,Vapnik, pattern recognition  computational learning theory
+391,Moshe,Vardi, professor of computer science at Rice University
+392,François,Vernadat, enterprise modeling
+393,Richard,Veryard, enterprise modeling
+394,Paul,Vitanyi, Kolmogorov complexity  Information distance  Normalized compression distance  Normalized Google distance
+395,Andrew,Viterbi, Viterbi algorithm
+396,Jeffrey,Vitter, external memory algorithms  compressed data structures  data compression  databases
+397,Paul,Vixie, DNS  BIND  PAIX  Internet Software Consortium  MAPS  DNSBL
+398,David,Wagner, security  cryptography
+399,Larry,Wall, Perl programming language
+400,Manfred,Warmuth, computational learning theory
+401,David,Warren, AI  logic programming  Prolog  the 'w' in WAM
+402,Kevin,Warwick, artificial intelligence
+403,Peter,Wegner, object-oriented programming  interaction (computer science)
+404,Peter,Weinberger, programming language design  the 'w' in AWK
+405,Mark,Weiser, ubiquitous computing
+406,Joseph,Weizenbaum, artificial intelligence  ELIZA
+407,David,Wheeler, EDSAC  subroutines
+408,Franklin,Westervelt, use of computers in engineering education  conversational use of computers  MTS  ARPANET  distance learning
+409,Steve,Whittaker, human computer interaction  computer support for cooperative work  social media
+410,Jennifer,Widom, nontraditional data management
+411,Gio,Wiederhold, database management systems
+412,Norbert,Wiener, Cybernetics
+413,Adriaan,Wijngaarden, Dutch pioneer; ARRA  ALGOL
+414,Mary,Wilkes, LINC developer  assembler-linker designer
+415,Maurice,Wilkes, microprogramming  EDSAC
+416,Yorick,Wilks, computational linguistics  artificial intelligence
+417,James,Wilkinson, numerical analysis
+418,Sophie,Wilson, ARM architecture
+419,Shmuel,Winograd, Coppersmith
+420,Terry,Winograd, artificial intelligence  SHRDLU
+421,Patrick,Winston, artificial intelligence
+422,Niklaus,Wirth, Pascal  Modula  Oberon (programming language)
+423,Neil,Wiseman, computer graphics
+424,Dennis,Wisnosky, Integrated Computer-Aided Manufacturing (ICAM)  IDEF
+425,Stephen,Wolfram, Mathematica
+426,Mike,Woodger, Pilot ACE  ALGOL 60  Ada (programming language)
+427,Beatrice,Worsley, wrote the first PhD dissertation involving modern computers; was one of the people who wrote Transcode
+428,Steve,Wozniak, engineered first generation personal computers at Apple Computer
+429,Jie,Wu, computer networks
+430,William,Wulf, compilers
+431,Edward,Yourdon, Structured Systems Analysis and Design Method
+432,Lotfi,Zadeh, fuzzy logic
+433,Hans,Zantema, termination analysis
+434,Arif,Zaman, pseudo-random number generator
+435,Shlomo,Zilberstein, artificial intelligence  anytime algorithms  automated planning  and decentralized POMDPs
+436,Jill,Zimmerman, James M. Beall Professor of Mathematics and Computer Science at Goucher College
+437,Konrad,Zuse, German pioneer of hardware and software
