@@ -125,8 +125,23 @@ class BinarySearchTree : public BSTInterface<KeyComparable, Value>
      */
     BinaryNode* find(const KeyComparable& key, BinaryNode* node) const
     {
-        // TODO write for lab 1
-        return nullptr;
+        // Check if the given node is null
+        if (!node)
+        {
+            return nullptr; // FAIL: node does not exist
+        }
+
+        // Check the current node
+        if (key == node->key)
+        {
+            return node; // SUCCESS: found the desired node
+        }
+
+        // If the key is less than the current node, check left;
+        // otherwise, check right.
+        // Return either the located node or nullptr if not found
+        return (key < node->key) ? find(key, node->left)
+                                 : find(key, node->right);
     }
 
     /*
@@ -201,8 +216,17 @@ class BinarySearchTree : public BSTInterface<KeyComparable, Value>
      */
     bool find(const KeyComparable& key, Value& founditem) const
     {
-        // TODO calls private find lab 1
-        return false;
+        // Try finding the key
+        BinaryNode* foundNode = find(key, root);
+
+        // If the key is found, set the out param 'founditem' to the value
+        if (foundNode)
+        {
+            founditem = foundNode->value;
+        }
+
+        // Return true if the key was found, false otherwise
+        return (foundNode != nullptr);
     }
 
     /*
