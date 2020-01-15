@@ -1,10 +1,23 @@
+///
+// Name: Tamara Roberson
+// Section: A
+// Program Name: Lab 01 - Binary Search Tree
+//
+// Description: An object-oriented implementation of a Binary Search Tree.
+// Includes functions for inserting, finding, and removing nodes. The nodes
+// are referenced by a key, which can be any comparable type.
+///
+
+
 #include "BSTInterface.h"
+#include "ComputerScientist.h"
+
 #include <string>
 
 using namespace std;
 
 template <typename KeyComparable, typename Value>
-class BinarySearchTree : BSTInterface<KeyComparable, Value>
+class BinarySearchTree : public BSTInterface<KeyComparable, Value>
 {
   private:
     /*
@@ -37,19 +50,52 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      * Inserts a node into the tree
      * returns true if item inserted
      * returns false if item not inserted (Key already in tree)
-     * maintains this property of th tree:
+     * maintains this property of the tree:
      *     All nodes to the left will be less
      *     All nodes to the right will be greater
      */
     bool insert(Value item, KeyComparable key, BinaryNode* node)
     {
-        // TODO write for lab 1
-        return false;
+        // Check if the given node is null
+        if (!node)
+        {
+            return false; // FAIL: node does not exist
+        }
+
+        // Check if the key is the same as the current key (already exists)
+        if (key == node->key)
+        {
+            return false; // FAIL: key already exists
+        }
+
+        // Use left branch for smaller keys
+        if (key < node->key)
+        {
+            // If there is a left node, recurse down the left branch
+            if (node->left)
+            {
+                return insert(item, key, node->left);
+            }
+
+            // Otherwise, make this the left child
+            node->left = new BinaryNode(key, item);
+            return true; // SUCCESS: node added
+        }
+
+        // Use right branch for larger keys
+        // If there is a right node, recurse down the right branch
+        if (node->right)
+        {
+            return insert(item, key, node->right);
+        }
+
+        node->right = new BinaryNode(key, item);
+        return true; // SUCCESS: node added
     }
 
     /*
      * remove a node from the tree
-     * maintains this property of th tree:
+     * maintains this property of the tree:
      *     All nodes to the left will be less
      *     All nodes to the right will be greater
      */
@@ -89,6 +135,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     bool contains(const Value& item, BinaryNode* t) const
     {
         // optional code
+        return false;
     }
 
     /*
@@ -104,7 +151,17 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void printTree(BinaryNode* t, std::ostream& out) const
     {
-        // TODO write for lab 1
+        // Skip null nodes
+        if (!t)
+        {
+            return;
+        }
+
+        // Print in-order, recursing down branches:
+        //   Left Branch, Current, Right Branch
+        printTree(t->left, out);
+        out << *t->value << "\n";
+        printTree(t->right, out);
     }
 
   public:
@@ -191,8 +248,15 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     bool insert(Value value, KeyComparable key)
     {
-        // TODO calls private remove
-        return false;
+        // If there is no root node, add this as the root
+        if (!root)
+        {
+            root = new BinaryNode(key, value);
+            return true;
+        }
+
+        // Try adding the value to the tree, starting from the root
+        return insert(value, key, root);
     }
 
     /*
