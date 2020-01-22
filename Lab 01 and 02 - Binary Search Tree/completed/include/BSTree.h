@@ -99,9 +99,81 @@ class BinarySearchTree : public BSTInterface<KeyComparable, Value>
      *     All nodes to the left will be less
      *     All nodes to the right will be greater
      */
-    void remove(const KeyComparable& key, BinaryNode** t)
+    void remove(const KeyComparable& key, BinaryNode*& t)
     {
-        // TODO write for lab 2
+        // Check if the given node is null
+        if (!t)
+        {
+            return; // FAIL: node does not exist
+        }
+
+        // Check left
+        if (key < t->key)
+        {
+            return remove(key, t->left);
+        }
+
+        // Check right
+        if (key > t->key)
+        {
+            return remove(key, t->right);
+        }
+
+        // Check current node
+        if (key != t->key)
+        {
+            return; // FAIL: key not found
+        }
+
+        // Has a left child?
+        if (t->left)
+        {
+            // Has a right child?
+            if (t->right)
+            {
+                // Has two children
+                // Replace the current node with the largest in the left
+                // subtree by copying the key and value, keeping the
+                // current left and right children.
+                auto max = findMax(t->left);
+                t->key = max->key;
+                t->value = max->value;
+
+                // Call this function on the key to delete to unlink
+                // correctly from parent
+                remove(max->key, t->left);
+            }
+            else
+            {
+                // Has a left child only.
+                // Replace the current node with the left child.
+                auto tmp = t->left;
+                delete t;
+                t = tmp;
+            }
+        }
+        else if (t->right)
+        {
+            // Has a right child only
+            // Replace the current node with the right child.
+            auto tmp = t->right;
+            delete t;
+            t = tmp;
+        }
+        else
+        {
+            // No children
+            // Just delete.
+            delete t;
+            t = nullptr;
+            return; // Don't reset root if there's no children
+        }
+
+        // Reset root if deleted
+        if (key == root->key)
+        {
+            root = t;
+        }
     }
 
     /*
@@ -278,7 +350,6 @@ class BinarySearchTree : public BSTInterface<KeyComparable, Value>
      */
     void printTree(std::ostream& out = cout) const
     {
-        // TODO Calls the private printTree function
         printTree(root, out);
     }
 
@@ -312,9 +383,8 @@ class BinarySearchTree : public BSTInterface<KeyComparable, Value>
     /*
      * Removes the nodes if it contains the given item
      */
-    void remove(const KeyComparable& key)
+    void remove(const KeyComparable& key) override
     {
-        // TODO calls private remove
+        remove(key, root);
     }
-
 }; // end of BinarySearchTree class
