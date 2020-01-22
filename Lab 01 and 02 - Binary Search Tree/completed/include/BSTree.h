@@ -1,7 +1,7 @@
 ///
 // Name: Tamara Roberson
 // Section: A
-// Program Name: Lab 01 - Binary Search Tree
+// Program Name: Lab 02 - Binary Search Tree
 //
 // Description: An object-oriented implementation of a Binary Search Tree.
 // Includes functions for inserting, finding, and removing nodes. The nodes
@@ -109,7 +109,20 @@ class BinarySearchTree : public BSTInterface<KeyComparable, Value>
      */
     BinaryNode* findMin(BinaryNode* t) const
     {
-        // TODO write for lab 2
+        // Check if node is null
+        if (!t)
+        {
+            return nullptr; // FAIL: Node is null
+        }
+
+        // If there is a left child, keep walking
+        if (t->left)
+        {
+            return findMin(t->left);
+        }
+
+        // If there is no left child, return the current node
+        return t;
     }
 
     /*
@@ -117,7 +130,20 @@ class BinarySearchTree : public BSTInterface<KeyComparable, Value>
      */
     BinaryNode* findMax(BinaryNode* t) const
     {
-        // TODO write for lab 2
+        // Check if node is null
+        if (!t)
+        {
+            return nullptr; // FAIL: Node is null
+        }
+
+        // If there is a right child, keep walking
+        if (t->right)
+        {
+            return findMax(t->right);
+        }
+
+        // If there is no right child, return the current node
+        return t;
     }
 
     /*
@@ -195,8 +221,8 @@ class BinarySearchTree : public BSTInterface<KeyComparable, Value>
      */
     const Value findMin() const
     {
-        // TODO calls private findMin  lab 2
-        return nullptr;
+        BinaryNode* found = findMin(root);
+        return found ? found->value : nullptr;
     }
 
     /*
@@ -204,8 +230,8 @@ class BinarySearchTree : public BSTInterface<KeyComparable, Value>
      */
     const Value findMax() const
     {
-        // TODO calls private findMax  lab 2
-        return nullptr;
+        BinaryNode* found = findMax(root);
+        return found ? found->value : nullptr;
     }
 
     /*
