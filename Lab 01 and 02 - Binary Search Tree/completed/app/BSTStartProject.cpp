@@ -57,6 +57,19 @@ int main()
     tree2.printTree();
     cout << endl << endl;
 
+    cout << "BEGIN LAB 2 TEST\n";
+
+    for (auto item : list)
+    {
+        auto id = item->getID();
+        if (id % 2 == 1)
+        {
+            tree2.remove(id);
+        }
+    }
+    tree2.printTree();
+    cout << "END LAB 2 TEST\n\n\n";
+
     BinarySearchTree<int, ComputerScientist*> tree;
     tree.insert(new ComputerScientist("Robert", "Ward", "Education", 50),
                 50);
