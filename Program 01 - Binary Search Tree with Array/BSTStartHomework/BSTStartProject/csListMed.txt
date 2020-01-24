@@ -1,0 +1,97 @@
+62,Bryan,Cantrill, inventor of DTrace
+63,Luca,Cardelli, objects
+64,Edwin,Catmull, computer graphics
+65,Vinton,Cerf, Internet  TCP/IP
+66,Zhou,Chaochen, duration calculus
+67,Peter,Chen, entity-relationship model  data modeling  conceptual model
+68,Alonzo,Church, mathematics of combinators  lambda calculus
+69,Edmund,Clarke, model checking
+70,John,Cocke, RISC
+71,Edgar,Codd,formulated the database relational model 
+72,Jacques,Cohen, computer science professor
+73,Simon,Colton, computational creativity
+74,Alain,Colmerauer, Prolog
+75,Paul,Compton, Ripple Down Rules
+76,Gordon,Cormack, co-inventor of dynamic Markov compression
+77,Stephen,Cook, NP-completeness
+78,James,Cooley, Fast Fourier transform (FFT)
+79,Danese,Cooper, Open Source Software
+80,Fernando,Corbató, Compatible Time-Sharing System (CTSS)  Multics
+81,Patrick,Cousot, abstract interpretation
+82,Ingemar,Cox, digital watermarking
+83,Seymour,Cray, Cray Research  supercomputer
+84,Nello,Cristianini, machine learning  pattern analysis  artificial intelligence
+85,Jon,Crowcroft, networking
+86,Glen,Culler, interactive computing  computer graphics  high performance computing
+87,Luigi,Dadda, designer of the Dadda multiplier
+88,Ole-Johan,Dahl, Simula
+89,Ryan,Dahl, founder of node.js project
+90,Andries,van Dam, computer graphics  hypertext
+91,Samir,Das, Wireless Networks  Mobile Computing  Vehicular ad hoc network  Sensor Networks  Mesh networking  Wireless ad hoc network
+92,Christopher,Date, proponent of database relational model
+93,Jeff,Dean, Bigtable  MapReduce  Spanner of Google
+94,Erik,Demaine, computational origami
+95,Richard,DeMillo, computer security  software engineering  educational technology
+96,Dorothy,Denning, computer security
+97,Peter,Denning, identified the use of an operating system's working set and balance set  President of ACM
+98,Michael,Dertouzos, Director of Massachusetts Institute of Technology (MIT) Laboratory for Computer Science (LCS) from 1974 to 2001
+99,Vinod,Dham, P5 Pentium processor
+100,Jan,Dietz, information systems theory and Design & Engineering Methodology for Organizations
+101,Whitfield,Diffie, public key cryptography  Diffie
+102,Edsger,Dijkstra, algorithms  Goto considered harmful  semaphore (programming)
+103,Alan,Dix, literally wrote the book on human
+104,Jack,Dongarra, linear algebra high performance computing (HCI)
+105,Marco,Dorigo, ant colony optimization
+106,Paul,Dourish, human computer interaction
+107,Susan,Dumais, information retrieval
+108,Peter,Eades, graph drawing
+109,Wim,Ebbinkhuijsen, COBOL
+110,John,Eckert, ENIAC
+111,Brendan,Eich, JavaScript  Mozilla
+112,Philip,Emeagwali, supercomputing
+113,E.,Emerson, model checking
+114,Douglas,Engelbart, tiled windows  hypertext  computer mouse
+115,Oren,Etzioni, MetaCrawler  Netbot
+116,David,Evans, computer graphics
+117,Edward,Feigenbaum, intelligence
+118,Edward,Felten, computer security
+119,Tommy,Flowers, Colossus computer
+120,Robert,Floyd, NP-completeness
+121,Sally,Floyd, Internet congestion control
+122,Lawrence,Fogel, Evolutionary programming
+123,Bernard,Galler, MAD (programming language)
+124,Michael,Garey, NP-completeness
+125,Bill,Gates, co-founder of Microsoft
+126,Juan,Gilbert, Human-Centered Computing
+127,Lee,Giles, CiteSeer
+128,Seymour,Ginsburg, formal languages  automata theory  AFL theory  database theory
+129,Kurt,Gödel, computability 
+130,Adele,Goldberg, Smalltalk
+131,Ian,Goldberg, cryptographer  off-the-record messaging
+132,Oded,Goldreich, cryptography  computational complexity theory
+133,Shafi,Goldwasser, cryptography  computational complexity theory
+134,Gene,Golub, Matrix computation
+196,Leonard,Kleinrock, ARPANET  queueing theory  packet switching  hierarchical routing
+197,Donald,Knuth, The Art of Computer Programming  MIX/MMIX  TeX  literate programming
+198,Andrew,Koenig, C++
+199,Daphne,Koller, Artificial intelligence  bayesian network
+200,Michael,Kölling, BlueJ
+201,Andrey,Kolmogorov, algorithmic complexity theory
+202,Janet,Kolodner, case-based reasoning
+203,David,Korn, Korn shell
+204,Kees,Koster, ALGOL 68
+205,Robert,Kowalski, logic programming
+206,John,Koza, genetic programming
+207,John,Krogstie, SEQUAL framework
+208,Joseph,Kruskal, Kruskal's algorithm
+209,Thomas,Kurtz, BASIC programming language; Dartmouth College computer professor
+210,Leslie,Lamport, algorithms for distributed computing  LaTeX
+235,Marshall,McKusick, BSD  Berkeley Fast File System
+236,Lambert,Meertens, ALGOL 68  ABC (programming language)
+237,Bertrand,Meyer, Eiffel (programming language)
+238,Silvio,Micali, cryptography
+239,Robin,Milner, ML (programming language)
+240,Jack,Minker, database logic
+241,Marvin,Minsky, artificial intelligence  perceptrons  Society of Mind
+242,Paul,Mockapetris, Domain Name System (DNS)
+243,Cleve,Moler, numerical analysis  MATLAB
