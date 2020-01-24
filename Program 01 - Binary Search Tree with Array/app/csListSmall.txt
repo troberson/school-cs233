@@ -1,0 +1,15 @@
+1,Wil,van der Aalst, business process management  process mining  Petri nets
+2,Scott,Aaronson, quantum computing and complexity theory
+3,Hal,Abelson, intersection of computing and teaching
+4,Serge,Abiteboul, database theory
+5,Samson,Abramsky, game semantics
+6,Leonard,Adleman, RSA  DNA computing
+7,Manindra,Agrawal, polynomial-time primality testing
+8,Luis,von Ahn, human-based computation
+9,Alfred,Aho, compilers book  the 'a' in AWK
+10,Frances,Allen, compiler optimization
+11,Gene,Amdahl, supercomputer developer  founder of Amdahl Corporation
+12,David,Anderson, volunteer computing
+13,Andrew,Appel, compiler of text books
+14,Cecilia,Aragon, inventor of the treap  human-centered data science
+15,Bruce,Arden, programming language compilers (GAT  MAD)  virtual memory architecture  MTS
