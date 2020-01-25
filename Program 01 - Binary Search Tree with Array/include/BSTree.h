@@ -1,5 +1,6 @@
 #include "BSTInterface.h"
 #include <string>
+#include <type_traits>
 
 using namespace std;
 template <typename KeyComparable, typename Value>
@@ -31,7 +32,47 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     // capacity of array holding the tree
     int size = 25;
     // the array that holds the pairs
-    Pair** root = new Pair*[size];
+    Pair** root = new Pair*[size]();
+
+    /*
+     * Returns the same index given if valid or 0 if invalid.
+     */
+    [[nodiscard]] int getIndex(int idx) const
+    {
+        return (idx < 1 || idx >= size) ? 0 : idx;
+    }
+
+    /*
+     * Returns the index of the left child of an index or 0 if no
+     * left child exists
+     */
+    [[nodiscard]] int getLeft(int idx) const
+    {
+        return getIndex(2 * idx);
+    }
+
+    /*
+     * Returns the index of the right child of an index or 0 if no
+     * right child exists
+     */
+    [[nodiscard]] int getRight(int idx) const
+    {
+        return getIndex(2 * idx + 1);
+    }
+
+    /*
+     * Returns the index of the parent of an index or 0 if node is root or
+     * invalid
+     */
+    [[nodiscard]] int getParent(int idx) const
+    {
+        if (idx <= 1)
+        {
+            return 0;
+        }
+
+        return getIndex(idx / 2);
+    }
 
     /*
      * Prints the inorder the tree to the stream out
@@ -39,12 +80,67 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void printTree(int index, std::ostream& out) const
     {
+        if (getIndex(index) == 0 || !root[index])
+        {
+            return; // FAIL: no such node
+        }
+
+        // out << "DEBUG: Print Left (" << index << ")\n";
+        printTree(getLeft(index), out);
+        // out << "DEBUG: Current: ";
+        out << *root[index]->value << "\n";
+        // out << "DEBUG: Print Right (" << index << ")\n";
+        printTree(getRight(index), out);
     }
+
+    /*
+     * Inserts the given key-value pair into the tree in sorted order below
+     * the given index. Returns true if added, false if not added.
+     */
+    bool insert(KeyComparable key, Value& value, int index)
+    {
+        // cout << "Inserting Key " << key << " below Index " << index
+        //      << "\n";
+
+        // TODO: Update to grow array as needed
+        if (getIndex(index) == 0)
+        {
+            return false; // FAIL: Invalid index
+        }
+
+        Pair*& curNode = this->root[index];
+
+        // If current index is empty, put the new node there
+        if (curNode == nullptr)
+        {
+            // cout << "Current Node is empty, adding key " << key << "\n";
+            curNode = new Pair(key, value);
+            this->count++;
+            return true; // SUCCESS: Key added
+        }
+
+        // cout << "Current Node has Key " << curNode->key << "\n";
+
+        // Check if the key is the same as the current key (already exists)
+        if (key == curNode->key)
+        {
+            return false; // FAIL: Key already exists
+        }
+
+        // Use left branch for smaller keys
+        if (key < curNode->key)
+        {
+            return insert(key, value, getLeft(index));
+        }
+
+        // Use right branch for larger keys
+        return insert(key, value, getRight(index));
+    }
+
 
   public:
     BinarySearchTree()
     {
-        // add needed code
     }
 
     ~BinarySearchTree()
@@ -96,7 +192,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     bool isEmpty() const
     {
-        // stub code remove
         return root == nullptr;
     }
 
@@ -105,7 +200,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void printTree(std::ostream& out = cout) const
     {
-        printTree(0, out);
+        printTree(1, out);
     }
 
     /*
@@ -121,10 +216,9 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      *     All nodes to the left will be less
      *     All nodes to the right will be greater
      */
-    bool insert(Value value, KeyComparable key)
+    bool insert(Value value, KeyComparable key) override
     {
-
-        return false;
+        return insert(key, value, 1);
     }
 
     /*
@@ -136,11 +230,11 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
 
     int getSize()
     {
-        return 0;
+        return this->size;
     }
 
     int getCount()
     {
-        return 0;
+        return this->count;
     }
 };

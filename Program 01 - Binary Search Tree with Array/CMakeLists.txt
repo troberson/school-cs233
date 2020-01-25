@@ -64,7 +64,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CTest)
 
 #    if(BUILD_TESTING)
-#        add_subdirectory(tests)
+       add_subdirectory(tests)
 #    endif()
 
     # Docs only available if this is the main app
