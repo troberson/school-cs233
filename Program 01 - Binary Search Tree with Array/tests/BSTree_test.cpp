@@ -185,3 +185,25 @@ SCENARIO("BSTree: Grow Tree")
         }
     }
 }
+
+SCENARIO("BSTree: Find Minimum and Maximum Value")
+{
+    GIVEN("A tree with values from 1-30")
+    {
+        const int numValues = 30;
+
+        auto [tree, nums] = generateTree(numValues);
+
+        THEN("The minimum value is 1")
+        {
+            std::string minVal = *tree.findMin();
+            REQUIRE("1" == minVal);
+        }
+
+        THEN("The maximum value is 30")
+        {
+            std::string maxVal = *tree.findMax();
+            REQUIRE("30" == maxVal);
+        }
+    }
+}

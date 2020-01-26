@@ -47,7 +47,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * Returns the index of the left child of a given index.
      */
-    [[nodiscard]] int getLeft(int idx) const
+    [[nodiscard]] static int getLeft(int idx)
     {
         return 2 * idx;
     }
@@ -55,7 +55,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * Returns the index of the right child of a given index.
      */
-    [[nodiscard]] int getRight(int idx) const
+    [[nodiscard]] static int getRight(int idx)
     {
         return 2 * idx + 1;
     }
@@ -182,6 +182,45 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         return insert(key, value, getRight(index));
     }
 
+    /*
+     * Returns the pair at the last valid index returned by WalkFunction
+     */
+    template <typename WalkFunction>
+    [[nodiscard]] Pair* findWhile(int index, WalkFunction walk) const
+    {
+        if (index < 1 || !this->root[index])
+        {
+            return nullptr; // FAIL: Index is invalid.
+        }
+
+        for (int newIndex = index;
+             newIndex > 0 && newIndex < this->size && this->root[newIndex];
+             newIndex = walk(index))
+        {
+            index = newIndex;
+        }
+
+        return this->root[index];
+    }
+
+    /*
+     * Finds the node with the smallest element below the give index
+     */
+    [[nodiscard]] Value findMin(int index) const
+    {
+        auto node = findWhile(index, getLeft);
+        return node ? node->value : nullptr;
+    }
+
+    /*
+     * Finds the node with the largest element below the give index
+     */
+    [[nodiscard]] Value findMax(int index) const
+    {
+        auto node = findWhile(index, getRight);
+        return node ? node->value : nullptr;
+    }
+
 
   public:
     BinarySearchTree()
@@ -196,18 +235,17 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * Finds the node with the smallest element in the tree
      */
-    const Value findMin() const
+    [[nodiscard]] const Value findMin() const override
     {
-        return nullptr;
+        return findMin(1);
     }
 
     /*
      * Finds the node with the largest element in the tree
      */
-    const Value findMax() const
+    [[nodiscard]] const Value findMax() const override
     {
-        // stub code remove
-        return nullptr;
+        return findMax(1);
     }
 
     /*
