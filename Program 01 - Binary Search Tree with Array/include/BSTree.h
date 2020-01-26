@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iterator>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -47,31 +48,134 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * Returns the index of the left child of a given index.
      */
-    [[nodiscard]] static int getLeft(int idx)
+    [[nodiscard]] static int getLeft(int index) noexcept
     {
-        return 2 * idx;
+        return 2 * index;
     }
 
     /*
      * Returns the index of the right child of a given index.
      */
-    [[nodiscard]] static int getRight(int idx)
+    [[nodiscard]] static int getRight(int index) noexcept
     {
-        return 2 * idx + 1;
+        return 2 * index + 1;
     }
 
     /*
      * Returns the index of the parent of an index or 0 if node is root or
      * invalid
      */
-    [[nodiscard]] int getParent(int idx) const
+    [[nodiscard]] int getParent(int index) const noexcept
     {
-        if (idx <= 1)
+        if (index <= 1)
         {
             return 0;
         }
 
-        return idx / 2;
+        return index / 2;
+    }
+
+    /*
+     * Returns true if the given index is in the range of [1, size), false
+     * otherwise.
+     * Note: This structure is 1-indexed, so 0 is not a valid index.
+     */
+
+    [[nodiscard]] bool isValidIndex(int idx) const noexcept
+    {
+        return (idx >= 1 && idx < this->size);
+    }
+
+    /*
+     * Asserts that the given index is valid.
+     * If it is invalid, a std::out_of_range exception is thrown.
+     */
+    void assertValidIndex(int idx) const
+    {
+        if (!isValidIndex(idx))
+        {
+            // FAIL: Invalid index
+            auto msg =
+                std::string("Invalid index: ") + std::to_string(idx);
+            throw std::out_of_range(msg);
+        }
+    }
+
+    /*
+     * Returns true if there is a non-empty node at the given index, false
+     * otherwise.
+     */
+    [[nodiscard]] bool hasNodeAt(int index) const noexcept
+    {
+        return isValidIndex(index) && this->root[index];
+    }
+
+    /*
+     * Asserts that there must be a non-empty node at the given index.
+     * If the index is invalid or the node is empty, a
+     * std::invalid_argument is thrown.
+     */
+    void assertHasNodeAt(int index) const
+    {
+        if (!hasNodeAt(index))
+        {
+            // FAIL: Empty node
+            auto msg = std::string("Node is empty, Index: ") +
+                       std::to_string(index);
+            throw std::invalid_argument(msg);
+        }
+    }
+
+    /*
+     * Returns a pointer to the Pair at the given index.
+     * Throws std::out_of_range if index is invalid.
+     * Throws std::invalid_argument if Node at the given index is empty.
+     */
+    [[nodiscard]] Pair* getNodeAt(int index) const
+    {
+        assertHasNodeAt(index);
+        return this->root[index];
+    }
+
+    /*
+     * Returns the key at the given index.
+     * Throws std::out_of_range if index is invalid.
+     * Throws std::invalid_argument if Node at the given index is empty.
+     */
+    [[nodiscard]] KeyComparable getKeyAt(int index) const
+    {
+        return getNodeAt(index)->key;
+    }
+
+    /*
+     * Returns the value at the given index.
+     * Note: The value is a pointer to an underlying value.
+     * Throws std::out_of_range if index is invalid.
+     * Throws std::invalid_argument if Node at the given index is empty.
+     */
+    [[nodiscard]] Value getValueAt(int index) const
+    {
+        return getNodeAt(index)->value;
+    }
+
+    /*
+     * Assigns a (key, value) Pair to the node at the given index.
+     * Will delete any existing data.
+     * Throws std::out_of_range if index is invalid.
+     */
+    void setNode(KeyComparable key, Value value, int index)
+    {
+        assertValidIndex(index);
+
+        // Delete any existing data
+        if (hasNodeAt(index))
+        {
+            delete getValueAt(index);
+            delete getNodeAt(index);
+        }
+
+        // Set the replacement node
+        this->root[index] = new Pair(key, value);
     }
 
     /*
@@ -80,14 +184,14 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void printTree(int index, std::ostream& out) const
     {
-        if (index <= 0 || index >= this->size)
+        if (!isValidIndex(index))
         {
             // std::cout << "DEBUG: Invalid Index " << index << " Size is "
             //           << this->size << "\n";
             return; // FAIL: no such node
         }
 
-        if (!this->root[index])
+        if (!hasNodeAt(index))
         {
             // std::cout << "DEBUG: Empty Index " << index << "\n";
             return; // FAIL: this node is empty
@@ -96,7 +200,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         // out << "DEBUG: Print Left (" << index << ")\n";
         printTree(getLeft(index), out);
         // out << "DEBUG: Current (" << index << "): " ;
-        out << *root[index]->value << "\n";
+        out << *getValueAt(index) << "\n";
         // out << "DEBUG: Print Right (" << index << ")\n";
         printTree(getRight(index), out);
     }
@@ -139,11 +243,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         // cout << "Inserting Key " << key << " below Index " << index
         //      << "\n";
 
-        if (index <= 0)
-        {
-            return false; // FAIL: Invalid index
-        }
-
         // Expand the capacity as needed
         // Note, this requires copying the whole array, so could be slow.
         if (index >= this->size)
@@ -153,27 +252,28 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
             grow(index + 1);
         }
 
-        Pair*& curNode = this->root[index];
+        assertValidIndex(index);
 
         // If current index is empty, put the new node there
-        if (curNode == nullptr)
+        if (!hasNodeAt(index))
         {
             // cout << "Current Node is empty, adding key " << key << "\n";
-            curNode = new Pair(key, value);
+            setNode(key, value, index);
             this->count++;
             return true; // SUCCESS: Key added
         }
 
+        auto currentKey = getKeyAt(index);
         // cout << "Current Node has Key " << curNode->key << "\n";
 
         // Check if the key is the same as the current key (already exists)
-        if (key == curNode->key)
+        if (key == currentKey)
         {
             return false; // FAIL: Key already exists
         }
 
         // Use left branch for smaller keys
-        if (key < curNode->key)
+        if (key < currentKey)
         {
             return insert(key, value, getLeft(index));
         }
@@ -188,19 +288,15 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     template <typename WalkFunction>
     [[nodiscard]] Pair* findWhile(int index, WalkFunction walk) const
     {
-        if (index < 1 || !this->root[index])
-        {
-            return nullptr; // FAIL: Index is invalid.
-        }
+        assertHasNodeAt(index);
 
-        for (int newIndex = index;
-             newIndex > 0 && newIndex < this->size && this->root[newIndex];
+        for (int newIndex = index; hasNodeAt(newIndex);
              newIndex = walk(index))
         {
             index = newIndex;
         }
 
-        return this->root[index];
+        return getNodeAt(index);
     }
 
     /*
@@ -332,9 +428,9 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         for (int i = 1; i < this->size; i++)
         {
             out << "[" << i << ": ";
-            auto node = this->root[i];
-            if (node)
+            if (hasNodeAt(i))
             {
+                auto node = getNodeAt(i);
                 out << node->key << ", " << *node->value;
             }
             out << "] ";
