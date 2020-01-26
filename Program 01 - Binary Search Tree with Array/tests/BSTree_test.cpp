@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <numeric>
 #include <random>
 #include <sstream>
 #include <string>
@@ -21,37 +22,23 @@
 // representation.
 using NumList = std::vector<std::pair<int, std::shared_ptr<std::string>>>;
 
-// Generate a list of random numbers
-std::vector<int> generateNums(int numValues)
+// Generate a randomized list of numbers from 1 to maxVal
+std::vector<int> generateNums(int maxVal)
 {
-    // Set up random number generator
-    std::random_device randDevice;
-    std::default_random_engine randEngine(randDevice());
-    std::uniform_int_distribution<> randNums(1, numValues);
-    auto rnd = std::bind(randNums, randEngine);
+    // Create list of numbers
+    std::vector<int> nums(maxVal);
 
-    // Function to check if the number list already contains a given value
-    auto contains = [](const auto& l, const auto val) {
-        return std::find(l.begin(), l.end(), val) != l.end();
-    };
+    // Fill list with numbers 1 to maxVal
+    std::iota(nums.begin(), nums.end(), 1);
 
-    // Create number list
-    std::vector<int> nums(numValues);
-
-    // Generate values
-    for (auto& node : nums)
-    {
-        int n = rnd();
-        while (contains(nums, n))
-        {
-            n = rnd();
-        }
-        node = n;
-    }
+    // Shuffle the number list
+    std::shuffle(nums.begin(), nums.end(),
+                 std::mt19937{std::random_device{}()});
 
     // Return
     return nums;
 }
+
 
 // Generate a NumList containing pairs of numbers and their string
 // representation
