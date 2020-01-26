@@ -1,11 +1,19 @@
 #include "BSTInterface.h"
+
+#include <algorithm>
+#include <iterator>
+#include <optional>
 #include <string>
-#include <type_traits>
+#include <utility>
+#include <vector>
 
 using namespace std;
 template <typename KeyComparable, typename Value>
 class BinarySearchTree : BSTInterface<KeyComparable, Value>
 {
+  public:
+    static const size_t DEFAULT_SIZE = 25;
+
   private:
     /*
      * Private Node Class
@@ -20,8 +28,8 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         // Initialize class members from constructor arguments
         // by using a member initializer list.
         // This method uses direct initialization, which is more
-        // efficient than using assignment operators inside the constructor
-        // body.
+        // efficient than using assignment operators inside the
+        // constructor body.
         Pair(KeyComparable& key, Value& value) : value{value}, key{key}
         {
         }
@@ -29,35 +37,27 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
 
     // number of values stored in the tree
     int count = 0;
+
     // capacity of array holding the tree
-    int size = 25;
+    int size = DEFAULT_SIZE;
+
     // the array that holds the pairs
     Pair** root = new Pair*[size]();
 
     /*
-     * Returns the same index given if valid or 0 if invalid.
-     */
-    [[nodiscard]] int getIndex(int idx) const
-    {
-        return (idx < 1 || idx >= size) ? 0 : idx;
-    }
-
-    /*
-     * Returns the index of the left child of an index or 0 if no
-     * left child exists
+     * Returns the index of the left child of a given index.
      */
     [[nodiscard]] int getLeft(int idx) const
     {
-        return getIndex(2 * idx);
+        return 2 * idx;
     }
 
     /*
-     * Returns the index of the right child of an index or 0 if no
-     * right child exists
+     * Returns the index of the right child of a given index.
      */
     [[nodiscard]] int getRight(int idx) const
     {
-        return getIndex(2 * idx + 1);
+        return 2 * idx + 1;
     }
 
     /*
@@ -71,7 +71,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
             return 0;
         }
 
-        return getIndex(idx / 2);
+        return idx / 2;
     }
 
     /*
@@ -80,32 +80,77 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void printTree(int index, std::ostream& out) const
     {
-        if (getIndex(index) == 0 || !root[index])
+        if (index <= 0 || index >= this->size)
         {
+            // std::cout << "DEBUG: Invalid Index " << index << " Size is "
+            //           << this->size << "\n";
             return; // FAIL: no such node
+        }
+
+        if (!this->root[index])
+        {
+            // std::cout << "DEBUG: Empty Index " << index << "\n";
+            return; // FAIL: this node is empty
         }
 
         // out << "DEBUG: Print Left (" << index << ")\n";
         printTree(getLeft(index), out);
-        // out << "DEBUG: Current: ";
+        // out << "DEBUG: Current (" << index << "): " ;
         out << *root[index]->value << "\n";
         // out << "DEBUG: Print Right (" << index << ")\n";
         printTree(getRight(index), out);
     }
 
     /*
-     * Inserts the given key-value pair into the tree in sorted order below
-     * the given index. Returns true if added, false if not added.
+     * Grow array to a larger size
+     */
+    void grow(size_t newSize = 0)
+    {
+        // default new size is double the current size plus one
+        if (newSize <= 0)
+        {
+            newSize = 2 * this->size + 1;
+        }
+
+        // check if we actually need to grow
+        if (newSize <= this->size)
+        {
+            return; // RETURN: no need to grow
+        }
+
+        // create a new array and copy the data from the current array into
+        // it
+        auto newRoot = new Pair*[newSize]();
+        std::copy(this->root, this->root + this->size, newRoot);
+
+        // update the object properties
+        delete[] this->root;
+        this->root = newRoot;
+        this->size = newSize;
+    }
+
+    /*
+     * Inserts the given key-value pair into the tree in sorted order
+     * below the given index. Returns true if added, false if not
+     * added.
      */
     bool insert(KeyComparable key, Value& value, int index)
     {
         // cout << "Inserting Key " << key << " below Index " << index
         //      << "\n";
 
-        // TODO: Update to grow array as needed
-        if (getIndex(index) == 0)
+        if (index <= 0)
         {
             return false; // FAIL: Invalid index
+        }
+
+        // Expand the capacity as needed
+        // Note, this requires copying the whole array, so could be slow.
+        if (index >= this->size)
+        {
+            // cout << "Current array size is " << this->size
+            //      << ", growing to " << index << "\n";
+            grow(index + 1);
         }
 
         Pair*& curNode = this->root[index];
@@ -153,7 +198,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     const Value findMin() const
     {
-        // stub code remove
         return nullptr;
     }
 
@@ -236,5 +280,27 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     int getCount()
     {
         return this->count;
+    }
+
+    /*
+     * Print the backing array in order as [index: key, value] for
+     * debugging purposes.
+     */
+    void printArray(std::ostream& out = cout) const
+    {
+        out << "Array of size " << this->size << " storing " << this->count
+            << " values.\n";
+
+        for (int i = 1; i < this->size; i++)
+        {
+            out << "[" << i << ": ";
+            auto node = this->root[i];
+            if (node)
+            {
+                out << node->key << ", " << *node->value;
+            }
+            out << "] ";
+        }
+        out << "\n";
     }
 };

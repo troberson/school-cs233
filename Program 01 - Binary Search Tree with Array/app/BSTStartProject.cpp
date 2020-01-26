@@ -48,10 +48,12 @@ int main()
 {
     // Uncomment later try the different files out
     // vector<ComputerScientist*> list = load("csList.txt");
-    vector<ComputerScientist*> list = load("csListSmall.txt");
+    // vector<ComputerScientist*> list = load("csListSmall.txt");
     BinarySearchTree<int, ComputerScientist*> tree2;
-    // vector<ComputerScientist*> list = load("csListMed.txt"); // for
-    // turn-in use this line
+
+    // for turn-in use this line
+    vector<ComputerScientist*> list = load("csListMed.txt");
+
     for (int i = 0; i < list.size(); i++)
     {
         tree2.insert(list[i], list[i]->getID());
