@@ -538,8 +538,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
             out << "[" << i << ": ";
             if (hasNodeAt(i))
             {
-                auto node = getNodeAt(i);
-                out << node->key << ", " << *node->value;
+                out << getKeyAt(i) << ", " << *getValueAt(i);
             }
             out << "] ";
         }
