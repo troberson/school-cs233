@@ -85,20 +85,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     }
 
     /*
-     * Returns the index of the parent of an index or 0 if node is root
-     * or invalid
-     */
-    [[nodiscard]] int getParent(int index) const noexcept
-    {
-        if (index <= 1)
-        {
-            return 0;
-        }
-
-        return index / 2;
-    }
-
-    /*
      * Returns true if the given index is in the range of [1, size),
      * false otherwise. Note: This structure is 1-indexed, so 0 is not
      * a valid index.
