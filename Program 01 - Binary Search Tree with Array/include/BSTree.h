@@ -1,3 +1,23 @@
+///
+// Name: Tamara Roberson
+// Section: A
+// Program Name: Program 1 - Binary Search Tree with Array
+//
+// Description: A Binary Search Tree which is backed by an array.
+//
+// The tree holds nodes where the key is any type and the value is a
+// pointer.
+//
+// The tree has functions to find the value associated with the minimum or
+// maximum key or any given key. The tree can also be printed as values
+// sorted in order of keys.
+//
+// Lookups are fast, O(log n). However, insertions may be slow if the array
+// needs to grow (which requires copying the entire array to a new, larger
+// array). Deletions may be moderately slow, as any children of the deleted
+// node may need to be shifted up the array.
+///
+
 #include "BSTInterface.h"
 
 #include <algorithm>
