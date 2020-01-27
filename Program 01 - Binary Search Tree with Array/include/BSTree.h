@@ -396,34 +396,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     }
 
     /*
-     * Returns the value at the last valid index returned by
-     * WalkFunction or nullptr if not found
-     */
-    template <typename WalkFunction>
-    [[nodiscard]] Value findLastValue(int index, WalkFunction walk) const
-    {
-        int found = findLast(index, walk);
-        return hasNodeAt(found) ? getValueAt(found) : nullptr;
-    }
-
-    /*
-     * Finds the value of the node with the smallest key below the
-     * given index
-     */
-    [[nodiscard]] Value findMinValue(int index) const
-    {
-        return findLastValue(index, getLeft);
-    }
-
-    /*
-     * Finds the node with the largest key below the given index
-     */
-    [[nodiscard]] Value findMaxValue(int index) const
-    {
-        return findLastValue(index, getRight);
-    }
-
-    /*
      * Search for the given key starting at the given index.
      * Returns the index of the node or 0 if not found.
      */
@@ -472,7 +444,8 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     [[nodiscard]] const Value findMin() const override
     {
-        return findMinValue(1);
+        int found = findLast(1, getLeft);
+        return hasNodeAt(found) ? getValueAt(found) : nullptr;
     }
 
     /*
@@ -480,7 +453,8 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     [[nodiscard]] const Value findMax() const override
     {
-        return findMaxValue(1);
+        int found = findLast(1, getRight);
+        return hasNodeAt(found) ? getValueAt(found) : nullptr;
     }
 
     /*
