@@ -18,7 +18,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
   private:
     /*
      * Private Node Class
-     *
      */
     class Pair
     {
@@ -49,7 +48,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      * Return a newly created pointer to an array of Pairs of given size
      * (or default) for a new tree.
      */
-    auto createTree(size_t capacity = DEFAULT_SIZE)
+    auto createTree(int capacity = DEFAULT_SIZE)
     {
         return new Pair*[capacity]();
     }
@@ -61,8 +60,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void deleteTree(bool deep = false)
     {
-        // std::cout << "Deleting Tree! " << (deep ? "DEEP" : "") << "\n";
-
         for (size_t i = 1; i < this->size; i++)
         {
             deleteNodeAt(i, deep, false);
@@ -106,7 +103,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      * false otherwise. Note: This structure is 1-indexed, so 0 is not
      * a valid index.
      */
-
     [[nodiscard]] bool isValidIndex(int idx) const noexcept
     {
         return (idx >= 1 && idx < this->size);
@@ -138,8 +134,8 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
 
     /*
      * Asserts that there must be a non-empty node at the given index.
-     * If the index is invalid or the node is empty, a
-     * std::invalid_argument is thrown.
+     * Throws std::invalid_argument if the index is invalid or if the node
+     * is empty
      */
     void assertHasNodeAt(int index) const
     {
@@ -209,21 +205,20 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
             return; // RETURN: Nothing to delete
         }
 
-        // std::cout << "Deleting Node at Index " << index << " ["
-        //           << getKeyAt(index) << ", " << getValueAt(index) << "]
-        //           "
-        //           << (deep ? "DEEP" : "") << "\n";
+        // If deep deleting, also delete the object in the value
         if (deep)
         {
-            Value val = getValueAt(index);
-            delete val;
+            delete getValueAt(index);
         }
 
+        // Delete the node
         delete this->root[index];
         this->root[index] = nullptr;
 
+        // Update count
         this->count--;
 
+        // If shifting, shift children up
         if (doShift)
         {
             shift(index);
@@ -235,13 +230,11 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void shift(int index)
     {
-        // std::cout << "Shift Index " << index << "\n";
         assertValidIndex(index);
 
         if (hasNodeAt(index))
         {
             // RETURN: No need to shift, there is an element here
-            // already.
             return;
         }
 
@@ -254,7 +247,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
             {
                 std::swap(this->root[index], this->root[maxLeft]);
                 shift(maxLeft);
-                // return;
+                return;
             }
         }
 
@@ -267,7 +260,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
             {
                 std::swap(this->root[index], this->root[minRight]);
                 shift(minRight);
-                // return;
+                return;
             }
         }
     }
@@ -286,34 +279,28 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
 
         // Set the replacement node
         this->root[index] = new Pair(key, value);
+
+        // Update count
         this->count++;
     }
 
     /*
      * Prints the inorder the tree to the stream out
-     *
      */
     void printTree(int index, std::ostream& out) const
     {
         if (!isValidIndex(index))
         {
-            // std::cout << "DEBUG: Invalid Index " << index << " Size
-            // is "
-            //           << this->size << "\n";
             return; // FAIL: no such node
         }
 
         if (!hasNodeAt(index))
         {
-            // std::cout << "DEBUG: Empty Index " << index << "\n";
             return; // FAIL: this node is empty
         }
 
-        // out << "DEBUG: Print Left (" << index << ")\n";
         printTree(getLeft(index), out);
-        // out << "DEBUG: Current (" << index << "): " ;
         out << *getValueAt(index) << "\n";
-        // out << "DEBUG: Print Right (" << index << ")\n";
         printTree(getRight(index), out);
     }
 
@@ -352,16 +339,10 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     bool insert(KeyComparable key, Value& value, int index)
     {
-        // cout << "Inserting Key " << key << " below Index " << index
-        //      << "\n";
-
         // Expand the capacity as needed
-        // Note, this requires copying the whole array, so could be
-        // slow.
+        // Note: This copies the array, so could be slow.
         if (index >= this->size)
         {
-            // cout << "Current array size is " << this->size
-            //      << ", growing to " << index << "\n";
             grow(index + 1);
         }
 
@@ -370,17 +351,13 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         // If current index is empty, put the new node there
         if (!hasNodeAt(index))
         {
-            // cout << "Current Node is empty, adding key " << key <<
-            // "\n";
             setNode(key, value, index);
             return true; // SUCCESS: Key added
         }
 
         auto currentKey = getKeyAt(index);
-        // cout << "Current Node has Key " << curNode->key << "\n";
 
-        // Check if the key is the same as the current key (already
-        // exists)
+        // Check if key is already in the tree
         if (key == currentKey)
         {
             return false; // FAIL: Key already exists
@@ -403,12 +380,14 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     {
         assertHasNodeAt(index);
 
+        // Keep walking until there's no more nodes in that direction
         for (int newIndex = index; hasNodeAt(newIndex);
              newIndex = walk(index))
         {
             index = newIndex;
         }
 
+        // Return the last valid index
         return index;
     }
 
@@ -432,7 +411,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
 
     /*
      * Returns the value at the last valid index returned by
-     * WalkFunction
+     * WalkFunction or nullptr if not found
      */
     template <typename WalkFunction>
     [[nodiscard]] Value findLastValue(int index, WalkFunction walk) const
@@ -464,35 +443,23 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     [[nodiscard]] int find(const KeyComparable& key, const int index) const
     {
-        // std::cout << "Searching for key " << key << " starting at
-        // index
-        // "
-        //           << index << "\n";
-
-        if (!hasNodeAt(index))
-        {
-            // std::cout << "Index " << index << " is empty.\n";
-            return 0;
-        }
-
-        auto currentKey = getKeyAt(index);
-
-        if (currentKey == key)
-        {
-            // std::cout << "SUCCESS: Found key at index " << index <<
-            // "\n";
-            return index; // SUCCESS: Found the key.
-        }
-
-        int newIndex =
-            (key < currentKey) ? getLeft(index) : getRight(index);
-
         if (!hasNodeAt(index))
         {
             return 0; // FAIL: Not found.
         }
 
-        // Keep searching
+        auto currentKey = getKeyAt(index);
+
+        // Check current node
+        if (currentKey == key)
+        {
+            return index; // SUCCESS: Found the key.
+        }
+
+        // Search left or right subtrees
+        int newIndex =
+            (key < currentKey) ? getLeft(index) : getRight(index);
+
         return find(key, newIndex);
     }
 
@@ -511,7 +478,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     ~BinarySearchTree()
     {
-        // std::cout << "DESTRUCTOR.\n";
         deleteTree(true);
     }
 
@@ -572,22 +538,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     void printTree(std::ostream& out = cout) const
     {
         printTree(1, out);
-
-        // std::cout << "Counting nodes.\n";
-        int num{0};
-        for (int i = 1; i < this->size; i++)
-        {
-            // std::cout << "Node Index " << i << ": ";
-            if (hasNodeAt(i))
-            {
-                // std::cout << "X";
-                num++;
-            }
-            // std::cout << "\n";
-        }
-
-        //     std::cout << "Node Count Should Be: " << num << " and is "
-        //               << this->count << "\n";
     }
 
     /*
@@ -617,11 +567,9 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void remove(const KeyComparable& key) override
     {
-        // std::cout << "Remove Key: " << key << "\n";
         int index = find(key, 1);
         if (index < 1)
         {
-            // std::cout << "KEY NOT FOUND!\n";
             return; // Key not found.
         }
         deleteNodeAt(index, true, true);
