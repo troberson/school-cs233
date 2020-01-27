@@ -20,13 +20,8 @@
 
 #include "BSTInterface.h"
 
-#include <algorithm>
-#include <iterator>
-#include <optional>
 #include <stdexcept>
 #include <string>
-#include <utility>
-#include <vector>
 
 template <typename KeyComparable, typename Value>
 class BinarySearchTree : BSTInterface<KeyComparable, Value>
