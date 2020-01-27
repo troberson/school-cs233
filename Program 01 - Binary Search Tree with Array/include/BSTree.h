@@ -273,20 +273,18 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         }
 
         // Use left branch for smaller keys
-        if (key < currentKey)
-        {
-            return insert(key, value, getLeft(index));
-        }
-
         // Use right branch for larger keys
-        return insert(key, value, getRight(index));
+        int newIndex =
+            (key < currentKey) ? getLeft(index) : getRight(index);
+
+        return insert(key, value, newIndex);
     }
 
     /*
-     * Returns the pair at the last valid index returned by WalkFunction
+     * Returns the last valid index after recursive calls of WalkFunction
      */
     template <typename WalkFunction>
-    [[nodiscard]] Pair* findWhile(int index, WalkFunction walk) const
+    [[nodiscard]] int findLast(int index, WalkFunction walk) const
     {
         assertHasNodeAt(index);
 
@@ -296,25 +294,90 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
             index = newIndex;
         }
 
-        return getNodeAt(index);
+        return index;
     }
 
     /*
-     * Finds the node with the smallest element below the give index
+     * Finds the index of the node with the smallest key below the given
+     * index
      */
-    [[nodiscard]] Value findMin(int index) const
+    [[nodiscard]] int findMin(int index) const
     {
-        auto node = findWhile(index, getLeft);
-        return node ? node->value : nullptr;
+        return findLast(index, getLeft);
     }
 
     /*
-     * Finds the node with the largest element below the give index
+     * Finds the index of the node with the largest key below the given
+     * index
      */
-    [[nodiscard]] Value findMax(int index) const
+    [[nodiscard]] int findMax(int index) const
     {
-        auto node = findWhile(index, getRight);
-        return node ? node->value : nullptr;
+        return findLast(index, getRight);
+    }
+
+    /*
+     * Returns the value at the last valid index returned by WalkFunction
+     */
+    template <typename WalkFunction>
+    [[nodiscard]] Value findLastValue(int index, WalkFunction walk) const
+    {
+        int found = findLast(index, walk);
+        return hasNodeAt(found) ? getValueAt(found) : nullptr;
+    }
+
+    /*
+     * Finds the value of the node with the smallest key below the given
+     * index
+     */
+    [[nodiscard]] Value findMinValue(int index) const
+    {
+        return findLastValue(index, getLeft);
+    }
+
+    /*
+     * Finds the node with the largest key below the given index
+     */
+    [[nodiscard]] Value findMaxValue(int index) const
+    {
+        return findLastValue(index, getRight);
+    }
+
+    /*
+     * Search for the given key starting at the given index.
+     * Returns the index of the node or 0 if not found.
+     */
+    [[nodiscard]] int find(const KeyComparable& key, const int index) const
+    {
+        // std::cout << "Searching for key " << key << " starting at
+        // index
+        // "
+        //           << index << "\n";
+
+        if (!hasNodeAt(index))
+        {
+            // std::cout << "Index " << index << " is empty.\n";
+            return 0;
+        }
+
+        auto currentKey = getKeyAt(index);
+
+        if (currentKey == key)
+        {
+            // std::cout << "SUCCESS: Found key at index " << index <<
+            // "\n";
+            return index; // SUCCESS: Found the key.
+        }
+
+        int newIndex =
+            (key < currentKey) ? getLeft(index) : getRight(index);
+
+        if (!hasNodeAt(index))
+        {
+            return 0; // FAIL: Not found.
+        }
+
+        // Keep searching
+        return find(key, newIndex);
     }
 
 
@@ -333,7 +396,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     [[nodiscard]] const Value findMin() const override
     {
-        return findMin(1);
+        return findMinValue(1);
     }
 
     /*
@@ -341,7 +404,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     [[nodiscard]] const Value findMax() const override
     {
-        return findMax(1);
+        return findMaxValue(1);
     }
 
     /*
@@ -350,10 +413,17 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      * returns true if it was found
      * returns false if it was not
      */
-    bool find(const KeyComparable& key, Value& founditem) const
+    bool find(const KeyComparable& key, /* out */ Value& founditem) const
     {
+        int index = find(key, 1);
+        if (index < 1)
+        {
+            return false; // FAIL: key not found
+        }
 
-        return false;
+        // extract value into the founditem outparam.
+        founditem = getValueAt(index);
+        return true; // SUCCESS
     }
 
     /*
@@ -361,8 +431,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     bool contains(const KeyComparable& key) const
     {
-        // stub code remove
-        return false;
+        return find(key, 1) > 0;
     }
 
     /*

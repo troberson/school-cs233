@@ -100,7 +100,7 @@ int main()
     ComputerScientist* find;
     if (tree.find(80, find))
     {
-        cout << find << endl;
+        cout << *find << endl;
     }
     else
     {

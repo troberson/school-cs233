@@ -177,9 +177,7 @@ SCENARIO("BSTree: Find Minimum and Maximum Value")
 {
     GIVEN("A tree with values from 1-30")
     {
-        const int numValues = 30;
-
-        auto [tree, nums] = generateTree(numValues);
+        auto [tree, nums] = generateTree(30);
 
         THEN("The minimum value is 1")
         {
@@ -191,6 +189,38 @@ SCENARIO("BSTree: Find Minimum and Maximum Value")
         {
             std::string maxVal = *tree.findMax();
             REQUIRE("30" == maxVal);
+        }
+    }
+}
+
+
+SCENARIO("BSTree: Find values")
+{
+    GIVEN("A tree with values from 1-5")
+    {
+        auto [tree, nums] = generateTree(5);
+
+        THEN("The key 4 exists in the tree")
+        {
+            REQUIRE(tree.contains(4));
+        }
+
+        THEN("The key 6 does not exist in the tree")
+        {
+            REQUIRE_FALSE(tree.contains(6));
+        }
+
+        THEN("The value from key 3 is extracted")
+        {
+            std::string* result;
+            tree.find(3, result);
+            REQUIRE("3" == *result);
+        }
+
+        THEN("Extracting the value from key 7 fails")
+        {
+            std::string* result;
+            REQUIRE_FALSE(tree.find(7, result));
         }
     }
 }
