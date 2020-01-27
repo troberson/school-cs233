@@ -65,7 +65,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
 
         for (size_t i = 1; i < this->size; i++)
         {
-            deleteNodeAt(i, deep);
+            deleteNodeAt(i, deep, false);
         }
 
         delete[] this->root;
@@ -189,36 +189,87 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
 
     /*
      * Delete node at a given index.
-     * If deep is true, also delete the data held in the values.
-     * Otherwise, do a shallow delete and delete only the Pair objects.
+     *
+     * If deep is true [default: false], also delete the data held in the
+     * values. Otherwise, do a shallow delete and delete only the Pair
+     * object.
+     *
+     * If doShift is true [default: true], shift the subtrees of the delete
+     * node up, so everything remains in order. Use false for a quick
+     * delete.
+     *
      * Throws std::out_of_range if index is invalid.
      */
-    void deleteNodeAt(int index, bool deep = false)
+    void deleteNodeAt(int index, bool deep = false, bool doShift = true)
     {
         assertValidIndex(index);
 
         if (!hasNodeAt(index))
         {
-            return; // Nothing to delete
+            return; // RETURN: Nothing to delete
         }
 
         // std::cout << "Deleting Node at Index " << index << " ["
         //           << getKeyAt(index) << ", " << getValueAt(index) << "]
         //           "
         //           << (deep ? "DEEP" : "") << "\n";
-
         if (deep)
         {
             Value val = getValueAt(index);
             delete val;
-            val = nullptr;
         }
 
-        Pair* ptr = getNodeAt(index);
-        delete ptr;
-        ptr = nullptr;
+        delete this->root[index];
+        this->root[index] = nullptr;
 
         this->count--;
+
+        if (doShift)
+        {
+            shift(index);
+        }
+    }
+
+    /*
+     * Shift remaining nodes up after deleting.
+     */
+    void shift(int index)
+    {
+        // std::cout << "Shift Index " << index << "\n";
+        assertValidIndex(index);
+
+        if (hasNodeAt(index))
+        {
+            // RETURN: No need to shift, there is an element here
+            // already.
+            return;
+        }
+
+        // Shift left subtree
+        int leftIndex = getLeft(index);
+        if (hasNodeAt(leftIndex))
+        {
+            int maxLeft = findMax(leftIndex);
+            if (hasNodeAt(maxLeft))
+            {
+                std::swap(this->root[index], this->root[maxLeft]);
+                shift(maxLeft);
+                // return;
+            }
+        }
+
+        // Shift right subtree
+        int rightIndex = getRight(index);
+        if (hasNodeAt(rightIndex))
+        {
+            int minRight = findMin(rightIndex);
+            if (hasNodeAt(minRight))
+            {
+                std::swap(this->root[index], this->root[minRight]);
+                shift(minRight);
+                // return;
+            }
+        }
     }
 
     /*
@@ -231,7 +282,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         assertValidIndex(index);
 
         // Delete any existing data
-        deleteNodeAt(index);
+        deleteNodeAt(index, false, false);
 
         // Set the replacement node
         this->root[index] = new Pair(key, value);
@@ -521,6 +572,22 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     void printTree(std::ostream& out = cout) const
     {
         printTree(1, out);
+
+        // std::cout << "Counting nodes.\n";
+        int num{0};
+        for (int i = 1; i < this->size; i++)
+        {
+            // std::cout << "Node Index " << i << ": ";
+            if (hasNodeAt(i))
+            {
+                // std::cout << "X";
+                num++;
+            }
+            // std::cout << "\n";
+        }
+
+        //     std::cout << "Node Count Should Be: " << num << " and is "
+        //               << this->count << "\n";
     }
 
     /*
@@ -550,6 +617,14 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void remove(const KeyComparable& key) override
     {
+        // std::cout << "Remove Key: " << key << "\n";
+        int index = find(key, 1);
+        if (index < 1)
+        {
+            // std::cout << "KEY NOT FOUND!\n";
+            return; // Key not found.
+        }
+        deleteNodeAt(index, true, true);
     }
 
     int getSize()

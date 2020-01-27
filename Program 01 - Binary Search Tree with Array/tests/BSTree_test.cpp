@@ -226,20 +226,21 @@ SCENARIO("BSTree: Find values")
 }
 
 
-SCENARIO("BSTree: Empty tree")
+SCENARIO("BSTree: Make an existing tree empty")
 {
     GIVEN("A tree with values 1-30")
     {
-        auto tree = generateTree(30);
+        const int numValues = 30;
+        auto tree = generateTree(numValues);
 
         THEN("The count is 30")
         {
-            REQUIRE(30 == tree.getCount());
+            REQUIRE(numValues == tree.getCount());
         }
 
         THEN("The size is at least 30")
         {
-            REQUIRE(30 <= tree.getSize());
+            REQUIRE(numValues <= tree.getSize());
         }
 
         WHEN("The tree is emptied")
@@ -259,6 +260,42 @@ SCENARIO("BSTree: Empty tree")
             THEN("The size is the default (25)")
             {
                 REQUIRE(NumTree::DEFAULT_SIZE == tree.getSize());
+            }
+        }
+    }
+}
+
+
+SCENARIO("BSTree: Delete a key")
+{
+    GIVEN("A tree with values 1-10")
+    {
+        const int numValues = 10;
+        auto tree = generateTree(numValues);
+
+        THEN("The count is 10")
+        {
+            REQUIRE(numValues == tree.getCount());
+
+
+            WHEN("The key 5 is deleted")
+            {
+                tree.remove(5);
+
+                THEN("The count is 9")
+                {
+                    REQUIRE(numValues - 1 == tree.getCount());
+                }
+            }
+
+            WHEN("The non-existent key 11 is deleted")
+            {
+                tree.remove(11);
+
+                THEN("The count remains 10")
+                {
+                    REQUIRE(numValues == tree.getCount());
+                }
             }
         }
     }

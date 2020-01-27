@@ -64,14 +64,17 @@ int main()
     cout << "Tree2 count: " << tree2.getCount() << endl;
     cout << "Tree2 size: " << tree2.getSize() << endl << endl;
 
-    // for (int i = 101; i <= 110; ++i) {		// for turn-in uncomment these
-    // lines 	tree2.remove(i);
-    //}
+    // for turn-in uncomment these lines
+    for (int i = 101; i <= 110; ++i)
+    {
+        tree2.remove(i);
+    }
 
-    // cout << "\n\nPRINTING TREE AFTER REMOVING 101-110:\n";  // for
-    // turn-in uncomment these lines tree2.printTree(); cout << "Tree2
-    // count: " << tree2.getCount() << endl; cout << "Tree2 size: " <<
-    // tree2.getSize() << endl << endl;
+    // for turn-in uncomment these lines
+    cout << "\n\nPRINTING TREE AFTER REMOVING 101-110:\n";
+    tree2.printTree();
+    cout << "Tree2 count: " << tree2.getCount() << endl;
+    cout << "Tree2 size: " << tree2.getSize() << endl << endl;
 
     BinarySearchTree<int, ComputerScientist*> tree;
     tree.insert(new ComputerScientist("Robert", "Ward", "Education", 50),
@@ -107,18 +110,19 @@ int main()
         cout << "Not Found" << endl;
     }
 
-    // tree.remove(50);						// for turn-in uncomment these
-    // lines cout << "\n\nPRINTING TREE AFTER REMOVING 50:\n";
-    // tree.printTree();
-    // cout << "Tree count: " << tree.getCount() << endl;
-    // cout << "Tree size: " << tree.getSize() << endl << endl;
+    // for turn-in uncomment these lines
+    tree.remove(50);
+    cout << "\n\nPRINTING TREE AFTER REMOVING 50 :\n";
+    tree.printTree();
+    cout << "Tree count: " << tree.getCount() << endl;
+    cout << "Tree size: " << tree.getSize() << endl << endl;
 
-
-    // tree.remove(60);						// for turn-in uncomment these
-    // lines cout << "\n\nPRINTING TREE AFTER REMOVING 60:\n";
-    // tree.printTree();
-    // cout << "Tree count: " << tree.getCount() << endl;
-    // cout << "Tree size: " << tree.getSize() << endl << endl;
+    // for turn-in uncomment these lines
+    tree.remove(60);
+    cout << "\n\nPRINTING TREE AFTER REMOVING 60 :\n";
+    tree.printTree();
+    cout << "Tree count:" << tree.getCount() << endl;
+    cout << "Tree size: " << tree.getSize() << endl << endl;
 
     return 0;
 }
