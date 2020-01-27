@@ -13,7 +13,7 @@ template <typename KeyComparable, typename Value>
 class BinarySearchTree : BSTInterface<KeyComparable, Value>
 {
   public:
-    inline static size_t DEFAULT_SIZE = 25;
+    inline static int DEFAULT_SIZE = 25;
 
   private:
     /*
@@ -42,13 +42,13 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     int size = DEFAULT_SIZE;
 
     // the array that holds the pairs
-    Pair** root;
+    Pair** root = createTree();
 
     /*
      * Return a newly created pointer to an array of Pairs of given size
      * (or default) for a new tree.
      */
-    auto createTree(int capacity = DEFAULT_SIZE)
+    static auto createTree(int capacity = DEFAULT_SIZE)
     {
         return new Pair*[capacity]();
     }
@@ -274,6 +274,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
             return; // FAIL: this node is empty
         }
 
+        // Print Left -> Current -> Right
         printTree(getLeft(index), out);
         out << *getValueAt(index) << "\n";
         printTree(getRight(index), out);
@@ -417,7 +418,6 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     BinarySearchTree()
     {
-        this->root = createTree();
     }
 
     /*
