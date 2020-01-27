@@ -220,35 +220,24 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
 
         if (hasNodeAt(index))
         {
-            // RETURN: No need to shift, there is an element here
-            return;
+            return; // RETURN: Don't shift, there's an element here
         }
 
-        // Shift left subtree
-        int leftIndex = getLeft(index);
-        if (hasNodeAt(leftIndex))
-        {
-            int maxLeft = findMax(leftIndex);
-            if (hasNodeAt(maxLeft))
+        auto swapNodes = [&](int newIndex) {
+            if (hasNodeAt(newIndex))
             {
-                std::swap(this->root[index], this->root[maxLeft]);
-                shift(maxLeft);
-                return;
+                std::swap(this->root[index], this->root[newIndex]);
+                shift(newIndex);
+                return true; // SUCCESS: Nodes swapped
             }
-        }
+            return false; // FAIL: No nodes to swap
+        };
 
-        // Shift right subtree
-        int rightIndex = getRight(index);
-        if (hasNodeAt(rightIndex))
-        {
-            int minRight = findMin(rightIndex);
-            if (hasNodeAt(minRight))
-            {
-                std::swap(this->root[index], this->root[minRight]);
-                shift(minRight);
-                return;
-            }
-        }
+        // Shift left or right subtree
+        int lIndex = getLeft(index);
+        int rIndex = getRight(index);
+        (hasNodeAt(lIndex) && swapNodes(findMax(lIndex))) ||
+            (hasNodeAt(rIndex) && swapNodes(findMin(rIndex)));
     }
 
     /*
