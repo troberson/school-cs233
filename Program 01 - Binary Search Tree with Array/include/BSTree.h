@@ -405,14 +405,12 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * CONSTRUCTOR
      */
-    BinarySearchTree()
-    {
-    }
+    BinarySearchTree() = default;
 
     /*
      * DESTRUCTOR
      */
-    ~BinarySearchTree()
+    ~BinarySearchTree() override
     {
         deleteTree(true);
     }
@@ -441,7 +439,8 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      * returns true if it was found
      * returns false if it was not
      */
-    bool find(const KeyComparable& key, /* out */ Value& founditem) const
+    bool find(const KeyComparable& key,
+              /* out */ Value& founditem) const override
     {
         int index = find(key, 1);
         if (index < 1)
@@ -457,7 +456,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * Returns true if the item is found in the tree
      */
-    bool contains(const KeyComparable& key) const
+    [[nodiscard]] bool contains(const KeyComparable& key) const override
     {
         return find(key, 1) > 0;
     }
@@ -465,7 +464,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * Returns true if tree has no nodes
      */
-    bool isEmpty() const
+    [[nodiscard]] bool isEmpty() const override
     {
         return this->count == 0;
     }
@@ -473,7 +472,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * Prints the inorder the tree to the stream out
      */
-    void printTree(std::ostream& out = cout) const
+    void printTree(std::ostream& out = cout) const override
     {
         printTree(1, out);
     }
