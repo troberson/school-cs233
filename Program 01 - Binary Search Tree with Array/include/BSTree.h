@@ -264,14 +264,9 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void printTree(int index, std::ostream& out) const
     {
-        if (!isValidIndex(index))
+        if (!isValidIndex(index) || !hasNodeAt(index))
         {
-            return; // FAIL: no such node
-        }
-
-        if (!hasNodeAt(index))
-        {
-            return; // FAIL: this node is empty
+            return; // FAIL: No such node
         }
 
         // Print Left -> Current -> Right
@@ -285,24 +280,18 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void grow(size_t newSize = 0)
     {
-        // default new size is double the current size plus one
-        if (newSize <= 0)
-        {
-            newSize = 2 * this->size + 1;
-        }
-
-        // check if we actually need to grow
+        // Check if we actually need to grow
         if (newSize <= this->size)
         {
-            return; // RETURN: no need to grow
+            return; // RETURN: No need to grow
         }
 
-        // create a new array and copy the data from the current array
+        // Create a new array and copy the data from the current array
         // into it
         auto newRoot = createTree(newSize);
         std::copy(this->root, this->root + this->size, newRoot);
 
-        // update the object properties
+        // Update the object properties
         delete[] this->root;
         this->root = newRoot;
         this->size = newSize;
