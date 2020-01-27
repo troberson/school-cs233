@@ -23,7 +23,7 @@
 using NumList = std::vector<std::pair<int, std::string*>>;
 
 // The tree representation of the data in a NumList
-using NumTree = BinarySearchTree<int, string*>;
+using NumTree = BinarySearchTree<int, std::string*>;
 
 // Generate a randomized list of numbers from 1 to maxVal
 std::vector<int> generateNums(int maxVal)

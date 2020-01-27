@@ -28,7 +28,6 @@
 #include <utility>
 #include <vector>
 
-using namespace std;
 template <typename KeyComparable, typename Value>
 class BinarySearchTree : BSTInterface<KeyComparable, Value>
 {
@@ -480,7 +479,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * Prints the inorder the tree to the stream out
      */
-    void printTree(std::ostream& out = cout) const override
+    void printTree(std::ostream& out = std::cout) const override
     {
         printTree(1, out);
     }
@@ -534,7 +533,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      * Print the backing array in order as [index: key, value] for
      * debugging purposes.
      */
-    void printArray(std::ostream& out = cout) const
+    void printArray(std::ostream& out = std::cout) const
     {
         out << "Array of size " << this->size << " storing " << this->count
             << " values.\n";
