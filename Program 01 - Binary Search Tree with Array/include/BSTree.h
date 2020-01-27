@@ -75,14 +75,12 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
 
     /*
      * Delete the current tree.
-     * If deep is true, also delete the data held in the values.
-     * Otherwise, do a shallow delete and delete only the Pair objects.
      */
-    void deleteTree(bool deep = false)
+    void deleteTree()
     {
         for (size_t i = 1; i < this->size; i++)
         {
-            deleteNodeAt(i, deep, false);
+            deleteNodeAt(i, /* doShift */ false);
         }
 
         delete[] this->root;
@@ -192,29 +190,19 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
     /*
      * Delete node at a given index.
      *
-     * If deep is true [default: false], also delete the data held in the
-     * values. Otherwise, do a shallow delete and delete only the Pair
-     * object.
-     *
      * If doShift is true [default: true], shift the subtrees of the delete
      * node up, so everything remains in order. Use false for a quick
      * delete.
      *
      * Throws std::out_of_range if index is invalid.
      */
-    void deleteNodeAt(int index, bool deep = false, bool doShift = true)
+    void deleteNodeAt(int index, bool doShift = true)
     {
         assertValidIndex(index);
 
         if (!hasNodeAt(index))
         {
             return; // RETURN: Nothing to delete
-        }
-
-        // If deep deleting, also delete the object in the value
-        if (deep)
-        {
-            delete getValueAt(index);
         }
 
         // Delete the node
@@ -270,7 +258,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         assertValidIndex(index);
 
         // Delete any existing data
-        deleteNodeAt(index, false, false);
+        deleteNodeAt(index, false);
 
         // Set the replacement node
         this->root[index] = new Pair(key, value);
@@ -432,7 +420,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     ~BinarySearchTree() override
     {
-        deleteTree(true);
+        deleteTree();
     }
 
     /*
@@ -503,7 +491,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
      */
     void makeEmpty() override
     {
-        deleteTree(true);
+        deleteTree();
         this->root = createTree();
         this->size = DEFAULT_SIZE;
     }
@@ -529,7 +517,7 @@ class BinarySearchTree : BSTInterface<KeyComparable, Value>
         {
             return; // Key not found.
         }
-        deleteNodeAt(index, true, true);
+        deleteNodeAt(index, true);
     }
 
     int getSize()
