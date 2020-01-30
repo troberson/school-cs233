@@ -1,0 +1,343 @@
+﻿The space/time tradeoff principle from Section 3.9 states that one can often gain
+an improvement in space requirements in exchange for a penalty in running time.
+There are many situations where this is a desirable tradeoff. A typical example is
+storing files on disk. If the files are not actively used, the owner might wish to
+compress them to save space. Later, they can be uncompressed for use, which costs
+some time, but only once.
+We often represent a set of items in a computer program by assigning a unique
+code to each item. For example, the standard ASCII coding scheme assigns a
+unique eight-bit value to each character. It takes a certain minimum number of
+bits to provide unique codes for each character. For example, it takes dlog 128e or
+seven bits to provide the 128 unique codes needed to represent the 128 symbols of
+the ASCII character set.5
+The requirement for dlog ne bits to represent n unique code values assumes that
+all codes will be the same length, as are ASCII codes. This is called a fixed-length 
+coding scheme. If all characters were used equally often, then a fixed-length coding
+scheme is the most space efficient method. However, you are probably aware that
+not all characters are used equally often in many applications. For example, the
+various letters in an English language document have greatly different frequencies
+of use.
+Figure 5.23 shows the relative frequencies of the letters of the alphabet. From
+this table we can see that the letter ‘E’ appears about 60 times more often than the
+letter ‘Z.’ In normal ASCII, the words “DEED” and “MUCK” require the same
+5The ASCII standard is eight bits, not seven, even though there are only 128 characters represented.
+The eighth bit is used either to check for transmission errors, or to support “extended” ASCII
+codes with an additional 128 characters.
+186 Chap. 5 Binary Trees
+Letter Frequency Letter Frequency
+A 77 N 67
+B 17 O 67
+C 32 P 20
+D 42 Q 5
+E 120 R 59
+F 24 S 67
+G 17 T 85
+H 50 U 37
+I 76 V 12
+J 4 W 22
+K 7 X 4
+L 42 Y 22
+M 24 Z 2
+Figure 5.23 Relative frequencies for the 26 letters of the alphabet as they appear
+in a selected set of English documents. “Frequency” represents the expected
+frequency of occurrence per 1000 letters, ignoring case.
+amount of space (four bytes). It would seem that words such as “DEED,” which
+are composed of relatively common letters, should be storable in less space than
+words such as “MUCK,” which are composed of relatively uncommon letters.
+If some characters are used more frequently than others, is it possible to take
+advantage of this fact and somehow assign them shorter codes? The price could
+be that other characters require longer codes, but this might be worthwhile if such
+characters appear rarely enough. This concept is at the heart of file compression
+techniques in common use today. The next section presents one such approach to
+assigning variable-length codes, called Huffman coding. While it is not commonly
+used in its simplest form for file compression (there are better methods), Huffman
+coding gives the flavor of such coding schemes. One motivation for studying Huffman
+coding is because it provides our first opportunity to see a type of tree structure
+referred to as a search trie.
+5.6.1 Building Huffman Coding Trees
+Huffman coding assigns codes to characters such that the length of the code depends
+on the relative frequency or weight of the corresponding character. Thus, it
+is a variable-length code. If the estimated frequencies for letters match the actual
+frequency found in an encoded message, then the length of that message will typically
+be less than if a fixed-length code had been used. The Huffman code for each
+letter is derived from a full binary tree called the Huffman coding tree, or simply
+the Huffman tree. Each leaf of the Huffman tree corresponds to a letter, and we
+define the weight of the leaf node to be the weight (frequency) of its associated
+Sec. 5.6 Huffman Coding Trees 187
+Letter C D E K L M U Z
+Frequency 32 42 120 7 42 24 37 2
+Figure 5.24 The relative frequencies for eight selected letters.
+letter. The goal is to build a tree with the minimum external path weight. Define
+the weighted path length of a leaf to be its weight times its depth. The binary tree
+with minimum external path weight is the one with the minimum sum of weighted
+path lengths for the given set of leaves. A letter with high weight should have low
+depth, so that it will count the least against the total path length. As a result, another
+letter might be pushed deeper in the tree if it has less weight.
+The process of building the Huffman tree for n letters is quite simple. First, create
+a collection of n initial Huffman trees, each of which is a single leaf node containing
+one of the letters. Put the n partial trees onto a priority queue organized by
+weight (frequency). Next, remove the first two trees (the ones with lowest weight)
+from the priority queue. Join these two trees together to create a new tree whose
+root has the two trees as children, and whose weight is the sum of the weights of the
+two trees. Put this new tree back into the priority queue. This process is repeated
+until all of the partial Huffman trees have been combined into one.
+Example 5.8 Figure 5.25 illustrates part of the Huffman tree construction
+process for the eight letters of Figure 5.24. Ranking D and L arbitrarily by
+alphabetical order, the letters are ordered by frequency as
+Letter Z K M C U D L E
+Frequency 2 7 24 32 37 42 42 120
+Because the first two letters on the list are Z and K, they are selected to
+be the first trees joined together.6 They become the children of a root node
+with weight 9. Thus, a tree whose root has weight 9 is placed back on the
+list, where it takes up the first position. The next step is to take values 9
+and 24 off the list (corresponding to the partial tree with two leaf nodes
+built in the last step, and the partial tree storing the letter M, respectively)
+and join them together. The resulting root node has weight 33, and so this
+tree is placed back into the list. Its priority will be between the trees with
+values 32 (for letter C) and 37 (for letter U). This process continues until a
+tree whose root has weight 306 is built. This tree is shown in Figure 5.26.
+6
+For clarity, the examples for building Huffman trees show a sorted list to keep the letters ordered
+by frequency. But a real implementation would use a heap to implement the priority queue for
+efficiency.
+188 Chap. 5 Binary Trees
+Step 1:
+Step 2:
+9
+Step 3:
+Step 4:
+65
+Step 5:
+42
+32
+C
+65
+33
+9
+E
+79
+L
+24
+L
+120
+37 42
+C
+42
+32
+24
+U D E
+2 7
+Z K
+M
+9
+9 24
+37
+U
+42
+D
+42
+M
+32 120
+C L E
+M C U D
+2
+Z
+7
+24 32 37 42 42
+L
+K
+120
+E
+2 7
+K M C
+24 32 37 42 42
+Z D L
+120
+U E
+120
+2
+Z
+7
+K
+37 42
+U D
+2
+Z
+7
+33
+33
+M
+K
+Figure 5.25 The first five steps of the building process for a sample Huffman
+tree.
+Sec. 5.6 Huffman Coding Trees 189
+306
+0 1
+E 0
+79
+0 1
+37
+U
+42
+1
+107
+0
+42
+1
+65 0
+C
+1
+0 1
+9
+0 1
+2
+Z
+7
+D L
+M
+K
+32 33
+24
+120 186
+Figure 5.26 A Huffman tree for the letters of Figure 5.24.
+Figure 5.27 shows an implementation for Huffman tree nodes. This implementation
+is similar to the VarBinNode implementation of Figure 5.10. There is an
+abstract base class, named HuffNode, and two subclasses, named LeafNode
+and IntlNode. This implementation reflects the fact that leaf and internal nodes
+contain distinctly different information.
+Figure 5.28 shows the implementation for the Huffman tree. Figure 5.29 shows
+the C++ code for the tree-building process.
+Huffman tree building is an example of a greedy algorithm. At each step, the
+algorithm makes a “greedy” decision to merge the two subtrees with least weight.
+This makes the algorithm simple, but does it give the desired result? This section
+concludes with a proof that the Huffman tree indeed gives the most efficient
+arrangement for the set of letters. The proof requires the following lemma.
+Lemma 5.1 For any Huffman tree built by function buildHuff containing at
+least two letters, the two letters with least frequency are stored in siblings nodes
+whose depth is at least as deep as any other leaf nodes in the tree.
+Proof: Call the two letters with least frequency l1 and l2. They must be siblings
+because buildHuff selects them in the first step of the construction process.
+Assume that l1 and l2 are not the deepest nodes in the tree. In this case, the Huffman
+tree must either look as shown in Figure 5.30, or in some sense be symmetrical
+to this. For this situation to occur, the parent of l1 and l2, labeled V, must have
+greater weight than the node labeled X. Otherwise, function buildHuff would
+have selected node V in place of node X as the child of node U. However, this is
+impossible because l1 and l2 are the letters with least frequency. ✷
+190 Chap. 5 Binary Trees
+// Huffman tree node abstract base class
+template <typename E> class HuffNode {
+public:
+virtual ˜HuffNode() {} // Base destructor
+virtual int weight() = 0; // Return frequency
+virtual bool isLeaf() = 0; // Determine type
+};
+template <typename E> // Leaf node subclass
+class LeafNode : public HuffNode<E> {
+private:
+E it; // Value
+int wgt; // Weight
+public:
+LeafNode(const E& val, int freq) // Constructor
+{ it = val; wgt = freq; }
+int weight() { return wgt; }
+E val() { return it; }
+bool isLeaf() { return true; }
+};
+template <typename E> // Internal node subclass
+class IntlNode : public HuffNode<E> {
+private:
+HuffNode<E>* lc; // Left child
+HuffNode<E>* rc; // Right child
+int wgt; // Subtree weight
+public:
+IntlNode(HuffNode<E>* l, HuffNode<E>* r)
+{ wgt = l->weight() + r->weight(); lc = l; rc = r; }
+int weight() { return wgt; }
+bool isLeaf() { return false; }
+HuffNode<E>* left() const { return lc; }
+void setLeft(HuffNode<E>* b)
+{ lc = (HuffNode<E>*)b; }
+HuffNode<E>* right() const { return rc; }
+void setRight(HuffNode<E>* b)
+{ rc = (HuffNode<E>*)b; }
+};
+Figure 5.27 Implementation for Huffman tree nodes. Internal nodes and leaf
+nodes are represented by separate classes, each derived from an abstract base class.
+Sec. 5.6 Huffman Coding Trees 191
+// HuffTree is a template of two parameters: the element
+// type being coded and a comparator for two such elements.
+template <typename E>
+class HuffTree {
+private:
+HuffNode<E>* Root; // Tree root
+public:
+HuffTree(E& val, int freq) // Leaf constructor
+{ Root = new LeafNode<E>(val, freq); }
+// Internal node constructor
+HuffTree(HuffTree<E>* l, HuffTree<E>* r)
+{ Root = new IntlNode<E>(l->root(), r->root()); }
+˜HuffTree() {} // Destructor
+HuffNode<E>* root() { return Root; } // Get root
+int weight() { return Root->weight(); } // Root weight
+};
+Figure 5.28 Class declarations for the Huffman tree.
+// Build a Huffman tree from a collection of frequencies
+template <typename E> HuffTree<E>*
+buildHuff(HuffTree<E>** TreeArray, int count) {
+heap<HuffTree<E>*,minTreeComp>* forest =
+new heap<HuffTree<E>*, minTreeComp>(TreeArray,
+count, count);
+HuffTree<char> *temp1, *temp2, *temp3 = NULL;
+while (forest->size() > 1) {
+temp1 = forest->removefirst(); // Pull first two trees
+temp2 = forest->removefirst(); // off the list
+temp3 = new HuffTree<E>(temp1, temp2);
+forest->insert(temp3); // Put the new tree back on list
+delete temp1; // Must delete the remnants
+delete temp2; // of the trees we created
+}
+return temp3;
+}
+Figure 5.29 Implementation for the Huffman tree construction function.
+buildHuff takes as input fl, the min-heap of partial Huffman trees, which
+initially are single leaf nodes as shown in Step 1 of Figure 5.25. The body of
+function buildTree consists mainly of a for loop. On each iteration of the
+for loop, the first two partial trees are taken off the heap and placed in variables
+temp1 and temp2. A tree is created (temp3) such that the left and right subtrees
+are temp1 and temp2, respectively. Finally, temp3 is returned to fl.
+192 Chap. 5 Binary Trees
+l1 X
+V
+l2
+U
+Figure 5.30 An impossible Huffman tree, showing the situation where the two
+nodes with least weight, l1 and l2, are not the deepest nodes in the tree. Triangles
+represent subtrees.
+Theorem 5.3 Function buildHuff builds the Huffman tree with the minimum
+external path weight for the given set of letters.
+Proof: The proof is by induction on n, the number of letters.
+• Base Case: For n = 2, the Huffman tree must have the minimum external
+path weight because there are only two possible trees, each with identical
+weighted path lengths for the two leaves.
+• Induction Hypothesis: Assume that any tree created by buildHuff that
+contains n − 1 leaves has minimum external path length.
+• Induction Step: Given a Huffman tree T built by buildHuff with n
+leaves, n ≥ 2, suppose that w1 ≤ w2 ≤ · · · ≤ wn where w1 to wn are
+the weights of the letters. Call V the parent of the letters with frequencies w1
+and w2. From the lemma, we know that the leaf nodes containing the letters
+with frequencies w1 and w2 are as deep as any nodes in T. If any other leaf
+nodes in the tree were deeper, we could reduce their weighted path length by
+swapping them with w1 or w2. But the lemma tells us that no such deeper
+nodes exist. Call T
+0
+the Huffman tree that is identical to T except that node
+V is replaced with a leaf node V
+0 whose weight is w1 +w2. By the induction
+hypothesis, T
+0
+has minimum external path length. Returning the children to
+V
+0
+restores tree T, which must also have minimum external path length.
+Thus by mathematical induction, function buildHuff creates the Huffman
+tree with minimum external path length. ✷

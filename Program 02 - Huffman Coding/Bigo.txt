@@ -1,0 +1,7 @@
+The notation is read, "f of n is big oh of g of n". 
+Formal Definition: f(n) = O(g(n)) means:
+there are positive constants c and k, 
+such that 0 ? f(n) ? cg(n) for all n ? k.
+The values of c and k must be fixed for the 
+function f and must not depend on n.
+Also known as O, asymptotic upper bound.
