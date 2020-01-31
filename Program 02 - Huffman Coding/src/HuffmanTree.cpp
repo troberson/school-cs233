@@ -58,7 +58,7 @@ std::string HuffmanTree::getCode(char letter) const
     return code;
 }
 
-void HuffmanTree::makeEmpty(BinaryNode*& t)
+void HuffmanTree::makeEmpty(BinaryNode*& node)
 {
     // need to write code
 }
@@ -185,7 +185,7 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
 }
 
 void HuffmanTree::uncompressFile(std::string compressedFileName,
-                                 std::string uncompressedToFileName)
+                                 std::string uncompressToFileName)
 {
     // need to write code
 

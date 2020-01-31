@@ -7,19 +7,16 @@ class HuffmanTreeInterface
 {
   private:
   public:
-    HuffmanTreeInterface(){};
-    HuffmanTreeInterface(std::string frequencyText){};
-    HuffmanTreeInterface(const HuffmanTreeInterface& rhs){};
-    HuffmanTreeInterface(HuffmanTreeInterface&& rhs){};
-    virtual ~HuffmanTreeInterface(){};
+    HuffmanTreeInterface() = default;
+    explicit HuffmanTreeInterface(std::string frequencyText){};
 
-        /**
-        prints the code for all the ASCII values in the tree.
+    /**
+    prints the code for all the ASCII values in the tree.
 
-        @param out the stream to send the output to.
-        by default it is standard cout
-        @return No return value
-        */
+    @param out the stream to send the output to.
+    by default it is standard cout
+    @return No return value
+    */
     virtual void printCodes(std::ostream& out = std::cout) const = 0;
 
     /**
@@ -28,7 +25,7 @@ class HuffmanTreeInterface
     @param letter the character you want the code for
     @return the string the represents the code of the letter
     */
-    virtual std::string getCode(char letter) const = 0;
+    [[nodiscard]] virtual std::string getCode(char letter) const = 0;
 
     /**
     Prints both the characters and frequency  (suggested)

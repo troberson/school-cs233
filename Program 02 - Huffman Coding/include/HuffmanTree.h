@@ -17,19 +17,21 @@ class HuffmanTree : HuffmanTreeInterface
         BinaryNode* left;
         BinaryNode* right;
 
-        BinaryNode(const std::string& theElement, int frequency = 0,
-                   BinaryNode* left = nullptr, BinaryNode* right = nullptr)
+        explicit BinaryNode(const std::string& theElement,
+                            int frequency = 0, BinaryNode* left = nullptr,
+                            BinaryNode* right = nullptr)
             : element(theElement), frequency(frequency), left(left),
               right(right)
         {
             // empty constructor
         }
 
-        const bool operator<(const BinaryNode& r) const
+        bool operator<(const BinaryNode& r) const
         {
             return (frequency < r.frequency);
         }
     }; // end of BinaryNode class
+
     struct compareBinaryNodes
         : public std::binary_function<BinaryNode*, BinaryNode*, bool>
     {
@@ -48,13 +50,13 @@ class HuffmanTree : HuffmanTreeInterface
     //  message.
 
     std::unordered_map<char, std::string> codeLookup;
-    void makeEmpty(BinaryNode*& t);
-    void printTree(BinaryNode* t, std::ostream& out) const;
-    void printCodes(BinaryNode* t, std::ostream& out,
+    void makeEmpty(BinaryNode*& node);
+    void printTree(BinaryNode* node, std::ostream& out) const;
+    void printCodes(BinaryNode* node, std::ostream& out,
                     std::string code) const;
 
     void saveTree(BinaryNode* current, std::string code);
-    void saveTree(std::ostream& out);
+    void saveTree(std::ostream& compressedFileStream);
 
     void rebuildTree(BinaryNode* node, std::string element,
                      std::string codedRoute);
@@ -65,27 +67,27 @@ class HuffmanTree : HuffmanTreeInterface
     unsigned char setBit(unsigned char byte, int position) const;
 
   public:
-    HuffmanTree(std::string frequencyText);
-    HuffmanTree(std::ifstream& frequencyStream);
+    explicit HuffmanTree(std::string frequencyText);
+    explicit HuffmanTree(std::ifstream& frequencyStream);
     ~HuffmanTree();
 
-    void printTree(std::ostream& out = std::cout) const;
-    void printCodes(std::ostream& out = std::cout) const;
+    void printTree(std::ostream& out = std::cout) const override;
+    void printCodes(std::ostream& out = std::cout) const override;
     void printBinary(std::vector<char> bytes,
                      std::ostream& out = std::cout) const;
     void printBits(char binary, std::ostream& out = std::cout) const;
 
-    std::string getCode(char letter) const;
+    std::string getCode(char letter) const override;
 
-    void makeEmpty();
+    void makeEmpty() override;
 
-    std::vector<char> encode(std::string stringToEncode);
-    std::string decode(std::vector<char> endcodedBytes);
+    std::vector<char> encode(std::string stringToEncode) override;
+    std::string decode(std::vector<char> encodedBytes) override;
 
     void uncompressFile(std::string compressedFileName,
-                        std::string uncompressedToFileName);
-    void compressFile(std::string compressedFileName,
+                        std::string uncompressToFileName) override;
+    void compressFile(std::string compressToFileName,
                       std::string uncompressedFileName,
-                      bool buildTree = true);
+                      bool buildNewTree = true) override;
 
 }; // end of HuffmanTree class
