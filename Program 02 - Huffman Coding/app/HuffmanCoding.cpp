@@ -19,15 +19,15 @@ int main()
     std::cout << "priority_queue test area: \n";
     std::priority_queue<int, std::vector<int>, std::greater<>> pq;
 
-    pq.push(111);
-    pq.push(1111);
-    pq.push(1011);
-    pq.push(100);
-    pq.push(1110);
-    pq.push(101);
+    pq.push(111); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+    pq.push(1111); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+    pq.push(1011); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+    pq.push(100); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+    pq.push(1110); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+    pq.push(101); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
 
     std::cout << "Top: " << pq.top() << std::endl;
-    pq.push(10);
+    pq.push(10); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
     std::cout << "New Top: " << pq.top() << std::endl;
 
     while (!pq.empty())
