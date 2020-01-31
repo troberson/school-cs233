@@ -69,7 +69,6 @@ class HuffmanTree : HuffmanTreeInterface
   public:
     explicit HuffmanTree(std::string frequencyText);
     explicit HuffmanTree(std::ifstream& frequencyStream);
-    ~HuffmanTree();
 
     void printTree(std::ostream& out = std::cout) const override;
     void printCodes(std::ostream& out = std::cout) const override;

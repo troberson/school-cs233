@@ -138,11 +138,6 @@ HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
     }
 }
 
-HuffmanTree::~HuffmanTree()
-{
-    // need to write code
-}
-
 // print out the char and its encoding
 void HuffmanTree::printCodes(std::ostream& out) const
 {
