@@ -74,7 +74,7 @@ int main()
     std::cout << "\n\nBuilding the tree from: HHHHEELLLLLLLOO "
                  "WOOOOORRLLLLLLDP\n ";
 
-    HuffmanTree tree(" HHHHEELLLLLLLOO WOOOOORRLLLLLLDP ");
+    HuffmanTree tree("HHHHEELLLLLLLOO WOOOOORRLLLLLLDP");
 
     std::cout << "\n\nprintTree: \n";
     tree.printTree();

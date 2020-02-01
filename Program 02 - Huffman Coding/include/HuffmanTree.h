@@ -4,6 +4,7 @@
 #include <map>
 #include <memory>
 #include <queue>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -25,7 +26,7 @@ class HuffmanTree : HuffmanTreeInterface
         int frequency;
 
       public:
-        explicit BinaryNode(char theElement, int frequency = 0,
+        explicit BinaryNode(char theElement = 0, int frequency = 0,
                             std::shared_ptr<BinaryNode> left = nullptr,
                             std::shared_ptr<BinaryNode> right = nullptr)
             : element(theElement), frequency(frequency),
@@ -38,6 +39,11 @@ class HuffmanTree : HuffmanTreeInterface
             return (frequency < rhs.frequency);
         }
 
+        bool operator>(const BinaryNode& rhs) const
+        {
+            return (frequency > rhs.frequency);
+        }
+
         [[nodiscard]] char getElement() const
         {
             return element;
@@ -48,14 +54,46 @@ class HuffmanTree : HuffmanTreeInterface
             return frequency;
         }
 
-        [[nodiscard]] std::shared_ptr<BinaryNode> getLeft() const
+        [[nodiscard]] BinaryNode* getLeft() const
         {
-            return left;
+            return this->left.get();
         }
 
-        [[nodiscard]] std::shared_ptr<BinaryNode> getRight() const
+        [[nodiscard]] BinaryNode* getRight() const
         {
-            return right;
+            return this->right.get();
+        }
+
+        void setLeft(std::shared_ptr<BinaryNode> node)
+        {
+            this->left = std::move(node);
+        }
+
+        void setRight(std::shared_ptr<BinaryNode> node)
+        {
+            this->right = std::move(node);
+        }
+
+        std::string str()
+        {
+            // Example:
+            // Leaf: 'x' (3)
+            // Internal: (Internal) (12)
+            char c = this->element;
+
+            std::stringstream out;
+            out << "  ";
+            if (c > 0)
+            {
+                out << "'" << c << "'";
+            }
+            else
+            {
+                out << "(Internal)";
+            }
+            out << " (" << this->frequency << ")";
+
+            return out.str();
         }
     };
 
@@ -80,7 +118,9 @@ class HuffmanTree : HuffmanTreeInterface
                      std::string codedRoute);
     void rebuildTree(std::ifstream& file);
 
-    std::shared_ptr<BinaryNode> buildTree(std::string frequencyText);
+    std::shared_ptr<BinaryNode>
+    buildTree(const std::string& frequencyText);
+
     bool getBit(unsigned char byte, int position) const;
     unsigned char setBit(unsigned char byte, int position) const;
 

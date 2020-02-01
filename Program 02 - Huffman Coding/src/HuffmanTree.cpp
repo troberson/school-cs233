@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <vector>
 
+
 inline bool HuffmanTree::getBit(unsigned char byte, int position) const
 {
     return (byte & BITMASK[position]);
@@ -67,7 +68,30 @@ void HuffmanTree::makeEmpty(BinaryNode*& node)
 
 void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
 {
-    out << this->root->getElement();
+    // Skip empty nodes
+    if (node == nullptr)
+    {
+        return;
+    }
+
+    // Note if the current node is the root of the tree
+    if (node == this->root.get())
+    {
+        out << "Root:\n";
+    }
+
+    // Print the current node
+    out << node->str() << "\n";
+
+    // Print left and right subtrees
+    if (node->getElement() == 0)
+    {
+        out << "Left:\n";
+        printTree(node->getLeft(), out);
+
+        out << "Right:\n";
+        printTree(node->getRight(), out);
+    }
 }
 
 void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out,
@@ -108,26 +132,66 @@ void HuffmanTree::rebuildTree(std::ifstream& compressedFile)
 }
 
 std::shared_ptr<HuffmanTree::BinaryNode>
-HuffmanTree::buildTree(std::string frequencyText)
+HuffmanTree::buildTree(const std::string& frequencyText)
 {
-    auto cmp = [](auto left, auto right) { return *left < *right; };
+    // Ergonomics
+    using node_t = HuffmanTree::BinaryNode;
+    using node_ptr_t = std::shared_ptr<node_t>;
 
-    std::priority_queue<
-        std::shared_ptr<HuffmanTree::BinaryNode>,
-        std::vector<std::shared_ptr<HuffmanTree::BinaryNode>>,
-        decltype(cmp)>
+    // Build a priority queue of nodes for each unique character in the
+    // text, such that the top node is the least frequent (weakly ordered).
+    auto cmp = [](auto left, auto right) { return *left > *right; };
+
+    std::priority_queue<node_ptr_t, std::vector<node_ptr_t>, decltype(cmp)>
         nodes(cmp);
 
+    // The DEL character causes problems, skip it
     for (char c = 0; c <= ASCII_MAX && c != ASCII_DEL; c++)
     {
         int f = std::count(frequencyText.begin(), frequencyText.end(), c);
 
         if (f > 0)
         {
-            nodes.emplace(std::make_shared<HuffmanTree::BinaryNode>(c, f));
+            nodes.emplace(std::make_shared<node_t>(c, f));
         }
     }
 
+    // Unfortunately, pop() is void. We need both top() and pop() together
+    auto getNext = [&nodes]() -> node_ptr_t {
+        auto n = nodes.top();
+        if (n)
+        {
+            nodes.pop();
+        }
+        return n;
+    };
+
+    // Build a tree from the priority queue
+    // Each time, take up to two nodes in the queue for left and right.
+    // Then create a parent for those nodes and add the parent node with a
+    //   combined weight of its children into the queue.
+    // The last remaining node in the queue will be the root.
+    while (nodes.size() > 1)
+    {
+        // Left: We will always have at least one node for the left
+        auto leftNode = getNext();
+        int freq = leftNode->getFrequency();
+
+        // Right: We may not have a node for the right
+        auto rightNode = getNext();
+        if (rightNode != nullptr)
+        {
+            freq += rightNode->getFrequency();
+        }
+
+        // Create a parent for these two nodes
+        auto newNode = std::make_shared<node_t>(0, freq);
+        newNode->setLeft(std::move(leftNode));
+        newNode->setRight(std::move(rightNode));
+        nodes.push(newNode);
+    }
+
+    // Return the root node
     return nodes.top();
 }
 
