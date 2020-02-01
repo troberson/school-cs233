@@ -131,7 +131,7 @@ HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
         (std::istreambuf_iterator<char>(frequencyStream)),
         std::istreambuf_iterator<char>());
     frequencyStream.close();
-    if (frequencyText.size() > 0)
+    if (frequencyText.empty())
     {
         root = buildTree(frequencyText);
         // saveTree(root, string());   // build the lookupTable for codes
