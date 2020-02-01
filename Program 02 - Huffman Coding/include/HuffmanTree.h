@@ -1,5 +1,8 @@
 #include "HuffmanTreeInterface.h"
+
+#include <limits>
 #include <map>
+#include <memory>
 #include <queue>
 #include <string>
 #include <unordered_map>
@@ -9,39 +12,54 @@ class HuffmanTree : HuffmanTreeInterface
 {
   private:
     const int BITMASK[8] = {1, 2, 4, 8, 16, 32, 64, 128};
+
+    static constexpr char ASCII_MAX = std::numeric_limits<char>::max();
+    static const int ASCII_DEL = 127; // DEL causes an infinite loop
+
     class BinaryNode
     {
-      public:
-        std::string element;
+      private:
+        std::shared_ptr<BinaryNode> left;
+        std::shared_ptr<BinaryNode> right;
+        char element;
         int frequency;
-        BinaryNode* left;
-        BinaryNode* right;
 
-        explicit BinaryNode(const std::string& theElement,
-                            int frequency = 0, BinaryNode* left = nullptr,
-                            BinaryNode* right = nullptr)
-            : element(theElement), frequency(frequency), left(left),
-              right(right)
+      public:
+        explicit BinaryNode(char theElement, int frequency = 0,
+                            std::shared_ptr<BinaryNode> left = nullptr,
+                            std::shared_ptr<BinaryNode> right = nullptr)
+            : element(theElement), frequency(frequency),
+              left(std::move(left)), right(std::move(right))
         {
-            // empty constructor
         }
 
-        bool operator<(const BinaryNode& r) const
+        bool operator<(const BinaryNode& rhs) const
         {
-            return (frequency < r.frequency);
+            return (frequency < rhs.frequency);
         }
-    }; // end of BinaryNode class
 
-    struct compareBinaryNodes
-        : public std::binary_function<BinaryNode*, BinaryNode*, bool>
-    {
-        bool operator()(const BinaryNode* p1, const BinaryNode* p2)
+        [[nodiscard]] char getElement() const
         {
-            return p1->frequency > p2->frequency;
+            return element;
         }
-    }; // end of compareBinaryNodes struct Functor
 
-    BinaryNode* root = nullptr;
+        [[nodiscard]] int getFrequency() const
+        {
+            return frequency;
+        }
+
+        [[nodiscard]] std::shared_ptr<BinaryNode> getLeft() const
+        {
+            return left;
+        }
+
+        [[nodiscard]] std::shared_ptr<BinaryNode> getRight() const
+        {
+            return right;
+        }
+    };
+
+    std::shared_ptr<BinaryNode> root;
     char EOFCharacter = 0;
 
     // can be used to store codes after tree is
@@ -62,7 +80,7 @@ class HuffmanTree : HuffmanTreeInterface
                      std::string codedRoute);
     void rebuildTree(std::ifstream& file);
 
-    BinaryNode* buildTree(std::string frequencyText);
+    std::shared_ptr<BinaryNode> buildTree(std::string frequencyText);
     bool getBit(unsigned char byte, int position) const;
     unsigned char setBit(unsigned char byte, int position) const;
 

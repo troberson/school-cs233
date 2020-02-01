@@ -13,50 +13,56 @@
 
 int main()
 {
+    // // example code for priority_queue....play with it and then
+    // // remove/comment out
+    // std::cout << "priority_queue test area: \n";
+    // std::priority_queue<int, std::vector<int>, std::greater<>> pq;
 
-    // example code for priority_queue....play with it and then
-    // remove/comment out
-    std::cout << "priority_queue test area: \n";
-    std::priority_queue<int, std::vector<int>, std::greater<>> pq;
+    // pq.push(111); // NOLINT(readability-magic-numbers,
+    // cppcoreguidelines-avoid-magic-numbers) pq.push(1111); //
+    // NOLINT(readability-magic-numbers,
+    // cppcoreguidelines-avoid-magic-numbers) pq.push(1011); //
+    // NOLINT(readability-magic-numbers,
+    // cppcoreguidelines-avoid-magic-numbers) pq.push(100); //
+    // NOLINT(readability-magic-numbers,
+    // cppcoreguidelines-avoid-magic-numbers) pq.push(1110); //
+    // NOLINT(readability-magic-numbers,
+    // cppcoreguidelines-avoid-magic-numbers) pq.push(101); //
+    // NOLINT(readability-magic-numbers,
+    // cppcoreguidelines-avoid-magic-numbers)
 
-    pq.push(111); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-    pq.push(1111); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-    pq.push(1011); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-    pq.push(100); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-    pq.push(1110); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-    pq.push(101); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
+    // std::cout << "Top: " << pq.top() << std::endl;
+    // pq.push(10); // NOLINT(readability-magic-numbers,
+    // cppcoreguidelines-avoid-magic-numbers) std::cout << "New Top: " <<
+    // pq.top() << std::endl;
 
-    std::cout << "Top: " << pq.top() << std::endl;
-    pq.push(10); // NOLINT(readability-magic-numbers, cppcoreguidelines-avoid-magic-numbers)
-    std::cout << "New Top: " << pq.top() << std::endl;
+    // while (!pq.empty())
+    // {
+    //     std::cout << pq.top() << std::endl;
+    //     pq.pop();
+    // }
+    // std::cout << std::endl << std::endl;
 
-    while (!pq.empty())
-    {
-        std::cout << pq.top() << std::endl;
-        pq.pop();
-    }
-    std::cout << std::endl << std::endl;
+    // // example code for unordered_map....play with it and then
+    // // remove/comment out
+    // //  an unordered_map can be used to store the char and its encoded
+    // //  values after you have built the tree
+    // std::cout << "unordered_map test area: \n";
+    // std::unordered_map<char, std::string> exampleMap;
+    // exampleMap['a'] = "apple";
+    // exampleMap['b'] = "ballon";
+    // exampleMap['c'] = "compiler";
+    // exampleMap['d'] = "10010";
 
-    // example code for unordered_map....play with it and then
-    // remove/comment out
-    //  an unordered_map can be used to store the char and its encoded
-    //  values after you have built the tree
-    std::cout << "unordered_map test area: \n";
-    std::unordered_map<char, std::string> exampleMap;
-    exampleMap['a'] = "apple";
-    exampleMap['b'] = "ballon";
-    exampleMap['c'] = "compiler";
-    exampleMap['d'] = "10010";
+    // std::cout << "c has: " << exampleMap['c'] << std::endl;
 
-    std::cout << "c has: " << exampleMap['c'] << std::endl;
-
-    exampleMap['c'] = "changed";
-    for (const auto& pair : exampleMap)
-    {
-        std::cout << pair.first << " = " << pair.second << std::endl;
-    }
-    std::cout << "Number of items stored in map: " << exampleMap.size();
-    std::cout << std::endl << std::endl;
+    // exampleMap['c'] = "changed";
+    // for (const auto& pair : exampleMap)
+    // {
+    //     std::cout << pair.first << " = " << pair.second << std::endl;
+    // }
+    // std::cout << "Number of items stored in map: " << exampleMap.size();
+    // std::cout << std::endl << std::endl;
 
 
     // SUGGESTION: write and test the functions in the order called below
@@ -65,13 +71,14 @@ int main()
 
     // Test 1
     // cout << "\n\nTest 1\n";
-    // cout << "\n\nBuilding the tree from: HHHHEELLLLLLLOO
-    // WOOOOORRLLLLLLDP\n"; HuffmanTree tree("HHHHEELLLLLLLOO
-    // WOOOOORRLLLLLLDP");
-    //
-    // cout << "\n\nprintTree: \n";
-    // tree.printTree();
-    //
+    std::cout << "\n\nBuilding the tree from: HHHHEELLLLLLLOO "
+                 "WOOOOORRLLLLLLDP\n ";
+
+    HuffmanTree tree(" HHHHEELLLLLLLOO WOOOOORRLLLLLLDP ");
+
+    std::cout << "\n\nprintTree: \n";
+    tree.printTree();
+
     // cout << "\n\nprintCodes:\n";
     // tree.printCodes();
     // cout << endl << endl;

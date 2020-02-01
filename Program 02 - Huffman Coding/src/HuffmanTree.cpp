@@ -1,9 +1,11 @@
 #include "HuffmanTree.h"
 #include <algorithm>
+#include <array>
 #include <bitset>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <queue>
 #include <sstream>
 #include <string>
@@ -65,7 +67,7 @@ void HuffmanTree::makeEmpty(BinaryNode*& node)
 
 void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
 {
-    // need to write code
+    out << this->root->getElement();
 }
 
 void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out,
@@ -105,14 +107,26 @@ void HuffmanTree::rebuildTree(std::ifstream& compressedFile)
     // calls recursive function
 }
 
-HuffmanTree::BinaryNode* HuffmanTree::buildTree(std::string frequencyText)
+std::shared_ptr<HuffmanTree::BinaryNode>
+HuffmanTree::buildTree(std::string frequencyText)
 {
-    std::priority_queue<HuffmanTree::BinaryNode*,
-                        std::vector<HuffmanTree::BinaryNode*>,
-                        compareBinaryNodes>
-        nodes;
+    auto cmp = [](auto left, auto right) { return *left < *right; };
 
-    // need to write code
+    std::priority_queue<
+        std::shared_ptr<HuffmanTree::BinaryNode>,
+        std::vector<std::shared_ptr<HuffmanTree::BinaryNode>>,
+        decltype(cmp)>
+        nodes(cmp);
+
+    for (char c = 0; c <= ASCII_MAX && c != ASCII_DEL; c++)
+    {
+        int f = std::count(frequencyText.begin(), frequencyText.end(), c);
+
+        if (f > 0)
+        {
+            nodes.emplace(std::make_shared<HuffmanTree::BinaryNode>(c, f));
+        }
+    }
 
     return nodes.top();
 }
@@ -148,8 +162,7 @@ void HuffmanTree::printCodes(std::ostream& out) const
 // prints out the char and frequency
 void HuffmanTree::printTree(std::ostream& out) const
 {
-    // need to write code
-    // calls recursive function
+    printTree(this->root.get(), out);
 }
 
 void HuffmanTree::makeEmpty()
