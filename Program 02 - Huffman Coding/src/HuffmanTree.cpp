@@ -1,10 +1,12 @@
 #include "HuffmanTree.h"
+
 #include <algorithm>
 #include <array>
 #include <bitset>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <queue>
 #include <sstream>
@@ -12,53 +14,10 @@
 #include <unordered_map>
 #include <vector>
 
-
-inline bool HuffmanTree::getBit(unsigned char byte, int position) const
-{
-    return (byte & BITMASK[position]);
-}
-
-// Usage
-// mybyte = setBit(mybyte,4);
-// This sets the bit in position 4
-inline unsigned char HuffmanTree::setBit(unsigned char byte,
-                                         int position) const
-{
-    return byte | BITMASK[position];
-}
-
-void HuffmanTree::printBits(char binary, std::ostream& out) const
-{
-    for (size_t i = 0; i < sizeof(char) * 8; i++)
-    {
-        if (getBit(binary, i))
-        {
-            out << 1;
-        }
-        else
-        {
-            out << 0;
-        }
-    }
-}
-
-void HuffmanTree::printBinary(std::vector<char> bytes,
-                              std::ostream& out) const
-{
-    for (char byte : bytes)
-    {
-        printBits(byte, out);
-        out << "-";
-    }
-}
-
 std::string HuffmanTree::getCode(char letter) const
 {
-    std::string code = "";
-
-    // need to write code
-
-    return code;
+    auto result = this->codeLookup.find(letter);
+    return ((result != this->codeLookup.end()) ? result->second : "");
 }
 
 void HuffmanTree::makeEmpty(BinaryNode*& node)
@@ -84,7 +43,7 @@ void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
     out << node->str() << "\n";
 
     // Print left and right subtrees
-    if (node->getElement() == 0)
+    if (!node->isLeaf())
     {
         out << "Left:\n";
         printTree(node->getLeft(), out);
@@ -94,10 +53,30 @@ void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
     }
 }
 
-void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out,
-                             std::string code) const
+void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out) const
 {
-    // need to write code
+    // Prepare codes for printing by placing them into a sorted map
+    // Sort by the string representation of the binary code
+    std::map<std::string, char> codeMap{};
+
+    for (const auto& [c, bitStr] : this->codeLookup)
+    {
+        codeMap.emplace(bitStr, c);
+    }
+
+    // Output:
+    //   x = 01011101 (93)
+    for (const auto& [bitStr, c] : codeMap)
+    {
+        // out << std::setw(10 + ASCII_WIDTH) << std::left;
+        out << c << " = " << std::left << std::setw(ASCII_WIDTH) << bitStr;
+
+        std::bitset<ASCII_WIDTH> bits{bitStr};
+        unsigned long bitLong = bits.to_ullong();
+        char bitNum = static_cast<char>(bitLong);
+
+        out << " (" << std::setw(3) << std::right << +bitNum << ")\n";
+    }
 }
 
 
@@ -157,7 +136,7 @@ HuffmanTree::buildTree(const std::string& frequencyText)
     }
 
     // Unfortunately, pop() is void. We need both top() and pop() together
-    auto getNext = [&nodes]() -> node_ptr_t {
+    auto getNext = [&nodes]() {
         auto n = nodes.top();
         if (n)
         {
@@ -195,9 +174,44 @@ HuffmanTree::buildTree(const std::string& frequencyText)
     return nodes.top();
 }
 
+// Build the lookup table.
+//   If a node is on the left, the bit at the depth position is 0
+//   If a node is on the right, the bit at the depth position is 1
+void HuffmanTree::buildTable(
+    BinaryNode* node,
+    std::bitset<ASCII_WIDTH> bits = std::bitset<ASCII_WIDTH>{},
+    int depth = 0)
+{
+    // Skip empty nodes
+    if (node == nullptr)
+    {
+        return;
+    }
+
+    depth++;
+
+    // Process left subtree
+    buildTable(node->getLeft(), bits, depth);
+
+    // Process right subtree
+    bits.set(bits.size() - depth);
+    buildTable(node->getRight(), bits, depth);
+    bits.set(bits.size() - depth, false);
+
+    depth--;
+
+    // Process current node
+    if (node->isLeaf())
+    {
+        this->codeLookup.emplace(node->getElement(),
+                                 bits.to_string().substr(0, depth));
+    }
+}
+
 HuffmanTree::HuffmanTree(std::string frequencyText)
 {
     root = buildTree(frequencyText);
+    buildTable(root.get());
     // saveTree(root, string());   // build the lookupTable for codes...can
     // write later
 }
@@ -219,8 +233,7 @@ HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
 // print out the char and its encoding
 void HuffmanTree::printCodes(std::ostream& out) const
 {
-    // need to write code
-    // calls recursive function
+    printCodes(this->root.get(), out);
 }
 
 // prints out the char and frequency

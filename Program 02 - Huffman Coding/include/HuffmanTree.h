@@ -1,5 +1,6 @@
 #include "HuffmanTreeInterface.h"
 
+#include <bitset>
 #include <limits>
 #include <map>
 #include <memory>
@@ -12,9 +13,8 @@
 class HuffmanTree : HuffmanTreeInterface
 {
   private:
-    const int BITMASK[8] = {1, 2, 4, 8, 16, 32, 64, 128};
-
     static constexpr char ASCII_MAX = std::numeric_limits<char>::max();
+    static constexpr int ASCII_WIDTH = std::numeric_limits<char>::digits;
     static const int ASCII_DEL = 127; // DEL causes an infinite loop
 
     class BinaryNode
@@ -74,6 +74,11 @@ class HuffmanTree : HuffmanTreeInterface
             this->right = std::move(node);
         }
 
+        [[nodiscard]] bool isLeaf()
+        {
+            return this->left == nullptr && this->right == nullptr;
+        }
+
         std::string str()
         {
             // Example:
@@ -106,10 +111,13 @@ class HuffmanTree : HuffmanTreeInterface
     //  message.
 
     std::unordered_map<char, std::string> codeLookup;
+    void buildTable(BinaryNode* node, std::bitset<ASCII_WIDTH> bits,
+                    int depth);
+
+
     void makeEmpty(BinaryNode*& node);
     void printTree(BinaryNode* node, std::ostream& out) const;
-    void printCodes(BinaryNode* node, std::ostream& out,
-                    std::string code) const;
+    void printCodes(BinaryNode* node, std::ostream& out) const;
 
     void saveTree(BinaryNode* current, std::string code);
     void saveTree(std::ostream& compressedFileStream);

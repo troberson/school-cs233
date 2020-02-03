@@ -72,19 +72,19 @@ int main()
     // Test 1
     // cout << "\n\nTest 1\n";
     std::cout << "\n\nBuilding the tree from: HHHHEELLLLLLLOO "
-                 "WOOOOORRLLLLLLDP\n ";
+                 "WOOOOORRLLLLLLDP\n";
 
     HuffmanTree tree("HHHHEELLLLLLLOO WOOOOORRLLLLLLDP");
 
     std::cout << "\n\nprintTree: \n";
     tree.printTree();
 
-    // cout << "\n\nprintCodes:\n";
-    // tree.printCodes();
-    // cout << endl << endl;
+    std::cout << "\n\nprintCodes:\n";
+    tree.printCodes();
+    std::cout << std::endl << std::endl;
 
-    // cout << "Code L :" <<tree.getCode('L') << endl;
-    // cout << "Code D :" << tree.getCode('D') << endl;
+    std::cout << "Code L :" << tree.getCode('L') << std::endl;
+    std::cout << "Code D :" << tree.getCode('D') << std::endl;
 
 
     // Test 2
