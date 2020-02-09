@@ -51,3 +51,22 @@ SCENARIO("HuffmanTree: Tree contains the character frequencies")
         }
     }
 }
+
+SCENARIO("HuffmanTree: Encode and decode a string")
+{
+    GIVEN("The string 'Hello, World!'")
+    {
+        std::string text{"Hello, World!"};
+        HuffmanTree tree{text};
+
+        WHEN("The string is encoded and decoded")
+        {
+            auto result = tree.decode(tree.encode(text));
+
+            THEN("The result is the same")
+            {
+                REQUIRE(text == result);
+            }
+        }
+    }
+}

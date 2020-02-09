@@ -94,7 +94,7 @@ int main()
     tree.printBinary(encoded);
     std::cout << std::endl;
 
-    // std::cout << tree.decode(encoded) << ":" << std::endl;
+    std::cout << tree.decode(encoded) << ":" << std::endl;
 
     // Test 3
     // cout << "\n\nTest 3\n";

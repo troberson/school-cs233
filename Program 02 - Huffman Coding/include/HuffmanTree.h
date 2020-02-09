@@ -130,8 +130,10 @@ class HuffmanTree : HuffmanTreeInterface
     //  message.
 
     std::unordered_map<char, std::string> codeLookup;
-    void buildTable(BinaryNode* node, std::bitset<ASCII_WIDTH> bits,
-                    int depth);
+    void
+    buildTable(BinaryNode* node,
+               std::bitset<ASCII_WIDTH> bits = std::bitset<ASCII_WIDTH>{},
+               int depth = 0);
 
 
     void makeEmpty(BinaryNode*& node);
@@ -145,8 +147,7 @@ class HuffmanTree : HuffmanTreeInterface
                      std::string codedRoute);
     void rebuildTree(std::ifstream& file);
 
-    std::shared_ptr<BinaryNode>
-    buildTree(const std::string& frequencyText);
+    std::shared_ptr<BinaryNode> buildTree(std::string& frequencyText);
 
     bool getBit(unsigned char byte, int position) const;
     unsigned char setBit(unsigned char byte, int position) const;

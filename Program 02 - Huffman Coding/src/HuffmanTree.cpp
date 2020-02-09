@@ -110,11 +110,15 @@ void HuffmanTree::rebuildTree(std::ifstream& compressedFile)
 }
 
 std::shared_ptr<HuffmanTree::BinaryNode>
-HuffmanTree::buildTree(const std::string& frequencyText)
+HuffmanTree::buildTree(std::string& frequencyText)
 {
     // Ergonomics
     using node_t = HuffmanTree::BinaryNode;
     using node_ptr_t = std::shared_ptr<node_t>;
+
+    // Add the EOF Character (NULL) to the string, so when decoded, we will
+    // know when the text ends.
+    frequencyText.push_back(this->EOFCharacter);
 
     // Build a priority queue of nodes for each unique character in the
     // text, such that the top node is the least frequent (weakly ordered).
@@ -169,6 +173,9 @@ HuffmanTree::buildTree(const std::string& frequencyText)
         nodes.push(newNode);
     }
 
+    // Build the lookup table
+    buildTable(nodes.top().get());
+
     // Return the root node
     return nodes.top();
 }
@@ -176,10 +183,8 @@ HuffmanTree::buildTree(const std::string& frequencyText)
 // Build the lookup table.
 //   If a node is on the left, the bit at the depth position is 0
 //   If a node is on the right, the bit at the depth position is 1
-void HuffmanTree::buildTable(
-    BinaryNode* node,
-    std::bitset<ASCII_WIDTH> bits = std::bitset<ASCII_WIDTH>{},
-    int depth = 0)
+void HuffmanTree::buildTable(BinaryNode* node,
+                             std::bitset<ASCII_WIDTH> bits, int depth)
 {
     // Skip empty nodes
     if (node == nullptr)
@@ -210,9 +215,6 @@ void HuffmanTree::buildTable(
 HuffmanTree::HuffmanTree(std::string frequencyText)
 {
     root = buildTree(frequencyText);
-    buildTable(root.get());
-    // saveTree(root, string());   // build the lookupTable for codes...can
-    // write later
 }
 
 HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
@@ -225,7 +227,6 @@ HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
     if (frequencyText.empty())
     {
         root = buildTree(frequencyText);
-        // saveTree(root, string());   // build the lookupTable for codes
     }
 }
 void HuffmanTree::printBinary(std::vector<char> bytes,
@@ -262,7 +263,31 @@ std::string HuffmanTree::decode(std::vector<char> encodedBytes)
 {
     std::string decoded;
 
-    // need to write code
+    auto curNode = this->root.get();
+
+    for (const unsigned long long bitNum : encodedBytes)
+    {
+        std::bitset<ASCII_WIDTH> bits{bitNum};
+
+        for (int i = ASCII_WIDTH - 1; i >= 0; i--)
+        {
+            curNode =
+                (bits.test(i)) ? curNode->getRight() : curNode->getLeft();
+
+            if (curNode->isLeaf())
+            {
+                // Stop if we reach the EOF Character
+                if (curNode->getElement() == this->EOFCharacter)
+                {
+                    break;
+                }
+
+                // Add the character and start over at root
+                decoded.push_back(curNode->getElement());
+                curNode = this->root.get();
+            }
+        }
+    }
 
     return decoded;
 }
@@ -270,7 +295,7 @@ std::string HuffmanTree::decode(std::vector<char> encodedBytes)
 std::vector<char> HuffmanTree::encode(std::string stringToEncode)
 {
     // needed when encoding message for file I/O
-    //    stringToEncode.push_back(EOFCharacter);
+    stringToEncode.push_back(EOFCharacter);
 
     auto getBitNum = [](const std::bitset<ASCII_WIDTH>& bits) {
         return static_cast<char>(bits.to_ulong());
@@ -301,15 +326,13 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
         }
 
         auto bitNum = getBitNumFromString(bitStr);
-        if (encodedCharStr.length() < ASCII_WIDTH)
+        encodedCharStr += bitStr;
+
+        if (encodedCharStr.length() > ASCII_WIDTH)
         {
-            encodedCharStr += bitStr;
-        }
-        else
-        {
-            auto newCharStr = encodedCharStr.substr(0, ASCII_WIDTH + 1);
+            auto newCharStr = encodedCharStr.substr(0, ASCII_WIDTH);
             encoded.emplace_back(getBitNumFromString(newCharStr));
-            encodedCharStr.erase(0, ASCII_WIDTH + 1);
+            encodedCharStr.erase(0, ASCII_WIDTH);
         }
     }
 
