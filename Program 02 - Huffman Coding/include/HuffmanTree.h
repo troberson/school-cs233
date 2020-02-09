@@ -1,6 +1,7 @@
 #include "HuffmanTreeInterface.h"
 
 #include <bitset>
+#include <functional>
 #include <limits>
 #include <map>
 #include <memory>
@@ -94,7 +95,25 @@ class HuffmanTree : HuffmanTreeInterface
             }
             else
             {
-                out << "(Internal)";
+                out << "(Internal - ";
+
+                std::function<void(BinaryNode*)> printSubtree =
+                    [&](BinaryNode* node) {
+                        if (node == nullptr)
+                        {
+                            return;
+                        }
+                        printSubtree(node->getLeft());
+                        if (node->isLeaf())
+                        {
+                            out << node->getElement();
+                        }
+                        printSubtree(node->getRight());
+                    };
+
+                printSubtree(this);
+
+                out << ")";
             }
             out << " (" << this->frequency << ")";
 

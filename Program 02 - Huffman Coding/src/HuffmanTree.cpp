@@ -68,7 +68,6 @@ void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out) const
     //   x = 01011101 (93)
     for (const auto& [bitStr, c] : codeMap)
     {
-        // out << std::setw(10 + ASCII_WIDTH) << std::left;
         out << c << " = " << std::left << std::setw(ASCII_WIDTH) << bitStr;
 
         std::bitset<ASCII_WIDTH> bits{bitStr};
