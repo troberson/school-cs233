@@ -88,14 +88,13 @@ int main()
 
 
     // Test 2
-    // cout << "\n\nTest 2\n";
-    // vector<char> encoded = tree.encode("HELP");
-    // tree.printCodes();
-    // tree.printBinary(encoded);
-    // cout << endl;
-    //
-    // cout << tree.decode(encoded) << ":" << endl;
-    // system("pause");
+    std::cout << "\n\nTest 2\n";
+    std::vector<char> encoded = tree.encode("HELP");
+    tree.printCodes();
+    tree.printBinary(encoded);
+    std::cout << std::endl;
+
+    // std::cout << tree.decode(encoded) << ":" << std::endl;
 
     // Test 3
     // cout << "\n\nTest 3\n";

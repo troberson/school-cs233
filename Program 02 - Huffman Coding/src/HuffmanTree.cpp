@@ -228,6 +228,17 @@ HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
         // saveTree(root, string());   // build the lookupTable for codes
     }
 }
+void HuffmanTree::printBinary(std::vector<char> bytes,
+                              std::ostream& out) const
+{
+    for (const unsigned long long bitNum : bytes)
+    {
+        std::bitset<ASCII_WIDTH> bits{bitNum};
+
+        out << bits << " (" << bitNum << ") - ";
+    }
+    out << "END\n";
+}
 
 // print out the char and its encoding
 void HuffmanTree::printCodes(std::ostream& out) const
@@ -258,12 +269,53 @@ std::string HuffmanTree::decode(std::vector<char> encodedBytes)
 
 std::vector<char> HuffmanTree::encode(std::string stringToEncode)
 {
-    stringToEncode.push_back(
-        EOFCharacter); // needed when encoding message for file I/O
+    // needed when encoding message for file I/O
+    //    stringToEncode.push_back(EOFCharacter);
+
+    auto getBitNum = [](const std::bitset<ASCII_WIDTH>& bits) {
+        return static_cast<char>(bits.to_ulong());
+    };
+
+    auto getBitNumFromString = [getBitNum](const std::string& bitStr) {
+        std::bitset<ASCII_WIDTH> bits{bitStr};
+        return getBitNum(bits);
+    };
+
 
     std::vector<char> encoded;
 
-    // need to write code
+    std::string encodedCharStr;
+    for (char c : stringToEncode)
+    {
+        // May throw std::out_of_range if character is not in tree
+        std::string bitStr;
+        try
+        {
+            bitStr = this->codeLookup.at(c);
+        }
+        catch (...)
+        {
+            std::cerr << "ERROR: Character '" << c
+                      << "' cannot be encoded.\n";
+            throw;
+        }
+
+        auto bitNum = getBitNumFromString(bitStr);
+        if (encodedCharStr.length() < ASCII_WIDTH)
+        {
+            encodedCharStr += bitStr;
+        }
+        else
+        {
+            auto newCharStr = encodedCharStr.substr(0, ASCII_WIDTH + 1);
+            encoded.emplace_back(getBitNumFromString(newCharStr));
+            encodedCharStr.erase(0, ASCII_WIDTH + 1);
+        }
+    }
+
+    std::bitset<ASCII_WIDTH> newCharBits{encodedCharStr};
+    newCharBits <<= ASCII_WIDTH - encodedCharStr.length();
+    encoded.push_back(getBitNum(newCharBits));
 
     return encoded;
 }
