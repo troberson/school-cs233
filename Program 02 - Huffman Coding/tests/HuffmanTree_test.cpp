@@ -33,7 +33,7 @@ SCENARIO("HuffmanTree: Tree contains the character frequencies")
 
             auto contains = [&result](char c, int f) {
                 std::stringstream substr;
-                substr << "'" << c << "' (" << f << ")";
+                substr << "'" << c << "'\t(" << f << ")";
 
                 return result.find(substr.str()) != std::string::npos;
             };

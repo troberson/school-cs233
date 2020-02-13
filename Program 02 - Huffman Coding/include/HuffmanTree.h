@@ -1,3 +1,15 @@
+////
+// Name: Tamara Roberson
+// Section: CS 233A
+// Program Name: Program 2 - Huffman Encoding
+// A console-based application to compress and decompress ASCII strings and
+// text files using canonical Huffman encoding. The frequency of each
+// character in the text is used to generate a variable-length encoding
+// using a binary search tree, with more common characters being given
+// shorter codes and rare characters given longer codes. For non-trivial
+// files, this results in approximately 20% compression.
+////
+
 #include "HuffmanTreeInterface.h"
 
 #include <bitset>
@@ -19,6 +31,7 @@ class HuffmanTree : HuffmanTreeInterface
     static constexpr int CHAR_WIDTH =
         std::numeric_limits<char>::digits + 1;
     static constexpr int CODE_WIDTH = CHAR_MAX;
+    static const bool PRINT_COMPACT = true;
 
     class BinaryNode
     {
@@ -82,7 +95,7 @@ class HuffmanTree : HuffmanTreeInterface
             return this->left == nullptr && this->right == nullptr;
         }
 
-        std::string str()
+        std::string str(bool compact = PRINT_COMPACT)
         {
             // Example:
             // Leaf: 'x' (3)
@@ -90,12 +103,17 @@ class HuffmanTree : HuffmanTreeInterface
             char c = this->element;
 
             std::stringstream out;
-            out << "  ";
+            if (!compact)
+            {
+                out << "  ";
+            }
+
             if (c > 0)
             {
                 out << "'" << c << "'";
             }
-            else
+
+            if (!compact)
             {
                 out << "(Internal - ";
 
@@ -117,7 +135,11 @@ class HuffmanTree : HuffmanTreeInterface
 
                 out << ")";
             }
-            out << " (" << this->frequency << ")";
+
+            if (isLeaf() || !compact)
+            {
+                out << "\t(" << this->frequency << ")";
+            }
 
             return out.str();
         }

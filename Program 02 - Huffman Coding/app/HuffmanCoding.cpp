@@ -122,8 +122,8 @@ int main()
     std::cout << "\n\nTest 4\n";
     std::ifstream frequencyStream2("20000leagues.txt");
     HuffmanTree tree3(frequencyStream2);
-    // tree3.printTree();
-    // tree3.printCodes();
+    tree3.printTree();
+    tree3.printCodes();
     std::cout << "Code L :" << tree3.getCode('L') << std::endl;
     tree3.compressFile("20000leaguesComp.bin", "20000leagues.txt", true);
     tree3.uncompressFile("20000leaguesComp.bin",

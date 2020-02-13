@@ -1,3 +1,16 @@
+////
+// Name: Tamara Roberson
+// Section: CS 233A
+// Program Name: Program 2 - Huffman Encoding
+// A console-based application to compress and decompress ASCII strings and
+// text files using canonical Huffman encoding. The frequency of each
+// character in the text is used to generate a variable-length encoding
+// using a binary search tree, with more common characters being given
+// shorter codes and rare characters given longer codes. For non-trivial
+// files, this results in approximately 20% compression.
+////
+
+
 #include "HuffmanTree.h"
 
 #include <algorithm>
@@ -49,22 +62,34 @@ void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
     }
 
     // Note if the current node is the root of the tree
-    if (node == this->root.get())
+    if (!PRINT_COMPACT && node == this->root.get())
     {
-        out << "Root:\n";
+        out << "Root: ";
     }
 
     // Print the current node
-    out << node->str() << "\n";
+    std::string nodeStr = node->str();
+    if (!nodeStr.empty())
+    {
+        out << nodeStr << "\n";
+    }
 
     // Print left and right subtrees
     if (!node->isLeaf())
     {
-        out << "Left:\n";
-        printTree(node->getLeft(), out);
+        auto left = node->getLeft();
+        if (!PRINT_COMPACT || left->isLeaf())
+        {
+            out << "Left:  ";
+        }
+        printTree(left, out);
 
-        out << "Right:\n";
-        printTree(node->getRight(), out);
+        auto right = node->getRight();
+        if (!PRINT_COMPACT || right->isLeaf())
+        {
+            out << "Right: ";
+        }
+        printTree(right, out);
     }
 }
 
@@ -137,12 +162,11 @@ HuffmanTree::buildTree(const std::string& frequencyText)
     // The DEL character causes problems, skip it
     for (char c = 0; c <= CHAR_MAX && c != ASCII_DEL; c++)
     {
-        int f = std::count(frequencyText.begin(), frequencyText.end(), c);
+        int freq = std::count(frequencyText.begin(), frequencyText.end(), c);
 
-
-        if (f > 0)
+        if (freq > 0)
         {
-            nodes.emplace(std::make_shared<node_t>(c, f));
+            nodes.emplace(std::make_shared<node_t>(c, freq));
         }
     }
 
@@ -189,7 +213,6 @@ HuffmanTree::buildTree(const std::string& frequencyText)
     return nodes.top();
 }
 
-
 // Build the lookup table.
 //   If a node is on the left, the bit at the depth position is 0
 //   If a node is on the right, the bit at the depth position is 1
@@ -216,7 +239,6 @@ void HuffmanTree::buildTable(BinaryNode* node,
         depth--;
     }
 
-
     // Process current node
     if (node->isLeaf())
     {
@@ -224,7 +246,6 @@ void HuffmanTree::buildTable(BinaryNode* node,
                                  bits.to_string().substr(0, depth));
     }
 }
-
 
 // Make Canonical
 // Convert a table from a general Huffman code into a Canonical Huffman
@@ -251,7 +272,6 @@ HuffmanTree::makeCanonical(std::unordered_map<char, std::string> oldTable)
 
     return makeCodebook(bitLengths);
 }
-
 
 std::unordered_map<char, std::string> HuffmanTree::makeCodebook(
     const std::vector<std::pair<char, int>>& bitLengths)
@@ -312,7 +332,7 @@ void HuffmanTree::printBinary(const std::vector<char>& bytes,
     {
         std::bitset<CHAR_WIDTH> bits{bitNum};
 
-        out << bits << " (" << bits.to_ulong() << ") - ";
+        out << bits << "-";
     }
     out << "END\n";
 }
@@ -328,23 +348,11 @@ void HuffmanTree::printCodes(std::ostream& out) const
         codeMap.emplace(bitStr, c);
     }
 
-    // Is actually finding largest string but that should be the longest
-    int maxLength =
-        std::max_element(this->codeLookup.begin(), this->codeLookup.end())
-            ->second.length();
-
-    // Output:
-    //   x = 01011101 (93)
     for (const auto& [bitStr, c] : codeMap)
     {
-        out << c << " = " << std::left << std::setw(maxLength) << bitStr;
-
-        std::bitset<CODE_WIDTH> bits{bitStr};
-        out << " (" << std::setw(3) << std::right << bits.to_ulong()
-            << ")\n";
+        out << c << " = " << bitStr << "\n";
     }
 }
-
 
 
 void HuffmanTree::printTree(std::ostream& out) const
@@ -461,7 +469,7 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
 
         encodedCharStr += bitStr;
 
-        if (encodedCharStr.length() > CHAR_WIDTH)
+        while (encodedCharStr.length() > CHAR_WIDTH)
         {
             auto newCharStr = encodedCharStr.substr(0, CHAR_WIDTH);
             encoded.emplace_back(getBitNumFromString(newCharStr));
@@ -469,13 +477,7 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
         }
     }
 
-    while (encodedCharStr.length() > CHAR_WIDTH)
-    {
-        auto newCharStr = encodedCharStr.substr(0, CHAR_WIDTH);
-        encoded.emplace_back(getBitNumFromString(newCharStr));
-        encodedCharStr.erase(0, CHAR_WIDTH);
-    }
-
+    // Pad the remainder with 0s
     std::bitset<CHAR_WIDTH> newCharBits{encodedCharStr};
     newCharBits <<= CHAR_WIDTH - encodedCharStr.length();
     encoded.push_back(getBitNum(newCharBits));
