@@ -400,6 +400,8 @@ void HuffmanTree::compressFile(std::string compressToFileName,
         build(text);
     }
 
+    encode(text);
+
     // auto outputStream = openWrite(compressToFileName);
 
     // saveTree(outputStream);
