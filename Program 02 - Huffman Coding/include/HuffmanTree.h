@@ -136,28 +136,34 @@ class HuffmanTree : HuffmanTreeInterface
                std::bitset<CODE_WIDTH> bits = std::bitset<CODE_WIDTH>{},
                int depth = 0);
 
+    std::string codebook;
+
+    std::map<int, std::map<std::string, char>> decodeTable;
 
     void makeEmpty(BinaryNode* node);
     void printTree(BinaryNode* node, std::ostream& out) const;
     void printCodes(BinaryNode* node, std::ostream& out) const;
 
-    void saveTree(BinaryNode* current, std::string code);
-    void saveTree(std::ostream& compressedFileStream);
+    std::string saveTable();
 
-    void rebuildTree(BinaryNode* node, std::string element,
-                     std::string codedRoute);
-    void rebuildTree(std::ifstream& file);
+    std::unordered_map<char, std::string>
+    rebuildTable(const std::string& codebookStr);
+
+    auto makeDecodeTable(std::unordered_map<char, std::string> codeLookup);
 
     std::shared_ptr<BinaryNode>
     buildTree(const std::string& frequencyText);
 
     std::shared_ptr<BinaryNode> buildTree(std::istream& frequencyStream);
 
+    std::unordered_map<char, std::string>
+    makeCanonical(std::unordered_map<char, std::string> oldTable);
+
+    std::unordered_map<char, std::string>
+    makeCodebook(const std::vector<std::pair<char, int>>& bitLengths);
+
     void build(const std::string& frequencyText);
     void build(std::ifstream& frequencyStream);
-
-    bool getBit(unsigned char byte, int position) const;
-    unsigned char setBit(unsigned char byte, int position) const;
 
   public:
     explicit HuffmanTree(const std::string& frequencyText);

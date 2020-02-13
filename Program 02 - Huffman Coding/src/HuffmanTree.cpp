@@ -10,6 +10,7 @@
 #include <map>
 #include <memory>
 #include <queue>
+#include <set>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -104,34 +105,56 @@ void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out) const
     }
 }
 
-
-void HuffmanTree::saveTree(BinaryNode* current, std::string code)
-{
-    // need to write code
-}
-
 // writes tree information to file so the tree can be rebuilt when
 // unzipping
-void HuffmanTree::saveTree(std::ostream& compressedFileStream)
+std::string HuffmanTree::saveTable()
 {
-    saveTree(this->root.get(), "");
+    std::stringstream codebook;
+    for (char c = 0; c <= CHAR_MAX && c != ASCII_DEL; c++)
+    {
+        int len = 0;
+        auto entry = this->codeLookup.find(c);
+        if (entry != this->codeLookup.end())
+        {
+            len = entry->second.length();
+        }
+        codebook << std::to_string(len) << " ";
+    }
+    return codebook.str();
 }
 
-
-void HuffmanTree::rebuildTree(BinaryNode* node, std::string element,
-                              std::string codedRoute)
+std::unordered_map<char, std::string>
+HuffmanTree::rebuildTable(const std::string& codebookStr)
 {
+    // decode the codebook string into a list of numbers
+    std::stringstream codeStream(codebookStr);
+    int num;
+    std::vector<int> codeLengths;
+    codeLengths.reserve(CHAR_MAX);
+    while (codeStream >> num)
+    {
+        codeLengths.push_back(num);
+    }
 
-    // need to write code
-}
+    std::vector<std::pair<char, int>> bitLengths;
 
-void HuffmanTree::rebuildTree(std::ifstream& compressedFile)
-{
-    // read info from file
-    // use info to build tree
+    for (char c = 0; c <= CHAR_MAX && c != ASCII_DEL; c++)
+    {
+        if (codeLengths[c] == 0)
+        {
+            continue;
+        }
 
-    // need to write code
-    // calls recursive function
+        bitLengths.emplace_back(std::make_pair(c, codeLengths[c]));
+    }
+
+    std::stable_sort(bitLengths.begin(), bitLengths.end(),
+                     [](const std::pair<char, int>& lhs,
+                        const std::pair<char, int>& rhs) {
+                         return lhs.second < rhs.second;
+                     });
+
+    return makeCodebook(bitLengths);
 }
 
 std::shared_ptr<HuffmanTree::BinaryNode>
@@ -199,9 +222,6 @@ HuffmanTree::buildTree(const std::string& frequencyText)
         nodes.push(newNode);
     }
 
-    // Build the lookup table
-    buildTable(nodes.top().get());
-
     // Return the root node
     return nodes.top();
 }
@@ -242,9 +262,68 @@ void HuffmanTree::buildTable(BinaryNode* node,
     }
 }
 
+
+// Make Canonical
+// Convert a table from a general Huffman code into a Canonical Huffman
+// Code
+std::unordered_map<char, std::string>
+HuffmanTree::makeCanonical(std::unordered_map<char, std::string> oldTable)
+{
+    auto sorter = [](const std::pair<char, std::string>& lhs,
+                     const std::pair<char, std::string>& rhs) {
+        return lhs.second.size() == rhs.second.size()
+                   ? lhs.first < rhs.first
+                   : lhs.second.size() < rhs.second.size();
+    };
+
+    std::set<std::pair<char, std::string>, decltype(sorter)> sortedPairs(
+        oldTable.begin(), oldTable.end(), sorter);
+
+    std::vector<std::pair<char, int>> bitLengths;
+    bitLengths.reserve(sortedPairs.size());
+    for (const auto& [c, bitStr] : sortedPairs)
+    {
+        bitLengths.emplace_back(std::make_pair(c, bitStr.length()));
+    }
+
+    return makeCodebook(bitLengths);
+}
+
+
+std::unordered_map<char, std::string>
+HuffmanTree::makeCodebook(const std::vector<std::pair<char, int>>& bitLengths)
+{
+    std::unordered_map<char, std::string> newTable;
+
+    unsigned int prevLength = 0;
+    unsigned long count = -1;
+
+    for (const auto& [c, len] : bitLengths)
+    {
+        count++;
+
+        if (len > prevLength)
+        {
+            count <<= (len - prevLength);
+            prevLength = len;
+        }
+
+        std::bitset<CODE_WIDTH> newBits(count);
+        newBits <<= CODE_WIDTH - len;
+        std::string newBitStr = newBits.to_string();
+        newBitStr = newBitStr.substr(0, len);
+        newTable.emplace(c, newBitStr);
+    }
+
+    return newTable;
+}
+
 void HuffmanTree::build(const std::string& frequencyText)
 {
     this->root = buildTree(frequencyText);
+    buildTable(this->root.get());
+    this->codeLookup = makeCanonical(this->codeLookup);
+    this->codebook = saveTable();
 }
 
 void HuffmanTree::build(std::ifstream& frequencyStream)
@@ -281,7 +360,7 @@ void HuffmanTree::printCodes(std::ostream& out) const
     printCodes(this->root.get(), out);
 }
 
-// prints out the char and frequency
+
 void HuffmanTree::printTree(std::ostream& out) const
 {
     printTree(this->root.get(), out);
@@ -294,37 +373,72 @@ void HuffmanTree::makeEmpty()
     this->root.reset();
 }
 
+auto HuffmanTree::makeDecodeTable(
+    std::unordered_map<char, std::string> codeLookup)
+{
+    std::map<int, std::map<std::string, char>> decodeTable;
+    for (const auto& [c, bitStr] : codeLookup)
+    {
+        int len = bitStr.length();
+
+        if (decodeTable.find(len) == decodeTable.end())
+        {
+            std::map<std::string, char> codes;
+            codes.emplace(bitStr, c);
+            decodeTable.emplace(len, codes);
+        }
+        else
+        {
+            decodeTable.at(len).emplace(bitStr, c);
+        }
+    }
+
+    return decodeTable;
+}
+
 std::string HuffmanTree::decode(std::vector<char> encodedBytes)
 {
     std::string decoded;
 
-    auto curNode = this->root.get();
+    if (this->codeLookup.empty())
+    {
+        this->codeLookup = rebuildTable(this->codebook);
+    }
 
+    if (this->decodeTable.empty())
+    {
+        this->decodeTable = makeDecodeTable(this->codeLookup);
+    }
+
+    std::string searchBits;
     for (const unsigned long long bitNum : encodedBytes)
     {
         std::bitset<CHAR_WIDTH> bits{bitNum};
 
         for (int i = CHAR_WIDTH - 1; i >= 0; i--)
         {
-            curNode =
-                (bits.test(i)) ? curNode->getRight() : curNode->getLeft();
+            searchBits += (bits.test(i) ? "1" : "0");
 
-            if (curNode->isLeaf())
+            int len = searchBits.length();
+            if (decodeTable.find(len) != decodeTable.end() &&
+                decodeTable.at(len).find(searchBits) !=
+                    decodeTable.at(len).end())
             {
-                // Stop if we reach the EOF Character
-                if (curNode->getElement() == this->EOFCharacter)
+                char c = decodeTable.at(len).at(searchBits);
+
+                // if we hit EOF, stop where we are and return
+                if (c == this->EOFCharacter)
                 {
-                    break;
+                    return decoded;
                 }
 
-                // Add the character and start over at root
-                decoded.push_back(curNode->getElement());
-                curNode = this->root.get();
+                decoded += c;
+                searchBits = searchBits.substr(len);
             }
         }
     }
 
-    return decoded;
+    return decoded; // hopefully we hit the EOF character before this
 }
 
 std::vector<char> HuffmanTree::encode(std::string stringToEncode)
