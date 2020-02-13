@@ -148,14 +148,19 @@ class HuffmanTree : HuffmanTreeInterface
                      std::string codedRoute);
     void rebuildTree(std::ifstream& file);
 
-    std::shared_ptr<BinaryNode> buildTree(std::string& frequencyText);
+    std::shared_ptr<BinaryNode>
+    buildTree(const std::string& frequencyText);
+
     std::shared_ptr<BinaryNode> buildTree(std::istream& frequencyStream);
+
+    void build(const std::string& frequencyText);
+    void build(std::ifstream& frequencyStream);
 
     bool getBit(unsigned char byte, int position) const;
     unsigned char setBit(unsigned char byte, int position) const;
 
   public:
-    explicit HuffmanTree(std::string frequencyText);
+    explicit HuffmanTree(const std::string& frequencyText);
     explicit HuffmanTree(std::ifstream& frequencyStream);
 
     void printTree(std::ostream& out = std::cout) const override;

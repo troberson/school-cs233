@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <bitset>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -13,6 +14,33 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+std::string readStream(std::ifstream& inputStream, uintmax_t size = 0);
+std::string readFile(const std::string& filename);
+
+
+std::string readStream(std::ifstream& inputStream, uintmax_t size)
+{
+    std::stringstream buffer;
+
+    // preallocate if size is known
+    if (size > 0)
+    {
+        buffer = std::stringstream(std::string(size, ' '));
+    }
+
+    buffer << inputStream.rdbuf();
+    return buffer.str();
+}
+
+
+std::string readFile(const std::string& filename)
+{
+    auto size = std::filesystem::file_size(filename);
+    std::ifstream inputStream(filename, std::ios::binary);
+    return readStream(inputStream, size);
+}
+
 
 std::string HuffmanTree::getCode(char letter) const
 {
@@ -107,15 +135,11 @@ void HuffmanTree::rebuildTree(std::ifstream& compressedFile)
 }
 
 std::shared_ptr<HuffmanTree::BinaryNode>
-HuffmanTree::buildTree(std::string& frequencyText)
+HuffmanTree::buildTree(const std::string& frequencyText)
 {
     // Ergonomics
     using node_t = HuffmanTree::BinaryNode;
     using node_ptr_t = std::shared_ptr<node_t>;
-
-    // Add the EOF Character (NULL) to the string, so when decoded, we will
-    // know when the text ends.
-    frequencyText.push_back(this->EOFCharacter);
 
     // Build a priority queue of nodes for each unique character in the
     // text, such that the top node is the least frequent (weakly ordered).
@@ -129,13 +153,16 @@ HuffmanTree::buildTree(std::string& frequencyText)
     {
         int f = std::count(frequencyText.begin(), frequencyText.end(), c);
 
-        // std::cout << "C: '" << c << "' F:  " << f << "\n";
 
         if (f > 0)
         {
             nodes.emplace(std::make_shared<node_t>(c, f));
         }
     }
+
+    // Add the EOF Character (NULL) to the string, so when decoded, we will
+    // know when the text ends.
+    nodes.emplace(std::make_shared<node_t>(this->EOFCharacter, 1));
 
     // Unfortunately, pop() is void. We need both top() and pop() together
     auto getNext = [&nodes]() {
@@ -179,20 +206,6 @@ HuffmanTree::buildTree(std::string& frequencyText)
     return nodes.top();
 }
 
-std::shared_ptr<HuffmanTree::BinaryNode>
-HuffmanTree::buildTree(std::istream& frequencyStream)
-{
-    std::string frequencyText(
-        (std::istreambuf_iterator<char>(frequencyStream)),
-        std::istreambuf_iterator<char>());
-
-    if (frequencyText.empty())
-    {
-        return nullptr;
-    }
-    return buildTree(frequencyText);
-}
-
 
 // Build the lookup table.
 //   If a node is on the left, the bit at the depth position is 0
@@ -206,7 +219,7 @@ void HuffmanTree::buildTable(BinaryNode* node,
         return;
     }
 
-
+    // Process left and right subtrees if we're not at the last row
     if (depth < CODE_WIDTH)
     {
         depth++;
@@ -224,21 +237,30 @@ void HuffmanTree::buildTable(BinaryNode* node,
     // Process current node
     if (node->isLeaf())
     {
-        std::cout << "Char: " << node->getElement() << " Bits: '" << bits
-                  << "'\n";
         this->codeLookup.emplace(node->getElement(),
                                  bits.to_string().substr(0, depth));
     }
 }
 
-HuffmanTree::HuffmanTree(std::string frequencyText)
+void HuffmanTree::build(const std::string& frequencyText)
 {
-    root = buildTree(frequencyText);
+    this->root = buildTree(frequencyText);
+}
+
+void HuffmanTree::build(std::ifstream& frequencyStream)
+{
+    build(readStream(frequencyStream));
+}
+
+
+HuffmanTree::HuffmanTree(const std::string& frequencyText)
+{
+    build(frequencyText);
 }
 
 HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
 {
-    root = buildTree(frequencyStream);
+    build(frequencyStream);
 }
 
 void HuffmanTree::printBinary(std::vector<char> bytes,
@@ -357,40 +379,6 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
     return encoded;
 }
 
-std::ifstream openRead(const std::string& filename)
-{
-    std::ifstream inputStream;
-    try
-    {
-        inputStream.open(filename, std::ios::binary);
-    }
-    catch (...)
-    {
-        std::cerr << "Unable to open file '" << filename
-                  << "' for reading.\n";
-        throw;
-    }
-
-    return inputStream;
-}
-
-std::ofstream openWrite(const std::string& filename)
-{
-    std::ofstream outputStream;
-    try
-    {
-        outputStream.open(filename, std::ios::binary);
-    }
-    catch (...)
-    {
-        std::cerr << "Unable to open file '" << filename
-                  << "' for writing.\n";
-        throw;
-    }
-
-    return outputStream;
-}
-
 
 void HuffmanTree::uncompressFile(std::string compressedFileName,
                                  std::string uncompressToFileName)
@@ -405,13 +393,14 @@ void HuffmanTree::compressFile(std::string compressToFileName,
                                std::string uncompressedFileName,
                                bool buildNewTree)
 {
-    auto inputStream = openRead(uncompressedFileName);
-    auto outputStream = openWrite(compressToFileName);
+    std::string text = readFile(uncompressedFileName);
 
     if (buildNewTree)
     {
-        makeEmpty();
+        build(text);
     }
 
-    saveTree(outputStream);
+    // auto outputStream = openWrite(compressToFileName);
+
+    // saveTree(outputStream);
 }
