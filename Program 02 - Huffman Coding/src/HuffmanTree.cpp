@@ -68,34 +68,6 @@ void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
     }
 }
 
-void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out) const
-{
-    // Prepare codes for printing by placing them into a sorted map
-    // Sort by the string representation of the binary code
-    std::map<std::string, char> codeMap{};
-
-    for (const auto& [c, bitStr] : this->codeLookup)
-    {
-        codeMap.emplace(bitStr, c);
-    }
-
-    // Is actually finding largest string but that should be the longest
-    int maxLength =
-        std::max_element(this->codeLookup.begin(), this->codeLookup.end())
-            ->second.length();
-
-    // Output:
-    //   x = 01011101 (93)
-    for (const auto& [bitStr, c] : codeMap)
-    {
-        out << c << " = " << std::left << std::setw(maxLength) << bitStr;
-
-        std::bitset<CODE_WIDTH> bits{bitStr};
-        out << " (" << std::setw(3) << std::right << bits.to_ulong()
-            << ")\n";
-    }
-}
-
 // writes tree information to file so the tree can be rebuilt when
 // unzipping
 std::string HuffmanTree::saveTable()
@@ -345,11 +317,34 @@ void HuffmanTree::printBinary(const std::vector<char>& bytes,
     out << "END\n";
 }
 
-// print out the char and its encoding
 void HuffmanTree::printCodes(std::ostream& out) const
 {
-    printCodes(this->root.get(), out);
+    // Prepare codes for printing by placing them into a sorted map
+    // Sort by the string representation of the binary code
+    std::map<std::string, char> codeMap{};
+
+    for (const auto& [c, bitStr] : this->codeLookup)
+    {
+        codeMap.emplace(bitStr, c);
+    }
+
+    // Is actually finding largest string but that should be the longest
+    int maxLength =
+        std::max_element(this->codeLookup.begin(), this->codeLookup.end())
+            ->second.length();
+
+    // Output:
+    //   x = 01011101 (93)
+    for (const auto& [bitStr, c] : codeMap)
+    {
+        out << c << " = " << std::left << std::setw(maxLength) << bitStr;
+
+        std::bitset<CODE_WIDTH> bits{bitStr};
+        out << " (" << std::setw(3) << std::right << bits.to_ulong()
+            << ")\n";
+    }
 }
+
 
 
 void HuffmanTree::printTree(std::ostream& out) const

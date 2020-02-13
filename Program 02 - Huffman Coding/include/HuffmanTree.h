@@ -143,7 +143,6 @@ class HuffmanTree : HuffmanTreeInterface
 
     void makeEmpty(BinaryNode* node);
     void printTree(BinaryNode* node, std::ostream& out) const;
-    void printCodes(BinaryNode* node, std::ostream& out) const;
 
     std::string saveTable();
 
