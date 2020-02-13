@@ -97,11 +97,20 @@ int main()
     std::cout << tree.decode(encoded) << ":" << std::endl;
 
     // Test 3
-    // cout << "\n\nTest 3\n";
-    // std::ifstream frequencyStream("Bigo.txt");
-    // HuffmanTree tree2(frequencyStream);
-    // tree2.printTree();
-    // tree2.printCodes();
+    std::cout << "\n\nTest 3\n";
+    std::ifstream frequencyStream;
+    try
+    {
+        frequencyStream.open("Bigo.txt");
+    }
+    catch (...)
+    {
+        std::cerr << "Unable to open file.\n";
+    }
+
+    HuffmanTree tree2(frequencyStream);
+    tree2.printTree();
+    tree2.printCodes();
 
     // tree2.compressFile("BigO.bin", "Bigo.txt");
     // tree2.printCodes();

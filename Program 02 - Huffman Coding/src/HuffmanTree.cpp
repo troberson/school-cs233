@@ -64,17 +64,20 @@ void HuffmanTree::printCodes(BinaryNode* node, std::ostream& out) const
         codeMap.emplace(bitStr, c);
     }
 
+    // Is actually finding largest string but that should be the longest
+    int maxLength =
+        std::max_element(this->codeLookup.begin(), this->codeLookup.end())
+            ->second.length();
+
     // Output:
     //   x = 01011101 (93)
     for (const auto& [bitStr, c] : codeMap)
     {
-        out << c << " = " << std::left << std::setw(ASCII_WIDTH) << bitStr;
+        out << c << " = " << std::left << std::setw(maxLength) << bitStr;
 
-        std::bitset<ASCII_WIDTH> bits{bitStr};
-        unsigned long bitLong = bits.to_ullong();
-        char bitNum = static_cast<char>(bitLong);
-
-        out << " (" << std::setw(3) << std::right << +bitNum << ")\n";
+        std::bitset<CODE_WIDTH> bits{bitStr};
+        out << " (" << std::setw(3) << std::right << bits.to_ulong()
+            << ")\n";
     }
 }
 
@@ -128,9 +131,11 @@ HuffmanTree::buildTree(std::string& frequencyText)
         nodes(cmp);
 
     // The DEL character causes problems, skip it
-    for (char c = 0; c <= ASCII_MAX && c != ASCII_DEL; c++)
+    for (char c = 0; c <= CHAR_MAX && c != ASCII_DEL; c++)
     {
         int f = std::count(frequencyText.begin(), frequencyText.end(), c);
+
+        // std::cout << "C: '" << c << "' F:  " << f << "\n";
 
         if (f > 0)
         {
@@ -184,29 +189,37 @@ HuffmanTree::buildTree(std::string& frequencyText)
 //   If a node is on the left, the bit at the depth position is 0
 //   If a node is on the right, the bit at the depth position is 1
 void HuffmanTree::buildTable(BinaryNode* node,
-                             std::bitset<ASCII_WIDTH> bits, int depth)
+                             std::bitset<CODE_WIDTH> bits, int depth)
 {
+    std::cout << "Depth: " << depth << " ";
     // Skip empty nodes
     if (node == nullptr)
     {
+        std::cout << "SKIP\n";
         return;
     }
+    std::cout << "\n";
 
-    depth++;
 
-    // Process left subtree
-    buildTable(node->getLeft(), bits, depth);
+    if (depth < CODE_WIDTH)
+    {
+        depth++;
+        // Process left subtree
+        buildTable(node->getLeft(), bits, depth);
 
-    // Process right subtree
-    bits.set(bits.size() - depth);
-    buildTable(node->getRight(), bits, depth);
-    bits.set(bits.size() - depth, false);
+        // Process right subtree
+        bits.set(bits.size() - depth);
+        buildTable(node->getRight(), bits, depth);
+        bits.set(bits.size() - depth, false);
+        depth--;
+    }
 
-    depth--;
 
     // Process current node
     if (node->isLeaf())
     {
+        std::cout << "Char: " << node->getElement() << " Bits: '" << bits
+                  << "'\n";
         this->codeLookup.emplace(node->getElement(),
                                  bits.to_string().substr(0, depth));
     }
@@ -224,8 +237,9 @@ HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
         (std::istreambuf_iterator<char>(frequencyStream)),
         std::istreambuf_iterator<char>());
     frequencyStream.close();
-    if (frequencyText.empty())
+    if (!frequencyText.empty())
     {
+        std::cout << frequencyText;
         root = buildTree(frequencyText);
     }
 }
@@ -234,9 +248,9 @@ void HuffmanTree::printBinary(std::vector<char> bytes,
 {
     for (const unsigned long long bitNum : bytes)
     {
-        std::bitset<ASCII_WIDTH> bits{bitNum};
+        std::bitset<CHAR_WIDTH> bits{bitNum};
 
-        out << bits << " (" << bitNum << ") - ";
+        out << bits << " (" << bits.to_ulong() << ") - ";
     }
     out << "END\n";
 }
@@ -267,9 +281,9 @@ std::string HuffmanTree::decode(std::vector<char> encodedBytes)
 
     for (const unsigned long long bitNum : encodedBytes)
     {
-        std::bitset<ASCII_WIDTH> bits{bitNum};
+        std::bitset<CHAR_WIDTH> bits{bitNum};
 
-        for (int i = ASCII_WIDTH - 1; i >= 0; i--)
+        for (int i = CHAR_WIDTH - 1; i >= 0; i--)
         {
             curNode =
                 (bits.test(i)) ? curNode->getRight() : curNode->getLeft();
@@ -297,12 +311,12 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
     // needed when encoding message for file I/O
     stringToEncode.push_back(EOFCharacter);
 
-    auto getBitNum = [](const std::bitset<ASCII_WIDTH>& bits) {
+    auto getBitNum = [](const std::bitset<CHAR_WIDTH>& bits) {
         return static_cast<char>(bits.to_ulong());
     };
 
     auto getBitNumFromString = [getBitNum](const std::string& bitStr) {
-        std::bitset<ASCII_WIDTH> bits{bitStr};
+        std::bitset<CHAR_WIDTH> bits{bitStr};
         return getBitNum(bits);
     };
 
@@ -310,7 +324,7 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
     std::vector<char> encoded;
 
     std::string encodedCharStr;
-    for (char c : stringToEncode)
+    for (const char c : stringToEncode)
     {
         // May throw std::out_of_range if character is not in tree
         std::string bitStr;
@@ -325,20 +339,21 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
             throw;
         }
 
-        auto bitNum = getBitNumFromString(bitStr);
         encodedCharStr += bitStr;
 
-        if (encodedCharStr.length() > ASCII_WIDTH)
+        if (encodedCharStr.length() > CHAR_WIDTH)
         {
-            auto newCharStr = encodedCharStr.substr(0, ASCII_WIDTH);
+            auto newCharStr = encodedCharStr.substr(0, CHAR_WIDTH);
             encoded.emplace_back(getBitNumFromString(newCharStr));
-            encodedCharStr.erase(0, ASCII_WIDTH);
+            encodedCharStr.erase(0, CHAR_WIDTH);
         }
     }
 
-    std::bitset<ASCII_WIDTH> newCharBits{encodedCharStr};
-    newCharBits <<= ASCII_WIDTH - encodedCharStr.length();
+    std::bitset<CHAR_WIDTH> newCharBits{encodedCharStr};
+    newCharBits <<= CHAR_WIDTH - encodedCharStr.length();
     encoded.push_back(getBitNum(newCharBits));
+
+    printBinary(encoded);
 
     return encoded;
 }

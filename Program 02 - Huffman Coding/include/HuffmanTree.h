@@ -14,9 +14,10 @@
 class HuffmanTree : HuffmanTreeInterface
 {
   private:
-    static constexpr char ASCII_MAX = std::numeric_limits<char>::max();
-    static constexpr int ASCII_WIDTH = std::numeric_limits<char>::digits;
+    static constexpr char CHAR_MAX = std::numeric_limits<char>::max();
     static const int ASCII_DEL = 127; // DEL causes an infinite loop
+    static constexpr int CHAR_WIDTH = std::numeric_limits<char>::digits;
+    static constexpr int CODE_WIDTH = CHAR_WIDTH + 1;
 
     class BinaryNode
     {
@@ -132,7 +133,7 @@ class HuffmanTree : HuffmanTreeInterface
     std::unordered_map<char, std::string> codeLookup;
     void
     buildTable(BinaryNode* node,
-               std::bitset<ASCII_WIDTH> bits = std::bitset<ASCII_WIDTH>{},
+               std::bitset<CODE_WIDTH> bits = std::bitset<CODE_WIDTH>{},
                int depth = 0);
 
 
