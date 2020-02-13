@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <array>
 #include <bitset>
-#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -17,10 +16,10 @@
 #include <vector>
 
 std::string readStream(std::ifstream& inputStream, uintmax_t size = 0);
-std::string readFile(const std::string& filename);
 
 
-std::string readStream(std::ifstream& inputStream, uintmax_t size)
+std::string readStream(std::ifstream& inputStream,
+                       uintmax_t size /* = 0 */)
 {
     std::stringstream buffer;
 
@@ -32,14 +31,6 @@ std::string readStream(std::ifstream& inputStream, uintmax_t size)
 
     buffer << inputStream.rdbuf();
     return buffer.str();
-}
-
-
-std::string readFile(const std::string& filename)
-{
-    auto size = std::filesystem::file_size(filename);
-    std::ifstream inputStream(filename, std::ios::binary);
-    return readStream(inputStream, size);
 }
 
 
@@ -526,7 +517,8 @@ void HuffmanTree::compressFile(std::string compressToFileName,
                                std::string uncompressedFileName,
                                bool buildNewTree)
 {
-    std::string text = readFile(uncompressedFileName);
+    std::ifstream inputStream(uncompressedFileName, std::ios::binary);
+    std::string text = readStream(inputStream);
 
     if (buildNewTree)
     {
