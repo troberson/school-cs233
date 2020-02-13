@@ -112,8 +112,8 @@ int main()
     tree2.printTree();
     tree2.printCodes();
 
-    // tree2.compressFile("BigO.bin", "Bigo.txt");
-    // tree2.printCodes();
+    tree2.compressFile("BigO.bin", "Bigo.txt");
+    tree2.printCodes();
     // tree2.uncompressFile("BigO.bin", "BigORebuilt.txt");
     // tree2.printTree();
     // tree2.printCodes();

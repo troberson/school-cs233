@@ -137,7 +137,7 @@ class HuffmanTree : HuffmanTreeInterface
                int depth = 0);
 
 
-    void makeEmpty(BinaryNode*& node);
+    void makeEmpty(BinaryNode* node);
     void printTree(BinaryNode* node, std::ostream& out) const;
     void printCodes(BinaryNode* node, std::ostream& out) const;
 
@@ -149,6 +149,7 @@ class HuffmanTree : HuffmanTreeInterface
     void rebuildTree(std::ifstream& file);
 
     std::shared_ptr<BinaryNode> buildTree(std::string& frequencyText);
+    std::shared_ptr<BinaryNode> buildTree(std::istream& frequencyStream);
 
     bool getBit(unsigned char byte, int position) const;
     unsigned char setBit(unsigned char byte, int position) const;

@@ -20,11 +20,6 @@ std::string HuffmanTree::getCode(char letter) const
     return ((result != this->codeLookup.end()) ? result->second : "");
 }
 
-void HuffmanTree::makeEmpty(BinaryNode*& node)
-{
-    // need to write code
-}
-
 void HuffmanTree::printTree(BinaryNode* node, std::ostream& out) const
 {
     // Skip empty nodes
@@ -91,8 +86,7 @@ void HuffmanTree::saveTree(BinaryNode* current, std::string code)
 // unzipping
 void HuffmanTree::saveTree(std::ostream& compressedFileStream)
 {
-    // need to write code
-    // calls recursive function
+    saveTree(this->root.get(), "");
 }
 
 
@@ -185,20 +179,32 @@ HuffmanTree::buildTree(std::string& frequencyText)
     return nodes.top();
 }
 
+std::shared_ptr<HuffmanTree::BinaryNode>
+HuffmanTree::buildTree(std::istream& frequencyStream)
+{
+    std::string frequencyText(
+        (std::istreambuf_iterator<char>(frequencyStream)),
+        std::istreambuf_iterator<char>());
+
+    if (frequencyText.empty())
+    {
+        return nullptr;
+    }
+    return buildTree(frequencyText);
+}
+
+
 // Build the lookup table.
 //   If a node is on the left, the bit at the depth position is 0
 //   If a node is on the right, the bit at the depth position is 1
 void HuffmanTree::buildTable(BinaryNode* node,
                              std::bitset<CODE_WIDTH> bits, int depth)
 {
-    std::cout << "Depth: " << depth << " ";
     // Skip empty nodes
     if (node == nullptr)
     {
-        std::cout << "SKIP\n";
         return;
     }
-    std::cout << "\n";
 
 
     if (depth < CODE_WIDTH)
@@ -232,17 +238,9 @@ HuffmanTree::HuffmanTree(std::string frequencyText)
 
 HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
 {
-
-    std::string frequencyText(
-        (std::istreambuf_iterator<char>(frequencyStream)),
-        std::istreambuf_iterator<char>());
-    frequencyStream.close();
-    if (!frequencyText.empty())
-    {
-        std::cout << frequencyText;
-        root = buildTree(frequencyText);
-    }
+    root = buildTree(frequencyStream);
 }
+
 void HuffmanTree::printBinary(std::vector<char> bytes,
                               std::ostream& out) const
 {
@@ -269,8 +267,9 @@ void HuffmanTree::printTree(std::ostream& out) const
 
 void HuffmanTree::makeEmpty()
 {
-    // need to write code
-    // calls recursive function
+    // Since nodes are linked by shared pointers, everything should clean
+    // itself up if we delete the root.
+    this->root.reset();
 }
 
 std::string HuffmanTree::decode(std::vector<char> encodedBytes)
@@ -358,6 +357,41 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
     return encoded;
 }
 
+std::ifstream openRead(const std::string& filename)
+{
+    std::ifstream inputStream;
+    try
+    {
+        inputStream.open(filename, std::ios::binary);
+    }
+    catch (...)
+    {
+        std::cerr << "Unable to open file '" << filename
+                  << "' for reading.\n";
+        throw;
+    }
+
+    return inputStream;
+}
+
+std::ofstream openWrite(const std::string& filename)
+{
+    std::ofstream outputStream;
+    try
+    {
+        outputStream.open(filename, std::ios::binary);
+    }
+    catch (...)
+    {
+        std::cerr << "Unable to open file '" << filename
+                  << "' for writing.\n";
+        throw;
+    }
+
+    return outputStream;
+}
+
+
 void HuffmanTree::uncompressFile(std::string compressedFileName,
                                  std::string uncompressToFileName)
 {
@@ -371,8 +405,13 @@ void HuffmanTree::compressFile(std::string compressToFileName,
                                std::string uncompressedFileName,
                                bool buildNewTree)
 {
-    // need to write code
+    auto inputStream = openRead(uncompressedFileName);
+    auto outputStream = openWrite(compressToFileName);
 
-    // NOTE: when opening the compressedFile, you need to open in
-    //  binary mode for writing..hmmm..why is that?
+    if (buildNewTree)
+    {
+        makeEmpty();
+    }
+
+    saveTree(outputStream);
 }
