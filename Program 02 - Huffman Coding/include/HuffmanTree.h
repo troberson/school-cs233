@@ -150,7 +150,8 @@ class HuffmanTree : HuffmanTreeInterface
     std::unordered_map<char, std::string>
     rebuildTable(const std::string& codebookStr);
 
-    auto makeDecodeTable(std::unordered_map<char, std::string> codeLookup);
+    auto makeDecodeTable(
+        const std::unordered_map<char, std::string>& codeLookup);
 
     std::shared_ptr<BinaryNode>
     buildTree(const std::string& frequencyText);
@@ -172,7 +173,7 @@ class HuffmanTree : HuffmanTreeInterface
 
     void printTree(std::ostream& out = std::cout) const override;
     void printCodes(std::ostream& out = std::cout) const override;
-    void printBinary(std::vector<char> bytes,
+    void printBinary(const std::vector<char>& bytes,
                      std::ostream& out = std::cout) const;
     void printBits(char binary, std::ostream& out = std::cout) const;
 
@@ -181,10 +182,11 @@ class HuffmanTree : HuffmanTreeInterface
     void makeEmpty() override;
 
     std::vector<char> encode(std::string stringToEncode) override;
-    std::string decode(std::vector<char> encodedBytes) override;
+    std::string decode(const std::vector<char>& encodedBytes) override;
 
     void uncompressFile(std::string compressedFileName,
                         std::string uncompressToFileName) override;
+
     void compressFile(std::string compressToFileName,
                       std::string uncompressedFileName,
                       bool buildNewTree = true) override;

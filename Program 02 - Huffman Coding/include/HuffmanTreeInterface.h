@@ -8,7 +8,7 @@ class HuffmanTreeInterface
   private:
   public:
     HuffmanTreeInterface() = default;
-    explicit HuffmanTreeInterface(std::string frequencyText){};
+    explicit HuffmanTreeInterface(const std::string& frequencyText){};
 
     /**
      * Print the code for all the ASCII values in the tree.
@@ -58,7 +58,7 @@ class HuffmanTreeInterface
      * @param encodedBytes the string to encode
      * @return a vector with chars with the encoded version of the string
      */
-    virtual std::string decode(std::vector<char> encodedBytes) = 0;
+    virtual std::string decode(const std::vector<char>& encodedBytes) = 0;
 
     /**
      * Decode the contents of the compressed file

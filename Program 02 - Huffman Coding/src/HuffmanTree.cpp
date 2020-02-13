@@ -333,7 +333,7 @@ HuffmanTree::HuffmanTree(std::ifstream& frequencyStream)
     build(frequencyStream);
 }
 
-void HuffmanTree::printBinary(std::vector<char> bytes,
+void HuffmanTree::printBinary(const std::vector<char>& bytes,
                               std::ostream& out) const
 {
     for (const unsigned long long bitNum : bytes)
@@ -365,7 +365,7 @@ void HuffmanTree::makeEmpty()
 }
 
 auto HuffmanTree::makeDecodeTable(
-    std::unordered_map<char, std::string> codeLookup)
+    const std::unordered_map<char, std::string>& codeLookup)
 {
     std::map<int, std::map<std::string, char>> decodeTable;
     for (const auto& [c, bitStr] : codeLookup)
@@ -387,7 +387,7 @@ auto HuffmanTree::makeDecodeTable(
     return decodeTable;
 }
 
-std::string HuffmanTree::decode(std::vector<char> encodedBytes)
+std::string HuffmanTree::decode(const std::vector<char>& encodedBytes)
 {
     std::string decoded;
 
