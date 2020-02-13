@@ -290,8 +290,8 @@ HuffmanTree::makeCanonical(std::unordered_map<char, std::string> oldTable)
 }
 
 
-std::unordered_map<char, std::string>
-HuffmanTree::makeCodebook(const std::vector<std::pair<char, int>>& bitLengths)
+std::unordered_map<char, std::string> HuffmanTree::makeCodebook(
+    const std::vector<std::pair<char, int>>& bitLengths)
 {
     std::unordered_map<char, std::string> newTable;
 
@@ -455,7 +455,6 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
         return getBitNum(bits);
     };
 
-
     std::vector<char> encoded;
 
     std::string encodedCharStr;
@@ -484,11 +483,16 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
         }
     }
 
+    while (encodedCharStr.length() > CHAR_WIDTH)
+    {
+        auto newCharStr = encodedCharStr.substr(0, CHAR_WIDTH);
+        encoded.emplace_back(getBitNumFromString(newCharStr));
+        encodedCharStr.erase(0, CHAR_WIDTH);
+    }
+
     std::bitset<CHAR_WIDTH> newCharBits{encodedCharStr};
     newCharBits <<= CHAR_WIDTH - encodedCharStr.length();
     encoded.push_back(getBitNum(newCharBits));
-
-    printBinary(encoded);
 
     return encoded;
 }
@@ -497,10 +501,25 @@ std::vector<char> HuffmanTree::encode(std::string stringToEncode)
 void HuffmanTree::uncompressFile(std::string compressedFileName,
                                  std::string uncompressToFileName)
 {
-    // need to write code
+    std::ifstream inputStream{compressedFileName, std::ios::binary};
+    std::ofstream outputStream{uncompressToFileName, std::ios::binary};
 
-    // NOTE: when opening the compressedFile, you need to open in
-    //  binary mode for reading..hmmm..why is that?
+    std::string codebook;
+    getline(inputStream, codebook, this->EOFCharacter);
+
+    this->codeLookup = rebuildTable(codebook);
+    std::stringstream encodedDataStream;
+    encodedDataStream << inputStream.rdbuf();
+
+    inputStream.close();
+
+    std::string encodedData = encodedDataStream.str();
+
+    std::vector<char> data(encodedData.begin(), encodedData.end());
+
+    outputStream << decode(data);
+
+    outputStream.close();
 }
 
 void HuffmanTree::compressFile(std::string compressToFileName,
@@ -514,9 +533,12 @@ void HuffmanTree::compressFile(std::string compressToFileName,
         build(text);
     }
 
-    encode(text);
+    std::ofstream outputStream{compressToFileName, std::ios::binary};
+    outputStream << this->codebook << this->EOFCharacter;
 
-    // auto outputStream = openWrite(compressToFileName);
+    std::vector<char> codeList = encode(text);
+    std::string encodedText{codeList.begin(), codeList.end()};
+    outputStream << encodedText;
 
-    // saveTree(outputStream);
+    outputStream.close();
 }

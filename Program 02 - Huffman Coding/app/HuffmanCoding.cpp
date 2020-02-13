@@ -114,27 +114,22 @@ int main()
 
     tree2.compressFile("BigO.bin", "Bigo.txt");
     tree2.printCodes();
-    // tree2.uncompressFile("BigO.bin", "BigORebuilt.txt");
-    // tree2.printTree();
-    // tree2.printCodes();
+    tree2.uncompressFile("BigO.bin", "BigORebuilt.txt");
+    tree2.printTree();
+    tree2.printCodes();
 
-    ////Test 4
-    // cout << "\n\nTest 4\n";
-    // std::ifstream frequencyStream2("20000leagues.txt");
-    // HuffmanTree tree3(frequencyStream2);
+    // Test 4
+    std::cout << "\n\nTest 4\n";
+    std::ifstream frequencyStream2("20000leagues.txt");
+    HuffmanTree tree3(frequencyStream2);
     // tree3.printTree();
     // tree3.printCodes();
-    // cout << "Code L :" << tree3.getCode('L') << endl;
-    // tree3.compressFile("20000leaguesComp.bin" ,"20000leagues.txt",true);
-    // tree3.uncompressFile("20000leaguesComp.bin",
-    // "20000leaguesRebuilt.txt"); tree3.printTree(); tree3.printCodes();
-
-    // Try Other Files
-
-    //// read in text file create string - might be useful
-    // std::ifstream bigtext("20000leagues.txt");
-    // std::string big((std::istreambuf_iterator<char>(bigtext)),
-    //				   std::istreambuf_iterator<char>());
+    std::cout << "Code L :" << tree3.getCode('L') << std::endl;
+    tree3.compressFile("20000leaguesComp.bin", "20000leagues.txt", true);
+    tree3.uncompressFile("20000leaguesComp.bin",
+                         "20000leaguesRebuilt.txt");
+    // tree3.printTree();
+    // tree3.printCodes();
 
     std::cout << std::endl;
     return 0;

@@ -16,7 +16,8 @@ class HuffmanTree : HuffmanTreeInterface
   private:
     static constexpr char CHAR_MAX = std::numeric_limits<char>::max();
     static const int ASCII_DEL = 127; // DEL causes an infinite loop
-    static constexpr int CHAR_WIDTH = std::numeric_limits<char>::digits;
+    static constexpr int CHAR_WIDTH =
+        std::numeric_limits<char>::digits + 1;
     static constexpr int CODE_WIDTH = CHAR_MAX;
 
     class BinaryNode
