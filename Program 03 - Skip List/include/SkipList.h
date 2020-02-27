@@ -8,13 +8,19 @@
 // reduce average lookup times. This implementation includes functions for
 // inserting, finding, and removing nodes. The nodes are referenced by a
 // key, which can be any comparable type.
+//
+// Like all linked lists, skip lists have poor cache hit performance. This
+// implementation is traditional, with downward links but an alternative is
+// described here: http://ticki.github.io/blog/skip-lists-done-right/
 ///
 
 #pragma once
 
+#include <cmath>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 template <typename Key, typename Value> class SkipList
 {
@@ -65,7 +71,78 @@ template <typename Key, typename Value> class SkipList
     };
 
     // the root node of the list
-    std::unique_ptr<Node> root;
+    std::shared_ptr<Node> root;
+
+    // the number of nodes in the bottom row
+    int listLength = 0;
+
+    // height of the tallest node
+    int listHeight = 0;
+
+
+    /*
+     * Update height to reflect added elements.
+     * Grows root's tower to the new height.
+     */
+    void updateHeight()
+    {
+        // By repeated "coin flips", the maximum height of the skip list is
+        // ceil(log2(n)), where n is the number of nodes in the bottom
+        // level. So bypass repeated coin flips and just set the height.
+        int newHeight = static_cast<int>(std::ceil(std::log2(listLength)));
+
+        if (newHeight > this->listHeight)
+        {
+            this->root = growTower(newHeight, this->root).at(0);
+            this->listHeight = newHeight;
+        }
+    }
+
+
+    /*
+     * Return the height of the tower, the number of nodes between the
+     * given node and the bottom level.
+     */
+    int getTowerHeight(Node* startNode)
+    {
+        int count = 0;
+        Node* curNode = startNode;
+        while (curNode)
+        {
+            count++;
+            curNode = curNode->getBelow();
+        }
+        return count;
+    }
+
+
+    /*
+     * Grow a tower to add height.
+     * Given node should be the top of an existing tower.
+     * Returns a list of the nodes added, such that the first element is
+     * the top node.
+     */
+    std::vector<std::shared_ptr<Node>> growTower(int newHeight,
+                                                 Node* startNode)
+    {
+        std::vector<std::shared_ptr<Node>> tower;
+
+        int curHeight = getTowerHeight(startNode);
+        Node* curNode = startNode;
+        Key key = startNode->getKey();
+        Value value = startNode->getValue();
+
+        while (newHeight > curHeight)
+        {
+            auto newNode =
+                std::make_shared<Node>(key, value, nullptr, curNode);
+
+            tower.push_back(newNode);
+            curNode = newNode;
+        }
+
+        return tower;
+    }
 
     /*
      * remove a node from the list
@@ -77,6 +154,9 @@ template <typename Key, typename Value> class SkipList
         {
             return; // FAIL: node does not exist
         }
+
+        // decrement list length if node removed
+        this->listLength--;
     }
 
     /*
@@ -99,6 +179,22 @@ template <typename Key, typename Value> class SkipList
         return nullptr;
     }
 
+
+    /*
+     * Returns a list of the keys in a level
+     */
+    std::vector<Key> getLevelKeys(Node* node) const
+    {
+        std::vector<Key> keys;
+        Node* curNode = node;
+        while (curNode)
+        {
+            keys.emplace_back(curNode->getKey());
+            curNode = curNode->getNext();
+        }
+        return keys;
+    }
+
     /*
      * Prints the list stream out
      */
@@ -109,13 +205,33 @@ template <typename Key, typename Value> class SkipList
         {
             return;
         }
+
+        Node* curNode = node;
+        for (int level = this->listHeight; level >= 0; level--)
+        {
+            out << "L" << level << ": ";
+            for (Key k : getLevelKeys(curNode))
+            {
+                out << k << " ";
+            }
+            out << "\n";
+            curNode = curNode->getBelow();
+        }
     }
 
   public:
     /*
+     * Returns the length of the list
+     */
+    [[nodiscard]] int getLength() const
+    {
+        return this->listLength;
+    }
+
+    /*
      * Finds the node with that the key
      */
-    Value& find(const Key& key) const
+    [[nodiscard]] Value& find(const Key& key) const
     {
         return find(key, this->root)->value;
     }
@@ -133,18 +249,13 @@ template <typename Key, typename Value> class SkipList
      * returns true if item inserted
      * returns false if item not inserted (Key already in list)
      */
-    bool insert(Value item, Key key)
-    {
-        return true; // SUCCESS: node added
-    }
-
-
     bool insert(Key key, Value value)
     {
         // If there is no root node, add this as the root
-        if (!root)
+        if (!this->root)
         {
-            root = std::make_unique<Node>(key, value);
+            this->root = std::make_shared<Node>(key, value);
+            this->listLength++;
             return true;
         }
 

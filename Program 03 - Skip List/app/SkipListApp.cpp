@@ -49,22 +49,24 @@ auto load(const string& filename)
 int main()
 {
     SkipList<int, ComputerScientist> list;
-    int count = 0;
     for (const auto& item : load("csList.txt"))
     {
         list.insert(item->getID(), *item);
-        count++;
     }
-    std::cout << "Number of Items: " << count << "\n";
+
+    int length = list.getLength();
+    std::cout << "Number of Items: " << length << "\n";
     list.displayList();
     std::cout << "\n\nRemove Multiples of 10\n\n";
 
+
     // NOLINTNEXTLINE
-    for (int i = 10; i < count; i += 10)
+    for (int i = 10; i < length; i += 10)
     {
         list.remove(i);
-        count--;
     }
+
+    std::cout << "Number of Items: " << list.getLength() << "\n";
     list.displayList();
 
     return 0;
