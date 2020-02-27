@@ -19,6 +19,7 @@
 #include <cmath>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -31,37 +32,64 @@ template <typename Key, typename Value> class SkipList
     class Node
     {
       private:
-        Key key;
-        Value value;
+        std::optional<Key> key;
+        std::optional<Value> value;
 
-        Node* next;
-        Node* below;
+        std::shared_ptr<Node> next;
+        std::shared_ptr<Node> below;
 
       public:
-        Node(Key& key, Value& value, Node* next = nullptr,
-             Node* below = nullptr)
-            : key{key}, value{value}, next{next}, below{below}
+        explicit Node(std::optional<Key> key = std::nullopt,
+                      std::optional<Value> value = std::nullopt,
+                      std::shared_ptr<Node> next = nullptr,
+                      std::shared_ptr<Node> below = nullptr)
+            : key{std::move(key)}, value{std::move(value)},
+              next{std::move(next)}, below{std::move(below)}
         {
         }
 
-        Key getKey()
+        Node(Key key, Value value, std::shared_ptr<Node> next = nullptr,
+             std::shared_ptr<Node> below = nullptr)
+            : next{std::move(next)}, below{std::move(below)}
+        {
+            this->key = std::make_optional<Key>(key);
+            this->value = std::make_optional<Value>(value);
+        }
+
+
+        bool isRoot()
+        {
+            return !key.has_value();
+        }
+
+        std::optional<Key> getKey()
         {
             return key;
         }
 
-        Value getValue()
+        std::optional<Value> getValue()
         {
             return value;
         }
 
-        Node* getNext()
+        std::shared_ptr<Node> getNext()
         {
             return next;
         }
 
-        Node* getBelow()
+        void setNext(std::shared_ptr<Node> node)
+        {
+            next = node;
+        }
+
+        std::shared_ptr<Node> getBelow()
         {
             return below;
+        }
+
+        void setBelow(std::shared_ptr<Node> node)
+        {
+            below = node;
         }
 
         bool isBottom()
@@ -71,7 +99,7 @@ template <typename Key, typename Value> class SkipList
     };
 
     // the root node of the list
-    std::shared_ptr<Node> root;
+    std::shared_ptr<Node> root = std::make_shared<Node>();
 
     // the number of nodes in the bottom row
     int listLength = 0;
@@ -129,6 +157,7 @@ template <typename Key, typename Value> class SkipList
 
         int curHeight = getTowerHeight(startNode);
         Node* curNode = startNode;
+
         Key key = startNode->getKey();
         Value value = startNode->getValue();
 
@@ -155,28 +184,71 @@ template <typename Key, typename Value> class SkipList
             return; // FAIL: node does not exist
         }
 
-        // decrement list length if node removed
+        // Decrement list length if node removed
         this->listLength--;
     }
 
     /*
-     * Finds the node with that satisfies equality for the element
+     * Find the node with the given key.
+     *
+     * Returns the path taken to find the node.
+     *
+     * If findInsert is true, return the path to the node prior to where
+     * the new node should be inserted.
+     *
+     * If findInsert is true and key already exists, path is empty.
+     * If findInsert is false and key does not exist, path is empty.
      */
-    Node* find(const Key& key, Node* searchNode) const
+    [[nodiscard]] std::vector<std::shared_ptr<Node>>
+    find(const Key& findKey, bool findInsert = false) const
     {
-        // Check if the given node is null
-        if (!searchNode)
+        std::vector<std::shared_ptr<Node>> path;
+
+        std::shared_ptr<Node> curNode = this->root;
+        while (curNode)
         {
-            return nullptr; // FAIL: node does not exist
+            // Walk forward until we reach a greater key
+            while (curNode->getNext() != nullptr &&
+                   curNode->getNext()->getKey().value() < findKey)
+            {
+                curNode = curNode->getNext();
+            }
+
+            // Check the current node
+            if (!curNode->isRoot())
+            {
+                // Add to path
+                path.push_back(curNode);
+
+                if (findInsert)
+                {
+                    if (curNode->getKey().value() == findKey)
+                    {
+                        return {}; // FAIL: Key already present
+                    }
+
+                    if (curNode->isBottom())
+                    {
+                        return path; // SUCCESS: Found a place to insert
+                    }
+                }
+                else
+                {
+                    if (curNode->getKey().value() == findKey)
+                    {
+                        return path; // SUCCESS: Found key
+                    }
+
+                    if (curNode->isBottom())
+                    {
+                        return {}; // FAIL: Did not find key
+                    }
+                }
+            }
+            curNode = curNode->getBelow();
         }
 
-        // Check the current node
-        if (key == searchNode->key)
-        {
-            return searchNode; // SUCCESS: found the desired node
-        }
-
-        return nullptr;
+        return {}; // FAIL: Did not find key
     }
 
 
@@ -189,8 +261,12 @@ template <typename Key, typename Value> class SkipList
         Node* curNode = node;
         while (curNode)
         {
-            keys.emplace_back(curNode->getKey());
-            curNode = curNode->getNext();
+            if (!curNode->isRoot())
+            {
+                keys.emplace_back(curNode->getKey().value());
+            }
+
+            curNode = curNode->getNext().get();
         }
         return keys;
     }
@@ -209,13 +285,19 @@ template <typename Key, typename Value> class SkipList
         Node* curNode = node;
         for (int level = this->listHeight; level >= 0; level--)
         {
-            out << "L" << level << ": ";
-            for (Key k : getLevelKeys(curNode))
+            auto keys = getLevelKeys(curNode);
+
+            if (!keys.empty())
             {
-                out << k << " ";
+                out << "L" << level << ": ";
+                for (Key k : keys)
+                {
+                    out << k << " ";
+                }
+                out << "\n";
             }
-            out << "\n";
-            curNode = curNode->getBelow();
+
+            curNode = curNode->getBelow().get();
         }
     }
 
@@ -251,13 +333,48 @@ template <typename Key, typename Value> class SkipList
      */
     bool insert(Key key, Value value)
     {
-        // If there is no root node, add this as the root
-        if (!this->root)
+        auto node = std::make_shared<Node>(key, value);
+
+        // If list is empty, set as first node
+        if (this->listLength == 0)
         {
-            this->root = std::make_shared<Node>(key, value);
+            this->root->setNext(node);
             this->listLength++;
             return true;
         }
+
+        // If new node key is less than the first node, put this at the
+        // beginning
+        if (this->root->getNext() &&
+            key < this->root->getNext()->getKey().value())
+        {
+            node->setNext(this->root->getNext());
+            this->root->setNext(node);
+            this->listLength++;
+            return true;
+        }
+
+
+        // Find where the new node should go
+        auto path = find(key, true);
+
+        if (path.empty())
+        {
+            return false; // FAIL: key already exists
+        }
+
+        // std::cout << "Link: " << path.back()->getKey().value() << " to "
+        //   << node->getKey().value() << "\n";
+        node->setNext(path.back()->getNext());
+        path.back()->setNext(node);
+        this->listLength++;
+
+        // std::cout << "PATH: ";
+        // for (const auto& node : path)
+        // {
+        //     std::cout << node->getKey().value() << "->";
+        // }
+        // std::cout << "\n";
 
         return true;
     }
