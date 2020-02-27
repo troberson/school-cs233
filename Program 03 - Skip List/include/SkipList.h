@@ -16,7 +16,6 @@
 
 #pragma once
 
-#include <cmath>
 #include <iostream>
 #include <memory>
 #include <optional>
@@ -153,22 +152,6 @@ template <typename Key, typename Value> class SkipList
 
 
     /*
-     * remove a node from the list
-     */
-    void remove(const Key& key, Node* searchNode)
-    {
-        // Check if the given node is null
-        if (!searchNode)
-        {
-            return; // FAIL: node does not exist
-        }
-
-        // Decrement list length if node removed
-        this->listLength--;
-    }
-
-
-    /*
      * Find the node with the given key.
      *
      * Returns the path taken to find the node.
@@ -186,15 +169,17 @@ template <typename Key, typename Value> class SkipList
 
         std::shared_ptr<Node> curNode = this->root;
 
-        std::cout << "BUILD PATH: ROOT->";
         while (curNode)
         {
             // Walk forward until we reach a greater key
             while (curNode->getNext() != nullptr &&
-                   curNode->getNext()->getKey().value() < findKey)
+                   curNode->getNext()->getKey().value() <= findKey)
             {
                 curNode = curNode->getNext();
-                std::cout << curNode->getKey().value() << "->";
+                if (!findInsert)
+                {
+                    path.push_back(curNode);
+                }
             }
 
             // Check the current node
@@ -204,14 +189,12 @@ template <typename Key, typename Value> class SkipList
                 {
                     if (curNode->getKey().value() == findKey)
                     {
-                        std::cout << "FAIL\n";
                         return {}; // FAIL: Key already present
                     }
 
                     if (curNode->isBottom())
                     {
                         path.push_back(curNode);
-                        std::cout << "Insert Here\n";
                         return path; // SUCCESS: Found a place to insert
                     }
                 }
@@ -228,24 +211,15 @@ template <typename Key, typename Value> class SkipList
                     }
                 }
             }
-            // Add to path
-            path.push_back(curNode);
+            // Add to path for findInsert
+            if (findInsert)
+            {
+                path.push_back(curNode);
+            }
 
             curNode = curNode->getBelow();
-            std::cout << "v->";
-
-            if (curNode->isRoot())
-            {
-                std::cout << "ROOT";
-            }
-            else
-            {
-                std::cout << curNode->getKey().value();
-            }
-            std::cout << "->";
         }
 
-        std::cout << "FAIL\n";
         return {}; // FAIL: Did not find key
     }
 
@@ -268,6 +242,7 @@ template <typename Key, typename Value> class SkipList
         }
         return keys;
     }
+
 
     /*
      * Prints the list stream out
@@ -299,14 +274,14 @@ template <typename Key, typename Value> class SkipList
         }
     }
 
+
     /*
      * Insert a new node with the given find path.
      * Returns true if inserted, false otherwise.
      */
     void insert(Key key, Value value,
-                std::vector<std::shared_ptr<Node>> path)
+                std::vector<std::shared_ptr<Node>>& path)
     {
-        std::cout << "Insert: " << key << "\n";
         this->listLength++;
 
         auto node = std::make_shared<Node>(key, value);
@@ -318,111 +293,57 @@ template <typename Key, typename Value> class SkipList
             return;
         }
 
+        // If there is no other path, set the path to root tower
         if (path.empty())
         {
             path = getTower(this->root);
         }
 
-        std::cout << "PATH: ";
-        for (const auto& n : path)
-        {
-            if (!n->isRoot())
-            {
-                std::cout << n->getKey().value() << "->";
-            }
-        }
-        std::cout << node->getKey().value(); // << "\n";
+        // Link to the previous node in the path
+        std::shared_ptr<Node> prev = path.back();
+        path.pop_back();
+        node->setNext(prev->getNext());
+        prev->setNext(node);
 
-        if (path.back()->isBottom())
-        {
-            std::cout << " (Bottom)\n";
-        }
-
-        std::cout << "Path Elements: " << path.size() << "\n";
-
+        // Randomly increase the height of the tree
         int height = 0;
-        if (!path.empty())
-        {
-            std::shared_ptr<Node> prev = path.back();
-            path.pop_back();
-
-            std::cout << "Linking up node: ";
-            if (prev->isRoot())
-            {
-                std::cout << "ROOT";
-            }
-            else
-            {
-                std::cout << prev->getKey().value();
-            }
-            std::cout << " <- " << key << " -> ";
-
-            if (prev->getNext())
-            {
-                std::cout << prev->getNext()->getKey().value();
-            }
-            else
-            {
-                std::cout << "END";
-            }
-            std::cout << "\n";
-
-            node->setNext(prev->getNext());
-            prev->setNext(node);
-        }
-
         while (this->rndDist(this->rndGen))
         {
+            // If we're taller than the root tower, grow the root
             height++;
-            std::cout << "Adding layer. Current Height: "
-                      << this->listHeight << "\n";
             if (height > this->listHeight)
             {
-                std::cout << "Height increased.\n";
                 increaseHeight();
             }
 
+            // If we have no other path, link to the top of the root tower
             if (path.empty())
             {
                 path.push_back(this->root);
             }
 
+            // Create and link a new level to the path
             std::shared_ptr<Node> prev = path.back();
             path.pop_back();
 
-            std::cout << "Linking up node: ";
-            if (prev->isRoot())
-            {
-                std::cout << "ROOT";
-            }
-            else
-            {
-                std::cout << prev->getKey().value();
-            }
-            std::cout << " <- " << key << " -> ";
-
-            if (prev->getNext())
-            {
-                std::cout << prev->getNext()->getKey().value();
-            }
-            else
-            {
-                std::cout << "END";
-            }
-            std::cout << "\n";
-
             auto newNode =
                 std::make_shared<Node>(key, value, prev->getNext(), node);
+
             prev->setNext(newNode);
             node = newNode;
         }
     }
 
+    /* ***
+     * *** PUBLIC
+     * ***/
 
   public:
+    /*
+     * Constructor
+     */
     explicit SkipList()
     {
-        // rndDev = std::random_device();
         rndGen = std::mt19937{rndDev()};
         rndDist = std::bernoulli_distribution(0.5);
     }
@@ -433,14 +354,6 @@ template <typename Key, typename Value> class SkipList
     [[nodiscard]] int getLength() const
     {
         return this->listLength;
-    }
-
-    /*
-     * Finds the node with that the key
-     */
-    [[nodiscard]] Value& find(const Key& key) const
-    {
-        return find(key, this->root)->value;
     }
 
     /*
@@ -458,8 +371,6 @@ template <typename Key, typename Value> class SkipList
      */
     bool insert(Key key, Value value)
     {
-        std::cout << "TRY INSERT: " << key << "\n";
-
         std::vector<std::shared_ptr<Node>> path;
         auto node = std::make_shared<Node>(key, value);
 
@@ -468,9 +379,6 @@ template <typename Key, typename Value> class SkipList
             key < findBottom(this->root)->getNext()->getKey().value())
         {
             insert(key, value, path);
-            std::cout << "\n";
-            displayList();
-            std::cout << "\n";
             return true;
         }
 
@@ -484,9 +392,6 @@ template <typename Key, typename Value> class SkipList
 
         // Insert node
         insert(key, value, path);
-        std::cout << "\n";
-        displayList();
-        std::cout << "\n";
         return true;
     }
 
@@ -495,6 +400,33 @@ template <typename Key, typename Value> class SkipList
      */
     void remove(const Key& key)
     {
-        remove(key, root.get());
+        // For every level, look for the key and remove it
+        for (const auto& level : getTower(this->root))
+        {
+            std::shared_ptr<Node> prev = level;
+            std::shared_ptr<Node> curNode = level->getNext();
+
+            // Walk through the level until we reach a key equal or larger
+            // than the one we are looking for
+            while (curNode && curNode->getKey().value() <= key)
+            {
+                // If we found the key, unlink it
+                if (curNode->getKey().value() == key)
+                {
+                    prev->setNext(curNode->getNext());
+
+                    // The list length only counts bottom level nodes
+                    if (curNode->isBottom())
+                    {
+                        this->listLength--;
+                    }
+                    break;
+                }
+
+                // Keep walking
+                prev = curNode;
+                curNode = curNode->getNext();
+            }
+        }
     }
 };
