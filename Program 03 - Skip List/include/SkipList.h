@@ -135,12 +135,26 @@ template <typename Key, typename Value> class SkipList
     {
         int count = 0;
         Node* curNode = startNode;
-        while (curNode)
+        while (!curNode->isBottom())
         {
             count++;
-            curNode = curNode->getBelow();
+            curNode = curNode->getBelow().get();
         }
         return count;
+    }
+
+
+    /*
+     * Return the bottom node of the current tower
+     */
+    std::shared_ptr<Node> findBottom(std::shared_ptr<Node> startNode)
+    {
+        auto curNode = startNode;
+        while (!curNode->isBottom())
+        {
+            curNode = curNode->getBelow();
+        }
+        return curNode;
     }
 
 
@@ -150,28 +164,30 @@ template <typename Key, typename Value> class SkipList
      * Returns a list of the nodes added, such that the first element is
      * the top node.
      */
-    std::vector<std::shared_ptr<Node>> growTower(int newHeight,
-                                                 Node* startNode)
+    std::vector<std::shared_ptr<Node>>
+    growTower(int newHeight, std::shared_ptr<Node> startNode)
     {
         std::vector<std::shared_ptr<Node>> tower;
 
-        int curHeight = getTowerHeight(startNode);
-        Node* curNode = startNode;
+        int curHeight = getTowerHeight(startNode.get());
+        auto curNode = startNode;
 
-        Key key = startNode->getKey();
-        Value value = startNode->getValue();
+        std::optional<Key> key = startNode->getKey();
+        std::optional<Value> value = startNode->getValue();
 
-        while (newHeight > curHeight)
+        while (curHeight < newHeight)
         {
             auto newNode =
                 std::make_shared<Node>(key, value, nullptr, curNode);
 
             tower.push_back(newNode);
             curNode = newNode;
+            curHeight++;
         }
 
-        return tower;
+        return std::move(tower);
     }
+
 
     /*
      * remove a node from the list
@@ -301,6 +317,46 @@ template <typename Key, typename Value> class SkipList
         }
     }
 
+    /*
+     * Insert a new node with the given find path.
+     * Returns true if inserted, false otherwise.
+     */
+    void insert(Key key, Value value,
+                std::vector<std::shared_ptr<Node>> path)
+    {
+        auto node = std::make_shared<Node>(key, value);
+
+        if (path.empty())
+        {
+            auto rootBottom = findBottom(this->root);
+            if (this->listLength > 0)
+            {
+                node->setNext(rootBottom->getNext());
+            }
+
+            rootBottom->setNext(node);
+        }
+        else
+        {
+            std::cout << "Link: " << path.back()->getKey().value()
+                      << " to " << node->getKey().value() << "\n";
+            node->setNext(path.back()->getNext());
+            path.back()->setNext(node);
+
+            std::cout << "PATH: ";
+            for (const auto& node : path)
+            {
+                std::cout << node->getKey().value() << "->";
+            }
+            std::cout << "\n";
+        }
+
+        this->listLength++;
+        updateHeight();
+        std::cout << "New Height: " << this->listHeight << "\n";
+    }
+
+
   public:
     /*
      * Returns the length of the list
@@ -333,49 +389,27 @@ template <typename Key, typename Value> class SkipList
      */
     bool insert(Key key, Value value)
     {
+        std::vector<std::shared_ptr<Node>> path;
         auto node = std::make_shared<Node>(key, value);
 
-        // If list is empty, set as first node
-        if (this->listLength == 0)
+        // Check if should go at the beginning
+        if (this->listLength == 0 ||
+            key < findBottom(this->root)->getNext()->getKey().value())
         {
-            this->root->setNext(node);
-            this->listLength++;
+            insert(key, value, path);
             return true;
         }
-
-        // If new node key is less than the first node, put this at the
-        // beginning
-        if (this->root->getNext() &&
-            key < this->root->getNext()->getKey().value())
-        {
-            node->setNext(this->root->getNext());
-            this->root->setNext(node);
-            this->listLength++;
-            return true;
-        }
-
 
         // Find where the new node should go
-        auto path = find(key, true);
+        path = find(key, true);
 
         if (path.empty())
         {
             return false; // FAIL: key already exists
         }
 
-        // std::cout << "Link: " << path.back()->getKey().value() << " to "
-        //   << node->getKey().value() << "\n";
-        node->setNext(path.back()->getNext());
-        path.back()->setNext(node);
-        this->listLength++;
-
-        // std::cout << "PATH: ";
-        // for (const auto& node : path)
-        // {
-        //     std::cout << node->getKey().value() << "->";
-        // }
-        // std::cout << "\n";
-
+        // Insert node
+        insert(key, value, path);
         return true;
     }
 
