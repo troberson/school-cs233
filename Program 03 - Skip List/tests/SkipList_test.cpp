@@ -57,7 +57,7 @@ SCENARIO("Create an single-item Skip List")
             {
                 std::stringstream result;
                 list.displayList(result);
-                REQUIRE(result.str() == "L0: 1 \n");
+                REQUIRE(result.str() == "L0: 1 \n\n");
             }
         }
     }

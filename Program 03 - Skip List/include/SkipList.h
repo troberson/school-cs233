@@ -98,8 +98,12 @@ template <typename Key, typename Value> class SkipList
         }
     };
 
+    // Ergonomics
+    using NodePtr = std::shared_ptr<Node>;
+    using NodeList = std::vector<NodePtr>;
+
     // the root node of the list
-    std::shared_ptr<Node> root = std::make_shared<Node>();
+    NodePtr root = std::make_shared<Node>();
 
     // the number of nodes in the bottom row
     int listLength = 0;
@@ -127,10 +131,9 @@ template <typename Key, typename Value> class SkipList
     /*
      * Returns a list of nodes representing a tower
      */
-    std::vector<std::shared_ptr<Node>>
-    getTower(std::shared_ptr<Node> startNode)
+    NodeList getTower(NodePtr startNode)
     {
-        std::vector<std::shared_ptr<Node>> tower;
+        NodeList tower;
         auto curNode = startNode;
         tower.push_back(curNode);
         while (!curNode->isBottom())
@@ -145,7 +148,7 @@ template <typename Key, typename Value> class SkipList
     /*
      * Return the bottom node of the current tower
      */
-    std::shared_ptr<Node> findBottom(std::shared_ptr<Node> startNode)
+    NodePtr findBottom(NodePtr startNode)
     {
         return getTower(startNode).back();
     }
@@ -162,12 +165,11 @@ template <typename Key, typename Value> class SkipList
      * If findInsert is true and key already exists, path is empty.
      * If findInsert is false and key does not exist, path is empty.
      */
-    [[nodiscard]] std::vector<std::shared_ptr<Node>>
-    find(const Key& findKey, bool findInsert = false) const
+    [[nodiscard]] NodeList find(const Key& findKey,
+                                bool findInsert = false) const
     {
-        std::vector<std::shared_ptr<Node>> path;
-
-        std::shared_ptr<Node> curNode = this->root;
+        NodeList path;
+        NodePtr curNode = this->root;
 
         while (curNode)
         {
@@ -225,66 +227,13 @@ template <typename Key, typename Value> class SkipList
 
 
     /*
-     * Returns a list of the keys in a level
-     */
-    std::vector<Key> getLevelKeys(Node* node) const
-    {
-        std::vector<Key> keys;
-        Node* curNode = node;
-        while (curNode)
-        {
-            if (!curNode->isRoot())
-            {
-                keys.emplace_back(curNode->getKey().value());
-            }
-
-            curNode = curNode->getNext().get();
-        }
-        return keys;
-    }
-
-
-    /*
-     * Prints the list stream out
-     */
-    void displayList(Node* node, std::ostream& out) const
-    {
-        // Skip null nodes
-        if (!node)
-        {
-            return;
-        }
-
-        Node* curNode = node;
-        for (int level = this->listHeight; level >= 0; level--)
-        {
-            auto keys = getLevelKeys(curNode);
-
-            if (!keys.empty())
-            {
-                out << "L" << level << ": ";
-                for (Key k : keys)
-                {
-                    out << k << " ";
-                }
-                out << "\n";
-            }
-
-            curNode = curNode->getBelow().get();
-        }
-    }
-
-
-    /*
      * Insert a new node with the given find path.
      * Returns true if inserted, false otherwise.
      */
-    void insert(Key key, Value value,
-                std::vector<std::shared_ptr<Node>>& path)
+    void insert(Key key, Value value, NodeList& path)
     {
         this->listLength++;
-
-        auto node = std::make_shared<Node>(key, value);
+        NodePtr node = std::make_shared<Node>(key, value);
 
         // First element added
         if (this->listLength == 1)
@@ -300,7 +249,7 @@ template <typename Key, typename Value> class SkipList
         }
 
         // Link to the previous node in the path
-        std::shared_ptr<Node> prev = path.back();
+        NodePtr prev = path.back();
         path.pop_back();
         node->setNext(prev->getNext());
         prev->setNext(node);
@@ -323,10 +272,10 @@ template <typename Key, typename Value> class SkipList
             }
 
             // Create and link a new level to the path
-            std::shared_ptr<Node> prev = path.back();
+            NodePtr prev = path.back();
             path.pop_back();
 
-            auto newNode =
+            NodePtr newNode =
                 std::make_shared<Node>(key, value, prev->getNext(), node);
 
             prev->setNext(newNode);
@@ -356,13 +305,32 @@ template <typename Key, typename Value> class SkipList
         return this->listLength;
     }
 
+
     /*
-     * Prints the list to the stream out
+     * Prints the list stream out
      */
     void displayList(std::ostream& out = std::cout) const
     {
-        displayList(this->root.get(), out);
+        NodePtr rootNode = this->root;
+        for (int level = this->listHeight; level >= 0; level--)
+        {
+            NodePtr curNode = rootNode->getNext();
+            if (curNode)
+            {
+                out << "L" << level << ": ";
+
+                while (curNode)
+                {
+                    out << curNode->getKey().value() << " ";
+                    curNode = curNode->getNext();
+                }
+                out << "\n\n";
+            }
+
+            rootNode = rootNode->getBelow();
+        }
     }
+
 
     /*
      * Inserts a node into the list
@@ -371,8 +339,8 @@ template <typename Key, typename Value> class SkipList
      */
     bool insert(Key key, Value value)
     {
-        std::vector<std::shared_ptr<Node>> path;
-        auto node = std::make_shared<Node>(key, value);
+        NodeList path;
+        NodePtr node = std::make_shared<Node>(key, value);
 
         // Check if should go at the beginning
         if (this->listLength == 0 ||
@@ -403,8 +371,8 @@ template <typename Key, typename Value> class SkipList
         // For every level, look for the key and remove it
         for (const auto& level : getTower(this->root))
         {
-            std::shared_ptr<Node> prev = level;
-            std::shared_ptr<Node> curNode = level->getNext();
+            NodePtr prev = level;
+            NodePtr curNode = level->getNext();
 
             // Walk through the level until we reach a key equal or larger
             // than the one we are looking for
