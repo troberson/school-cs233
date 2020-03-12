@@ -1,76 +1,73 @@
 #include "QueueADT.h"
+
 #include <iostream>
 #include <stdexcept>
-using namespace std;
 
-template <typename E> class PriorityQueue : Queue<E>
+template <typename E>
+class PriorityQueue : Queue<E>
 {
   private:
     E* items;
     unsigned int count = 0; // number of items
     bool (*compareFunction)(E, E);
-    // Protect assignment
-    void operator=(const PriorityQueue&){
 
-    };
-    // Protect copy constructor
-    PriorityQueue(const PriorityQueue&){
-
-    };
     // Intialization helper method
     void init()
     {
         this->items = new E[10]();
         this->count = 0;
     }
+
+    // Return link nodes to free store
     void removeall()
-    { // Return link nodes to free store
+    {
     }
 
   public:
+    // Protect assignment
+    void operator=(const PriorityQueue&) = delete;
+
+    // Protect copy constructor
+    PriorityQueue(const PriorityQueue&) = delete;
+
     // takes a function pointer to a compare function
     // as a Parameter
-    PriorityQueue(bool (*func)(E, E))
+    explicit PriorityQueue(bool (*func)(E, E))
     {
         compareFunction = func;
         init();
     }
 
-    // Print queue contents
-    void print() const {
-
-
-    };
-
     // Base destructor
-    ~PriorityQueue()
-    {
-    }
+    ~PriorityQueue() override = default;
+
+    // Print queue contents
+    void print() const {};
+
     // Reinitialize the queue. The user is responsible for
     // reclaiming the storage used by the queue elements.
-    void clear(){
+    void clear() override {};
 
-    };
     // Place an element at the position
     // based on its prioity of the queue.
     // it: The element being enqueued.
-    void enqueue(const E& it){
+    void enqueue(const E& it) override {};
 
-
-    };
     // Remove and return element at the front of the queue.
     // Return: The element at the front of the queue.
-    E dequeue()
-    {
-        return E();
-    };
-    // Return: A copy of the front element.
-    const E& frontValue() const
+    E dequeue() override
     {
         return E();
     }
+
+    // Return: A copy of the front element.
+    [[nodiscard]] const E& frontValue() const override 
+    {
+        return E();
+    }
+
     // Return: The number of elements in the queue.
-    int length() const
+    [[nodiscard]] int length() const override 
     {
         return 0;
     }

@@ -1,5 +1,6 @@
 #include "PriorityQueue.h"
 #include "Process.h"
+
 #include <algorithm>
 #include <ctime>
 #include <fstream>
@@ -9,29 +10,29 @@
 #include <string>
 #include <vector>
 
-
-
-vector<string> split(const string& s, char delim)
+std::vector<std::string> split(const std::string& s, char delim)
 {
-    stringstream ss(s);
-    string item;
-    vector<string> tokens;
+    std::stringstream ss(s);
+    std::string item;
+    std::vector<std::string> tokens;
+
     while (getline(ss, item, delim))
     {
         tokens.push_back(item);
     }
+
     return tokens;
 }
 
-vector<Process*> load(const string& filename)
+std::vector<Process*> load(const std::string& filename)
 {
-    vector<Process*> list;
+    std::vector<Process*> list;
     std::ifstream file(filename);
 
     std::string str;
     while (std::getline(file, str))
     {
-        vector<string> tokens = split(str, ',');
+        std::vector<std::string> tokens = split(str, ',');
 
         list.push_back(new Process(
             tokens[0], stoi(tokens[1]), stoi(tokens[2]),
@@ -40,6 +41,7 @@ vector<Process*> load(const string& filename)
 
     return list;
 }
+
 bool compare(int first, int second)
 {
     return (first > second);
@@ -50,12 +52,11 @@ bool compareProcess(Process* first, Process* second)
     return (first->getPriorityLevel() > second->getPriorityLevel());
 }
 
-
-int main(int argc, char* argv[])
+int main()
 {
-
-    srand(time(NULL));
+    srand(time(nullptr));
     int random = 0;
+
     // Random Numbers
     PriorityQueue<int> pq(
         [](int first, int second) { return (first > second); });
@@ -63,23 +64,26 @@ int main(int argc, char* argv[])
     for (int x = 0; x < 10; x++)
     {
         random = rand() % 10 + 1;
-        cout << random << " ";
+        std::cout << random << " ";
         pq.enqueue(random);
     }
     std::cout << std::endl;
 
     for (int x = 0; x < 10; x++)
+    {
         std::cout << pq.dequeue() << " ";
+    }
     std::cout << std::endl;
 
     // Process with Function Pointer
-    vector<Process*> processes = load("ProcessList.txt");
+    std::vector<Process*> processes = load("ProcessList.txt");
     for (Process* process :
          processes) // access by reference to avoid copying
     {
-        cout << (*process) << endl;
+        std::cout << (*process) << std::endl;
     }
-    cout << endl;
+    std::cout << std::endl;
+
     // Process Queue with Function Pointer
     PriorityQueue<Process*> processq(&compareProcess);
     for (Process* process :
@@ -87,9 +91,9 @@ int main(int argc, char* argv[])
     {
         processq.enqueue(process);
     }
-    cout << endl;
+    std::cout << std::endl;
 
-    std::cout << " Start DEQUEUE processq " << endl;
+    std::cout << " Start DEQUEUE processq " << std::endl;
     while (processq.length() > 0)
     {
         std::cout << processq.length() << " ";
@@ -97,22 +101,20 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
     }
 
-
     // Process Queue with Lamda
     PriorityQueue<Process*> processqLambda([](Process* first,
                                               Process* second) {
         return (first->getPriorityLevel() > second->getPriorityLevel());
     });
 
-
     for (Process* process :
          processes) // access by reference to avoid copying
     {
         processqLambda.enqueue(process);
     }
-    cout << endl;
+    std::cout << std::endl;
 
-    std::cout << " Start DEQUEUE processqLambda " << endl;
+    std::cout << " Start DEQUEUE processqLambda " << std::endl;
     while (processqLambda.length() > 0)
     {
         std::cout << processqLambda.length() << " ";
