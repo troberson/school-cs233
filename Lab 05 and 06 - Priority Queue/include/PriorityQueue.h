@@ -2,18 +2,19 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 template <typename E> class PriorityQueue : Queue<E>
 {
   private:
-    E* items;
+    std::vector<E> items;
     unsigned int count = 0; // number of items
     bool (*compareFunction)(E, E);
 
     // Intialization helper method
     void init()
     {
-        this->items = new E[20]();
+        items = std::vector<E>(2);
         this->count = 0;
     }
 
@@ -131,8 +132,18 @@ template <typename E> class PriorityQueue : Queue<E>
     // it: The element being enqueued.
     void enqueue(const E& it) override
     {
-        this->items[this->count + 1] = it;
         this->count++;
+
+        // If we need to increase capacity, add to the back
+        // otherwise, just replace what is in the last used position.
+        if (this->count >= this->items.size())
+        {
+            this->items.emplace_back(it);
+        }
+        else
+        {
+            this->items[this->count] = it;
+        }
 
         heapifyUp(this->count);
     }
