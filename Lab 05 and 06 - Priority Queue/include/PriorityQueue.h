@@ -18,11 +18,6 @@ template <typename E> class PriorityQueue : Queue<E>
         this->count = 0;
     }
 
-    // Return link nodes to free store
-    void removeall()
-    {
-    }
-
     // Is the queue empty?
     [[nodiscard]] bool isEmpty() const
     {
@@ -98,7 +93,6 @@ template <typename E> class PriorityQueue : Queue<E>
     }
 
 
-
   public:
     // Protect assignment
     void operator=(const PriorityQueue&) = delete;
@@ -114,9 +108,6 @@ template <typename E> class PriorityQueue : Queue<E>
         init();
     }
 
-    // Base destructor
-    ~PriorityQueue() override = default;
-
     // Print queue contents
     void print() const
     {
@@ -128,7 +119,11 @@ template <typename E> class PriorityQueue : Queue<E>
 
     // Reinitialize the queue. The user is responsible for
     // reclaiming the storage used by the queue elements.
-    void clear() override{};
+    void clear() override
+    {
+        this->items.clear();
+        init();
+    };
 
     // Place an element at the position
     // based on its prioity of the queue.

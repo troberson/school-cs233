@@ -8,7 +8,6 @@ using namespace std;
 
 Process::Process(string name, int processID, int size, PriorityLevel level)
 {
-
     this->name = name;
     this->prioritylevel = level;
     this->processID = processID;
