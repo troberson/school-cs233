@@ -102,38 +102,94 @@ int main()
     }
 
     // Process Queue with Lamda
-    PriorityQueue<Process*> processqLambda([](Process* first,
-                                              Process* second) {
-        return (first->getPriorityLevel() > second->getPriorityLevel());
-    });
+    auto printSorted = [&processes](PriorityQueue<Process*>& pq) {
+        for (Process* process : processes)
+        {
+            pq.enqueue(process);
+        }
 
-    for (Process* process :
-         processes) // access by reference to avoid copying
-    {
-        processqLambda.enqueue(process);
-    }
-    std::cout << std::endl;
-
-    std::cout << " Start DEQUEUE processqLambda " << std::endl;
-    while (processqLambda.length() > 0)
-    {
-        std::cout << processqLambda.length() << " ";
-        std::cout << *(processqLambda.dequeue()) << " ";
+        while (pq.length() > 0)
+        {
+            std::cout << pq.length() << " " << *(pq.dequeue()) << "\n";
+        }
         std::cout << std::endl;
-    }
+    };
 
+    auto sortPriority = [](Process* first, Process* second) {
+        return (first->getPriorityLevel() > second->getPriorityLevel());
+    };
+    PriorityQueue<Process*> pqSortPriority(sortPriority);
+    std::cout << "\nStart DEQUEUE processqLambda\n";
+    printSorted(pqSortPriority);
+
+
+    // LAB 6: Lambdas
     // Part 2 A prioritize by ID
+    std::cout << "Prioritize by ID\n";
+    auto sortID = [](Process* first, Process* second) {
+        return (first->getID() > second->getID());
+    };
+    PriorityQueue<Process*> pqSortID(sortID);
+    printSorted(pqSortID);
+
 
     // Part 2 B prioritize by PriorityLevel Reverse
+    std::cout << "Prioritize by PriorityLevel Reverse\n";
+    auto sortPriorityReverse = [](Process* first, Process* second) {
+        return (first->getPriorityLevel() < second->getPriorityLevel());
+    };
+    PriorityQueue<Process*> pqSortPriorityReverse(sortPriorityReverse);
+    printSorted(pqSortPriorityReverse);
+
 
     // Part 2 C prioritize by Size Large to small
+    std::cout << "Prioritize by Size\n";
+    auto sortSize = [](Process* first, Process* second) {
+        return (first->getSize() > second->getSize());
+    };
+    PriorityQueue<Process*> pqSortSize(sortSize);
+    printSorted(pqSortSize);
+
 
     // Part 2 D prioritize by Name as in Dictionary
+    std::cout << "Prioritize by Name\n";
+    auto sortName = [](Process* first, Process* second) {
+        std::string name1 = first->getName();
+        std::string name2 = second->getName();
+        auto cmp = [](auto c1, auto c2) {
+            return std::tolower(c1) < std::tolower(c2);
+        };
+        return std::lexicographical_compare(
+            name1.begin(), name1.end(), name2.begin(), name2.end(), cmp);
+    };
+    PriorityQueue<Process*> pqSortName(sortName);
+    printSorted(pqSortName);
+
 
     // Part 2 E prioritize by Name Reverse Dictionary
+    std::cout << "Prioritize by Name Reverse\n";
+    auto sortNameReverse = [](Process* first, Process* second) {
+        std::string name1 = first->getName();
+        std::string name2 = second->getName();
+        auto cmp = [](auto c1, auto c2) {
+            return std::tolower(c1) > std::tolower(c2);
+        };
+        return std::lexicographical_compare(
+            name1.begin(), name1.end(), name2.begin(), name2.end(), cmp);
+    };
+    PriorityQueue<Process*> pqSortNameReverse(sortNameReverse);
+    printSorted(pqSortNameReverse);
+
 
     // Part 2 F prioritize by PriorityLevel Critcal then High ALL others
     // equal
+    std::cout << "Prioritize Critical Only\n";
+    auto sortCritical = [](Process* first, Process* second) {
+        return first->getPriorityLevel() ==
+               Process::PriorityLevel::Critical;
+    };
+    PriorityQueue<Process*> pqSortCritical(sortCritical);
+    printSorted(pqSortCritical);
 
     return 0;
 }
