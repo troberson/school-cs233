@@ -216,3 +216,78 @@ SCENARIO("PriorityQueue: Items enqueued are dequeued in order (all items "
         }
     }
 }
+
+
+SCENARIO("PriorityQueue: Queue length after enqueuing values is correct")
+{
+    GIVEN("A priority queue")
+    {
+        PriorityQueue<int> pq(compareGreater);
+
+        WHEN("19 values are enqueued")
+        {
+            for (int x = 19; x > 0; x--)
+            {
+                pq.enqueue(x);
+            }
+
+            THEN("The length is 19")
+            {
+                REQUIRE(19 == pq.length());
+            }
+        }
+    }
+}
+
+SCENARIO("PriorityQueue: Queue length after dequeuing values is correct")
+{
+    GIVEN("A priority queue with 19 values")
+    {
+        PriorityQueue<int> pq(compareGreater);
+
+        for (int x = 19; x > 0; x--)
+        {
+            pq.enqueue(x);
+        }
+        WHEN("4 values are dequeued")
+        {
+            pq.dequeue();
+            pq.dequeue();
+            pq.dequeue();
+            pq.dequeue();
+
+            THEN("The length is 15")
+            {
+                REQUIRE(15 == pq.length());
+            }
+        }
+    }
+}
+
+SCENARIO("PriorityQueue: Queue length after dequeuing and enqueuing "
+         "values is correct")
+{
+    GIVEN("A priority queue with 19 values")
+    {
+        PriorityQueue<int> pq(compareGreater);
+
+        for (int x = 19; x > 0; x--)
+        {
+            pq.enqueue(x);
+        }
+        WHEN("4 values are dequeued and 2 are enqueued")
+        {
+            pq.dequeue();
+            pq.dequeue();
+            pq.dequeue();
+            pq.dequeue();
+            pq.enqueue(19);
+            pq.enqueue(18);
+
+            THEN("The length is 17")
+            {
+                REQUIRE(17 == pq.length());
+            }
+        }
+    }
+}

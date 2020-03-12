@@ -13,7 +13,7 @@ template <typename E> class PriorityQueue : Queue<E>
     // Intialization helper method
     void init()
     {
-        this->items = new E[10]();
+        this->items = new E[20]();
         this->count = 0;
     }
 
@@ -161,6 +161,6 @@ template <typename E> class PriorityQueue : Queue<E>
     // Return: The number of elements in the queue.
     [[nodiscard]] int length() const override
     {
-        return 0;
+        return this->count;
     }
 };
