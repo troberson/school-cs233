@@ -3,8 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 
-template <typename E>
-class PriorityQueue : Queue<E>
+template <typename E> class PriorityQueue : Queue<E>
 {
   private:
     E* items;
@@ -23,20 +22,20 @@ class PriorityQueue : Queue<E>
     {
     }
 
-	// Is the queue empty?
-	[[nodiscard]] bool isEmpty()
-	{
-		return this->count == 0;
-	}
+    // Is the queue empty?
+    [[nodiscard]] bool isEmpty() const
+    {
+        return this->count == 0;
+    }
 
-	// Throw std::out_of_range exception if the queue is empty.
-	void assertNotEmpty()
-	{
-		if (isEmpty())
-		{
-			throw std::out_of_range("Queue is empty");
-		}
-	}
+    // Throw std::out_of_range exception if the queue is empty.
+    void assertNotEmpty() const
+    {
+        if (isEmpty())
+        {
+            throw std::out_of_range("Queue is empty");
+        }
+    }
 
 
   public:
@@ -62,30 +61,32 @@ class PriorityQueue : Queue<E>
 
     // Reinitialize the queue. The user is responsible for
     // reclaiming the storage used by the queue elements.
-    void clear() override {};
+    void clear() override{};
 
     // Place an element at the position
     // based on its prioity of the queue.
     // it: The element being enqueued.
-    void enqueue(const E& it) override {};
+    void enqueue(const E& it) override{};
 
     // Remove and return element at the front of the queue.
     // Return: The element at the front of the queue.
     E dequeue() override
     {
-		assertNotEmpty();
+        assertNotEmpty();
 
         return E();
     }
 
     // Return: A copy of the front element.
-    [[nodiscard]] const E& frontValue() const override 
+    [[nodiscard]] const E& frontValue() const override
     {
+        assertNotEmpty();
+
         return E();
     }
 
     // Return: The number of elements in the queue.
-    [[nodiscard]] int length() const override 
+    [[nodiscard]] int length() const override
     {
         return 0;
     }
