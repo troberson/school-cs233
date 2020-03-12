@@ -188,13 +188,16 @@ int main()
 
     // Part 2 F prioritize by PriorityLevel Critcal then High ALL others
     // equal
-    std::cout << "Prioritize Critical Only\n";
-    auto sortCritical = [](ProcessPtr first, ProcessPtr second) {
-        return first->getPriorityLevel() ==
-               Process::PriorityLevel::Critical;
+    std::cout << "Prioritize Critical then High Only\n";
+    auto sortCriticalHigh = [](ProcessPtr first, ProcessPtr second) {
+        auto p1 = first->getPriorityLevel();
+        auto p2 = second->getPriorityLevel();
+        return (p1 <= Process::PriorityLevel::High ||
+                p2 <= Process::PriorityLevel::High) &&
+               p1 < p2;
     };
-    ProcessQueue pqSortCritical(sortCritical);
-    printSorted(pqSortCritical);
+    ProcessQueue pqSortCriticalHigh(sortCriticalHigh);
+    printSorted(pqSortCriticalHigh);
 
     return 0;
 }
