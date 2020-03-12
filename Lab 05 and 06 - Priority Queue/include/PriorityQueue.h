@@ -37,6 +37,17 @@ template <typename E> class PriorityQueue : Queue<E>
         }
     }
 
+    // Get left node index
+    constexpr int leftIndex(int idx)
+    {
+        return 2 * idx;
+    }
+
+    // Get right node index
+    constexpr int rightIndex(int idx)
+    {
+        return 2 * idx + 1;
+    }
 
   public:
     // Protect assignment
@@ -57,22 +68,62 @@ template <typename E> class PriorityQueue : Queue<E>
     ~PriorityQueue() override = default;
 
     // Print queue contents
-    void print() const {};
+    void print() const
+    {
+        for (int i = 1; i <= this->count; i++)
+        {
+            std::cout << "INDEX " << i << ": " << this->items[i] << "\n";
+        }
+    };
 
     // Reinitialize the queue. The user is responsible for
     // reclaiming the storage used by the queue elements.
     void clear() override{};
+
+    // Heapify the list using the compareFunction
+    void heapify()
+    {
+        for (int i = this->count / 2; i > 0; i--)
+        {
+            heapifyRecurse(i);
+        }
+    }
+
+    void heapifyRecurse(int idx)
+    {
+        int left = leftIndex(idx);
+        int right = rightIndex(idx);
+        int max = idx;
+
+        if (left <= this->count &&
+            compareFunction(this->items[left], this->items[idx]))
+        {
+            max = left;
+        }
+
+        if (right <= this->count &&
+            compareFunction(this->items[right], this->items[idx]))
+        {
+            max = right;
+        }
+
+        if (max != idx)
+        {
+            std::swap(this->items[idx], this->items[max]);
+            heapifyRecurse(max);
+        }
+    }
+
 
     // Place an element at the position
     // based on its prioity of the queue.
     // it: The element being enqueued.
     void enqueue(const E& it) override
     {
-        if (this->count == 0)
-        {
-            this->items[0] = it;
-            this->count++;
-        }
+        this->items[this->count + 1] = it;
+        this->count++;
+
+        heapify();
     }
 
     // Remove and return element at the front of the queue.
@@ -89,7 +140,7 @@ template <typename E> class PriorityQueue : Queue<E>
     {
         assertNotEmpty();
 
-        return this->items[0];
+        return this->items[1];
     }
 
     // Return: The number of elements in the queue.

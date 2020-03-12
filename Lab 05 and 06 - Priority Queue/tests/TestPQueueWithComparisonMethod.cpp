@@ -17,21 +17,6 @@ TEST_CLASS(TestPQueueWithComparisonMethod){
 pq.dequeue();
 } // namespace PQueueUnitTest
 
-
-TEST_METHOD(EqueueHighestPriorityItemsOnList)
-{
-    PriorityQueue<int> pq(compareGreater);
-    pq.enqueue(3);
-    pq.enqueue(12);
-    pq.enqueue(5);
-    pq.enqueue(1);
-    // higest priority item
-    // enqueued last
-    pq.enqueue(19);
-    Assert::AreEqual(
-        19, pq.frontValue(),
-        L" New Higher priority element not at Front on Empty List");
-}
 TEST_METHOD(EqueueHighestPriorityOneItemOnList)
 {
     PriorityQueue<int> pq(compareGreater);

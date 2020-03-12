@@ -58,3 +58,27 @@ SCENARIO("PriorityQueue: Enqueing a value to an empty list makes it the "
         }
     }
 }
+
+
+SCENARIO("PriorityQueue: After enqueing several items, the highest value "
+         "is the front value")
+{
+    GIVEN("An empty list")
+    {
+        PriorityQueue<int> pq(compareGreater);
+
+        WHEN("A value is enqueued")
+        {
+            pq.enqueue(3);
+            pq.enqueue(12);
+            pq.enqueue(5);
+            pq.enqueue(1);
+            pq.enqueue(19);
+
+            THEN("The highest value is the front value")
+            {
+                REQUIRE(19 == pq.frontValue());
+            }
+        }
+    }
+}
