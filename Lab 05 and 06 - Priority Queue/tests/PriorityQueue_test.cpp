@@ -1,3 +1,16 @@
+////
+// Name: Tamara Roberson
+// Section: A
+// Program Name: Lab 5 and 6 - Priority Queue
+//
+// Description: Priority Queue
+// A priority queue implemented on top of an array-based binary heap.
+// Values are enqueued and sorted with a custom sorter.
+// The next value in the queue may be peeked at with frontValue() or
+// dequeued.
+////
+
+
 #include "PriorityQueue.h"
 
 #include <catch2/catch.hpp>

@@ -1,3 +1,13 @@
+////
+// Name: Tamara Roberson
+// Section: A
+// Program Name: Lab 5 and 6 - Priority Queue
+//
+// Description: Main app for testing the priority queue
+// Enqueues and dequeues random numbers.
+// Then enqueues and enqueues Process objects with various sorting schemes.
+////
+
 #include "PriorityQueue.h"
 #include "Process.h"
 
