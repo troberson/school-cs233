@@ -56,6 +56,48 @@ template <typename E> class PriorityQueue : Queue<E>
         return idx / 2;
     }
 
+    // Heapify the list using the compareFunction
+    // heapifyUp on enqueue
+    void heapifyUp(int idx)
+    {
+        int parent = getParent(idx);
+
+        if (idx > 1 &&
+            compareFunction(this->items[idx], this->items[parent]))
+        {
+            std::swap(this->items[idx], this->items[parent]);
+            heapifyUp(parent);
+        }
+    }
+
+    // Heapify the list using the compareFunction
+    // heapifyDown on dequeue
+    void heapifyDown(int idx)
+    {
+        int left = getLeft(idx);
+        int right = getRight(idx);
+        int max = idx;
+
+        if (left <= this->count &&
+            compareFunction(this->items[left], this->items[max]))
+        {
+            max = left;
+        }
+
+        if (right <= this->count &&
+            compareFunction(this->items[right], this->items[max]))
+        {
+            max = right;
+        }
+
+        if (max != idx)
+        {
+            std::swap(this->items[idx], this->items[max]);
+            heapifyDown(max);
+        }
+    }
+
+
 
   public:
     // Protect assignment
@@ -87,45 +129,6 @@ template <typename E> class PriorityQueue : Queue<E>
     // Reinitialize the queue. The user is responsible for
     // reclaiming the storage used by the queue elements.
     void clear() override{};
-
-    // Heapify the list using the compareFunction
-    void heapifyUp(int idx)
-    {
-        int parent = getParent(idx);
-
-        if (idx > 1 &&
-            compareFunction(this->items[idx], this->items[parent]))
-        {
-            std::swap(this->items[idx], this->items[parent]);
-            heapifyUp(parent);
-        }
-    }
-
-    void heapifyDown(int idx)
-    {
-        int left = getLeft(idx);
-        int right = getRight(idx);
-        int max = idx;
-
-        if (left <= this->count &&
-            compareFunction(this->items[left], this->items[max]))
-        {
-            max = left;
-        }
-
-        if (right <= this->count &&
-            compareFunction(this->items[right], this->items[max]))
-        {
-            max = right;
-        }
-
-        if (max != idx)
-        {
-            std::swap(this->items[idx], this->items[max]);
-            heapifyDown(max);
-        }
-    }
-
 
     // Place an element at the position
     // based on its prioity of the queue.
