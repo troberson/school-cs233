@@ -23,6 +23,22 @@ class PriorityQueue : Queue<E>
     {
     }
 
+	// Is the queue empty?
+	[[nodiscard]] bool isEmpty()
+	{
+		return this->count == 0;
+	}
+
+	// Throw std::out_of_range exception if the queue is empty.
+	void assertNotEmpty()
+	{
+		if (isEmpty())
+		{
+			throw std::out_of_range("Queue is empty");
+		}
+	}
+
+
   public:
     // Protect assignment
     void operator=(const PriorityQueue&) = delete;
@@ -57,6 +73,8 @@ class PriorityQueue : Queue<E>
     // Return: The element at the front of the queue.
     E dequeue() override
     {
+		assertNotEmpty();
+
         return E();
     }
 

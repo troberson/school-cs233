@@ -17,14 +17,6 @@ TEST_CLASS(TestPQueueWithComparisonMethod){
 pq.dequeue();
 } // namespace PQueueUnitTest
 
-TEST_METHOD(DequeueEmptyList)
-{
-
-    Assert::ExpectException<std::out_of_range>(
-        &TestPQueueWithComparisonMethod::dequeueEmptyList,
-        L"Exception not thrown on dequeue with Empty List");
-}
-
 void static fronValueEmptyList()
 {
     PriorityQueue<int> pq(compareGreater);

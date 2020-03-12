@@ -8,7 +8,7 @@ FetchContent_MakeAvailable(catch2)
 
 add_executable(priority_test
     test_main.cpp
-    # PriorityQueue_test.cpp
+    PriorityQueue_test.cpp
 )
 
 # Use C++17
