@@ -17,13 +17,7 @@ TEST_CLASS(TestPQueueWithComparisonMethod){
 pq.dequeue();
 } // namespace PQueueUnitTest
 
-TEST_METHOD(EqueueEmptyList)
-{
-    PriorityQueue<int> pq(compareGreater);
-    pq.enqueue(1);
-    Assert::AreEqual(1, pq.frontValue(),
-                     L" New Element not at Front on Empty List");
-}
+
 TEST_METHOD(EqueueHighestPriorityItemsOnList)
 {
     PriorityQueue<int> pq(compareGreater);

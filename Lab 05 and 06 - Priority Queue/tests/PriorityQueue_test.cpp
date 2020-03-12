@@ -39,3 +39,22 @@ SCENARIO("PriorityQueue: Get the front value of an empty list")
         }
     }
 }
+
+SCENARIO("PriorityQueue: Enqueing a value to an empty list makes it the "
+         "front value")
+{
+    GIVEN("An empty list")
+    {
+        PriorityQueue<int> pq(compareGreater);
+
+        WHEN("A value is enqueued")
+        {
+            pq.enqueue(1);
+
+            THEN("It is the front value")
+            {
+                REQUIRE(1 == pq.frontValue());
+            }
+        }
+    }
+}

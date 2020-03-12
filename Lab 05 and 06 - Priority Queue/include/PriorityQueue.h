@@ -66,7 +66,14 @@ template <typename E> class PriorityQueue : Queue<E>
     // Place an element at the position
     // based on its prioity of the queue.
     // it: The element being enqueued.
-    void enqueue(const E& it) override{};
+    void enqueue(const E& it) override
+    {
+        if (this->count == 0)
+        {
+            this->items[0] = it;
+            this->count++;
+        }
+    }
 
     // Remove and return element at the front of the queue.
     // Return: The element at the front of the queue.
@@ -82,7 +89,7 @@ template <typename E> class PriorityQueue : Queue<E>
     {
         assertNotEmpty();
 
-        return E();
+        return this->items[0];
     }
 
     // Return: The number of elements in the queue.
