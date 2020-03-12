@@ -67,7 +67,7 @@ SCENARIO("PriorityQueue: After enqueing several items, the highest value "
     {
         PriorityQueue<int> pq(compareGreater);
 
-        WHEN("A value is enqueued")
+        WHEN("Values are enqueued")
         {
             pq.enqueue(3);
             pq.enqueue(12);
@@ -78,6 +78,140 @@ SCENARIO("PriorityQueue: After enqueing several items, the highest value "
             THEN("The highest value is the front value")
             {
                 REQUIRE(19 == pq.frontValue());
+            }
+        }
+    }
+}
+
+
+SCENARIO(
+    "PriorityQueue: Items enqueued are dequeued in order (one other item)")
+{
+    GIVEN("An empty list")
+    {
+        PriorityQueue<int> pq(compareGreater);
+
+        WHEN("Values are enqueued")
+        {
+            pq.enqueue(3);
+            pq.enqueue(12);
+
+            THEN("The highest value is the front value")
+            {
+                REQUIRE(12 == pq.frontValue());
+
+                AND_THEN("The highest value is dequeued")
+                {
+                    REQUIRE(12 == pq.dequeue());
+
+                    AND_THEN("The remaining value is dequeued")
+                    {
+                        REQUIRE(3 == pq.dequeue());
+                    }
+                }
+            }
+        }
+    }
+}
+
+SCENARIO("PriorityQueue: Items enqueued are dequeued in order (middle "
+         "priority last)")
+{
+    GIVEN("An empty list")
+    {
+        PriorityQueue<int> pq(compareGreater);
+
+        WHEN("Values are enqueued")
+        {
+            pq.enqueue(12);
+            pq.enqueue(3);
+            pq.enqueue(5);
+
+            THEN("The highest value is the front value")
+            {
+                REQUIRE(12 == pq.frontValue());
+
+                AND_THEN("The highest value is dequeued")
+                {
+                    REQUIRE(12 == pq.dequeue());
+
+                    AND_THEN("The next highest value is dequeued")
+                    {
+                        REQUIRE(5 == pq.dequeue());
+                        AND_THEN("The remaining value is dequeued")
+                        {
+                            REQUIRE(3 == pq.dequeue());
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+SCENARIO("PriorityQueue: Items enqueued are dequeued in order (lowest "
+         "added last)")
+{
+    GIVEN("An empty list")
+    {
+        PriorityQueue<int> pq(compareGreater);
+
+        WHEN("Values are enqueued")
+        {
+            pq.enqueue(3);
+            pq.enqueue(1);
+
+            THEN("The highest value is dequeued")
+            {
+                REQUIRE(3 == pq.dequeue());
+
+                AND_THEN("The remaining value is the front value")
+                {
+                    REQUIRE(1 == pq.frontValue());
+                }
+            }
+        }
+    }
+}
+
+SCENARIO("PriorityQueue: Items enqueued are dequeued in order (all items "
+         "dequeued)")
+{
+    GIVEN("An empty list")
+    {
+        PriorityQueue<int> pq(compareGreater);
+
+        WHEN("Values are enqueued")
+        {
+            pq.enqueue(3);
+            pq.enqueue(12);
+            pq.enqueue(5);
+            pq.enqueue(1);
+            pq.enqueue(19);
+
+            THEN("The highest value is dequeued")
+            {
+                REQUIRE(19 == pq.dequeue());
+
+                AND_THEN("The next highest value is dequeued")
+                {
+                    REQUIRE(12 == pq.dequeue());
+
+                    AND_THEN("The next highest value is dequeued")
+                    {
+                        REQUIRE(5 == pq.dequeue());
+
+                        AND_THEN("The next highest value is dequeued")
+                        {
+                            REQUIRE(3 == pq.dequeue());
+
+                            AND_THEN("The remaining value is dequeued")
+                            {
+                                REQUIRE(1 == pq.dequeue());
+                            }
+                        }
+                    }
+                }
             }
         }
     }

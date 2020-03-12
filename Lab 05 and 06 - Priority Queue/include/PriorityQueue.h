@@ -38,16 +38,23 @@ template <typename E> class PriorityQueue : Queue<E>
     }
 
     // Get left node index
-    constexpr int leftIndex(int idx)
+    constexpr int getLeft(int idx)
     {
         return 2 * idx;
     }
 
     // Get right node index
-    constexpr int rightIndex(int idx)
+    constexpr int getRight(int idx)
     {
         return 2 * idx + 1;
     }
+
+    // Get parent index
+    constexpr int getParent(int idx)
+    {
+        return idx / 2;
+    }
+
 
   public:
     // Protect assignment
@@ -81,28 +88,32 @@ template <typename E> class PriorityQueue : Queue<E>
     void clear() override{};
 
     // Heapify the list using the compareFunction
-    void heapify()
+    void heapifyUp(int idx)
     {
-        for (int i = this->count / 2; i > 0; i--)
+        int parent = getParent(idx);
+
+        if (idx > 1 &&
+            compareFunction(this->items[idx], this->items[parent]))
         {
-            heapifyRecurse(i);
+            std::swap(this->items[idx], this->items[parent]);
+            heapifyUp(parent);
         }
     }
 
-    void heapifyRecurse(int idx)
+    void heapifyDown(int idx)
     {
-        int left = leftIndex(idx);
-        int right = rightIndex(idx);
+        int left = getLeft(idx);
+        int right = getRight(idx);
         int max = idx;
 
         if (left <= this->count &&
-            compareFunction(this->items[left], this->items[idx]))
+            compareFunction(this->items[left], this->items[max]))
         {
             max = left;
         }
 
         if (right <= this->count &&
-            compareFunction(this->items[right], this->items[idx]))
+            compareFunction(this->items[right], this->items[max]))
         {
             max = right;
         }
@@ -110,7 +121,7 @@ template <typename E> class PriorityQueue : Queue<E>
         if (max != idx)
         {
             std::swap(this->items[idx], this->items[max]);
-            heapifyRecurse(max);
+            heapifyDown(max);
         }
     }
 
@@ -123,7 +134,7 @@ template <typename E> class PriorityQueue : Queue<E>
         this->items[this->count + 1] = it;
         this->count++;
 
-        heapify();
+        heapifyUp(this->count);
     }
 
     // Remove and return element at the front of the queue.
@@ -132,7 +143,11 @@ template <typename E> class PriorityQueue : Queue<E>
     {
         assertNotEmpty();
 
-        return E();
+        std::swap(this->items[this->count], this->items[1]);
+        this->count--;
+
+        heapifyDown(1);
+        return this->items[this->count + 1];
     }
 
     // Return: A copy of the front element.
